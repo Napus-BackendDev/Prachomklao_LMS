@@ -1,27 +1,19 @@
+"use client";
+
 import { Image } from "@heroui/image";
 import { siteConfig } from "@/config/site";
 import { Button } from "@heroui/button";
-import { Clock4, Smile, Smartphone, GraduationCap, Globe, Facebook, type LucideIcon } from "lucide-react";
-
-
-type Feature = {
-  icon: LucideIcon;
-  topic: string;
-  detail: string;
-};
-
-type Course = {
-  title: string;
-  description: string;
-  link: string;
-};
-
-type Contact = {
-  icon: LucideIcon;
-  name: string;
-  url: string;
-  description: string;
-};
+import {
+  Clock4,
+  Smile,
+  Smartphone,
+  GraduationCap,
+  Globe,
+  Facebook,
+} from "lucide-react";
+import { Card, CardBody, CardFooter, CardHeader } from "@heroui/react";
+import { CourseCard } from "@/public/components/courseCard";
+import Link from "next/link";
 
 const featuresData = [
   {
@@ -48,23 +40,30 @@ const featuresData = [
 
 const coursesData = [
   {
-    title: "หลักสูตรพยาบาลเด็กและวัยรุ่น",
-    description: "เรียนรู้การดูแลพยาบาลเด็กและวัยรุ่นอย่างมืออาชีพ",
+    title:
+      "การพยาบาลผู้ป่วยที่มีความจำเป็นต้องใช้เครื่องช่วยหายใจ ( Ventilator )",
+    code: "MEDNUR-101",
+    url: "https://img.youtube.com/vi/hFgiweAHkXQ/0.jpg",
     link: "/courses/",
   },
   {
-    title: "หลักสูตรการพยาบาลทั่วไป",
-    description: "พื้นฐานการพยาบาลที่จำเป็นสำหรับทุกคน",
+    title: "การพยาบาลผู้ป่วยที่มีความจำเป็นต้องใช้ตู้อบ (Incubator)",
+    code: "HSC-201",
+    url: "https://img.youtube.com/vi/PEYZoVI9M_c/0.jpg",
     link: "/courses/1",
   },
   {
-    title: "DADA",
-    description: "GE",
+    title:
+      "การพยาบาลผู้ป่วยที่ได้รับการรักษาภาวะตัวเหลืองด้วยเครื่องส่องไฟ Phototherapy",
+    code: "CLNC-310",
+    url: "https://img.youtube.com/vi/JHm4GsMhygM/0.jpg",
     link: "/courses/2",
   },
   {
-    title: "EQWE",
-    description: "GREG",
+    title:
+      "การพยาบาลผู้ป่วยที่มีความจำเป็นต้องใช้เครื่องให้ความร้อนแบบแผ่รังสี ( Radiant warmer )",
+    code: "MEDNUR-405",
+    url: "https://img.youtube.com/vi/ck4RGeoHFko/0.jpg",
     link: "/courses/3",
   },
 ];
@@ -87,7 +86,7 @@ const FeedbackData = [
   },
 ];
 
-const ContextDate: Contact[] = [
+const ContextDate = [
   {
     icon: Globe,
     name: "Website",
@@ -99,8 +98,7 @@ const ContextDate: Contact[] = [
     icon: Facebook,
     name: "Facebook",
     url: "วิทยาลัยพยาบาลพระจอมเกล้า",
-    description:
-      "ติดตามข่าวสารและข้อมูลล่าสุดได้ทาง Facebook Page ของเรา",
+    description: "ติดตามข่าวสารและข้อมูลล่าสุดได้ทาง Facebook Page ของเรา",
   },
 ];
 
@@ -109,15 +107,16 @@ export default function Home() {
     <>
       <section
         id="introduction"
-        className="flex items-center justify-between py-8 px-26 bg-[#EBEFFF] w-full backdrop-blur-2xl"
+        className="flex sm:flex-row flex-col-reverse items-center justify-between py-8 sm:px-14 px-4 gap-4 bg-[#EBEFFF] w-full backdrop-blur-2xl"
       >
         <div className="inline-block max-w-xl py-2 space-y-3">
-          <h1 className="text-3xl font-bold text-default-900">
+          <h1 className="text-4xl font-extrabold text-default-900">
             Welcome to {siteConfig.name}
           </h1>
-          <p className="mt-2 text-lg text-default-600">
+          <p className="mt-2 text-xl text-default-600">
             {siteConfig.description}
           </p>
+          <Link href="/courses">
           <Button
             className="px-5 my-2 text-medium font-medium"
             color="primary"
@@ -125,6 +124,7 @@ export default function Home() {
           >
             เริ่ม หลักสูตรออนไลน์
           </Button>
+          </Link>
         </div>
         <Image
           src="/homepage.png"
@@ -136,18 +136,18 @@ export default function Home() {
       </section>
       <section
         id="About"
-        className="flex flex-col items-center justify-center py-8 px-4"
+        className="flex  flex-col items-center justify-center py-12  px-4"
       >
-        <h1 className="text-3xl font-semibold inline-flex flex-nowrap items-baseline gap-2 mb-2">
+        <h1 className="sm:text-3xl text-lg font-semibold inline-flex flex-nowrap items-baseline gap-2 mb-2">
           <span>วิทยาลัยพยาบาลพระจอมเกล้า จังหวัดเพชรบุรี</span>
           <span className="text-[#4E71FF]">เปิดแหล่งเรียนรู้</span>
         </h1>
-        <p className="text-xl text-default-600 ">
+        <p className="sm:text-xl text-medium text-default-600 ">
           เพื่อพัฒนาความรู้และทักษะด้านการพยาบาลอย่างรอบด้าน
           ให้ผู้เรียนได้ฝึกปฏิบัติจริงและเตรียมพร้อมสู่การเป็นพยาบาลมืออาชีพ
         </p>
 
-        <div id="features" className="flex m-6 flex-wrap justify-center gap-6">
+        <div id="features" className="flex m-6 flex-wrap justify-center  gap-6">
           {featuresData.map((item) => (
             <div
               className="flex flex-col items-center justify-center pt-4"
@@ -164,52 +164,61 @@ export default function Home() {
       </section>
       <section
         id="courses"
-        className="flex flex-col items-center justify-center py-8 px-4 bg-[#EBEFFF] w-full"
+        className="flex flex-col items-center justify-center py-12 space-y-12 bg-[#EBEFFF] w-full "
       >
-        <h1 className="text-3xl font-semibold mb-4">หลักสูตรออนไลน์ของเรา</h1>
-        <div className="flex items-center justify-center  w-full max-w-4xl">
+        <h1 className="text-3xl font-semibold ">หลักสูตรออนไลน์ของเรา</h1>
+        <div className="flex sm:flex-row flex-col items-stretch justify-center w-full px-15 gap-7">
           {coursesData.map((course) => (
-            <div className="flex flex-col bg-white p-6 rounded-lg shadow-md m-4 ">
-              <h2 className="text-xl font-semibold">{course.title}</h2>
-              <p className="text-sm text-default-600 mb-2">
-                {course.description}
-              </p>
-            </div>
+            <CourseCard
+              key={course.code}
+              title={course.title}
+              code={course.code}
+              url={course.url}
+            />
           ))}
         </div>
       </section>
       <section
         id="Feedback"
-        className="flex flex-col items-center justify-center py-8 px-4 w-full space-y-3"
+        className="flex flex-col items-center justify-center py-12 w-full space-y-12"
       >
-        <h1 className="text-3xl font-semibold my-2">รวมความประทับใจ</h1>
-        <div className="flex items-center justify-center w-full ">
+        <h1 className="text-3xl font-semibold">รวมความประทับใจ</h1>
+        <div className="flex sm:flex-row flex-col items-stretch justify-center gap-6">
           {FeedbackData.map((feedback) => (
-            <div className="flex flex-col bg-white rounded-lg shadow-md m-4 py-4 px-6">
-              <div className="mb-3">
-                <h2 className="text-2xl"> {feedback.name}</h2>
-                <h6 className="text-sm"> {feedback.subname}</h6>
-              </div>
-              <h6 className="text-sm"> {feedback.description}</h6>
-            </div>
+            <Card className="mx-0 flex flex-col w-90" key={feedback.name}>
+              <CardHeader className="flex flex-col items-start gap-2 pb-0 ">
+                <div>
+                  <h2 className="text-2xl font-semibold">{feedback.name}</h2>
+                  <h6 className="text-md">{feedback.subname}</h6>
+                </div>
+              </CardHeader>
+              <CardBody className="flex-1 flex items-center">
+                <h6 className="text-sm">{feedback.description}</h6>
+              </CardBody>
+            </Card>
           ))}
         </div>
-        <h1 className="text-3xl font-semibold my-2">ช่องทางติดต่อ</h1>
-        <div className="flex items-center justify-center w-full">
+        <h1 className="text-3xl font-semibold">ช่องทางติดต่อ</h1>
+        <div className="flex sm:flex-row flex-col items-stretch justify-center gap-10">
           {ContextDate.map((context) => (
-            <div className="flex flex-col bg-white rounded-lg shadow-md m-4 py-4 p-6 ">
-              <div>
-                {context.icon}
-                <div>
-                  <span>{context.name}</span>
-                  <span>{context.url}</span>
+            <Card key={context.name}>
+              <CardHeader className="flex items-center gap-4 pb-0">
+                <context.icon className="w-9 h-9 text-primary" />
+                <div className="flex flex-col">
+                  <span className="text-medium font-semibold">
+                    {context.name}
+                  </span>
+                  <span className="text-sm">{context.url}</span>
                 </div>
-              </div>
-              <p> {context.description} </p>
-            </div>
+              </CardHeader>
+              <CardBody>
+                <p className="text-sm w-2xs"> {context.description} </p>
+              </CardBody>
+            </Card>
           ))}
         </div>
       </section>
+      <footer className="w-full h-5 bg-[#7F9FE0] border-b-2 border-[#0930CF]" />
     </>
   );
 }

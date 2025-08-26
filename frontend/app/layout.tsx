@@ -1,10 +1,9 @@
 import "@/styles/globals.css";
 import { Metadata, Viewport } from "next";
-import { Link } from "@heroui/link";
 import clsx from "clsx";
 
 import { siteConfig } from "@/config/site";
-import { fontSans } from "@/config/fonts";
+import { fontSans, fontThai } from "@/config/fonts";
 import { Navbar } from "@/components/navbar";
 
 export const metadata: Metadata = {
@@ -31,22 +30,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html suppressHydrationWarning lang="en">
-      <head />
+    <html suppressHydrationWarning lang="en" className={fontThai.className}>
+      <head>
+        <title> Prachomklao LMS</title>
+      </head>
       <body
         className={clsx(
-          "min-h-screen text-foreground bg-background font-sans antialiased",
-          fontSans.variable,
+          "min-h-screen text-foreground bg-background font-sans antialiased overflow-x-hidden"
         )}
       >
-          <div className="relative flex flex-col h-screen">
-            <Navbar />
-            <main className="mx-auto flex-grow w-full">
-              {children}
-            </main>
-            <footer className="w-full bg-[#7F9FE0] border-b-1 border-[#0930CF]">
-            </footer>
-          </div>
+        <div className="relative flex flex-col min-w-0">
+          <Navbar />
+          <main className="mx-auto flex-grow w-full max-w-screen-2xl min-w-0">
+            {children}
+          </main>
+        </div>
       </body>
     </html>
   );

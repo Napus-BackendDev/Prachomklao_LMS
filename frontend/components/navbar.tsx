@@ -10,19 +10,20 @@ import {
 import { Button } from "@heroui/button";
 import NextLink from "next/link";
 import { siteConfig } from "@/config/site";
+import { fontSans } from "@/config/fonts";
 
 export const Navbar = () => {
   return (
     <HeroUINavbar
       maxWidth="xl"
       position="sticky"
-      className=" py-0.5 shadow-2xs border-t-4 border-t-[#0930CF] "
+      className={` ${fontSans.className} py-0.5 shadow-2xs border-t-4 border-t-[#0930CF] `}
     >
       <NavbarContent
         className="basis-1/5 sm:basis-full space-x-4"
         justify="start"
       >
-        <NavbarBrand as="li" className="gap-3 max-w-fit">
+        <NavbarBrand className={`${fontSans.className} gap-3 max-w-fit`}>
           <NextLink className="flex justify-start items-center gap-1" href="/">
             <img
               alt="Prachomklao College of Nursing Logo"
@@ -30,7 +31,7 @@ export const Navbar = () => {
               src="/logo.png"
             />
             <div>
-              <p className="text-sm font-semibold text-default-800 ">
+              <p className="text-sm font-semibold text-default-800">
                 Prachomklao
               </p>
               <p className="text-xs text-default-400 font-medium">
@@ -59,7 +60,7 @@ export const Navbar = () => {
       >
         <NavbarItem className="hidden lg:flex">
           <Button
-            className="text-sm font-medium px-6"
+            className="text-sm font-medium px-6 border-2 border-primary"
             href={"/login"}
             variant="flat"
             color="primary"
