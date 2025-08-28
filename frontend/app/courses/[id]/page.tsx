@@ -34,7 +34,7 @@ declare global {
   }
 }
 
-export default function CoursesPage({ params }: { params: { id: string } }) {
+export default function CoursesPage({ }: { params: { id: string } }) {
   // ตัวอย่างข้อมูล
   const examList = [
     { title: "แบบทดสอบก่อนเรียน", count: 5 },
