@@ -5,6 +5,7 @@ import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
 import { Search } from "lucide-react";
 import { Pagination } from "@heroui/react";
+import { fontSans } from "@/config/fonts";
 
 const coursesData = [
   {
@@ -66,8 +67,8 @@ const coursesData = [
 export default function CoursesPage() {
   return (
     <>
-      <div className="flex flex-col w-full px-26 py-4">
-        <div className="flex w-full gap-10 mb-4">
+      <div className="flex flex-col w-full sm:px-14 px-4 py-4">
+        <div className={`${fontSans.className} flex w-full gap-10 mb-4`}>
           <Input
             placeholder="Search Courses"
             startContent={
@@ -75,7 +76,7 @@ export default function CoursesPage() {
             }
             type="text"
           />
-          <div className="flex gap-4">
+          <div className='flex gap-4'>
             <Button
               color="success"
               variant="flat"
@@ -88,7 +89,7 @@ export default function CoursesPage() {
             </Button>
           </div>
         </div>
-        <div className="">
+        <div>
           <h1>ผลลัพธ์ จำนวน 8 วิชา</h1>
           <hr className="flex-1 border-t border-gray-300" aria-hidden="true" />
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 py-4">

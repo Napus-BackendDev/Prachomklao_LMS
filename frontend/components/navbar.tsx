@@ -11,6 +11,7 @@ import { Button } from "@heroui/button";
 import NextLink from "next/link";
 import { siteConfig } from "@/config/site";
 import { fontSans } from "@/config/fonts";
+import Link from "next/link";
 
 export const Navbar = () => {
   return (
@@ -59,14 +60,15 @@ export const Navbar = () => {
         justify="end"
       >
         <NavbarItem className="hidden lg:flex">
+          <Link href={"/signin"}>
           <Button
             className="text-sm font-medium px-6 border-2 border-primary"
-            href={"/login"}
             variant="flat"
             color="primary"
           >
             Sign In
           </Button>
+          </Link>
         </NavbarItem>
         <NavbarItem className="hidden md:flex">
           <Button

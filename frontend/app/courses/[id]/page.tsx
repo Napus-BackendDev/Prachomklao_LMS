@@ -1,8 +1,18 @@
 "use client";
 
-import { Button, Card } from "@heroui/react";
+import {
+  Button,
+  Card,
+  Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  useDisclosure,
+} from "@heroui/react";
 import { Image } from "@heroui/image";
-import { Users, FileText, Target } from "lucide-react";
+import { Users, FileText, Target, User } from "lucide-react";
 import {
   Table,
   TableHeader,
@@ -12,6 +22,17 @@ import {
   TableCell,
   getKeyValue,
 } from "@heroui/react";
+import { useEffect, useRef, useState } from "react";
+import { RegisterCourseModal } from "./components/registerCourseModal";
+import { pretestModal } from "./components/pretestModal";
+import { posttestModal } from "./components/posttestModal";
+
+declare global {
+  interface Window {
+    YT: any;
+    onYouTubeIframeAPIReady: any;
+  }
+}
 
 export default function CoursesPage({ params }: { params: { id: string } }) {
   // ตัวอย่างข้อมูล
@@ -63,6 +84,52 @@ export default function CoursesPage({ params }: { params: { id: string } }) {
     },
   ];
 
+  const [showVideo, setShowVideo] = useState(false);
+  const [showAssessment, setShowAssessment] = useState(false);
+  const [showPosttest, setShowPosttest] = useState(false);
+  const [showPretest, setShowPretest] = useState(false);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const playerRef = useRef<any>(null);
+
+  useEffect(() => {
+    if (showVideo) {
+      // โหลด YouTube IFrame API
+      if (!window.YT) {
+        const tag = document.createElement("script");
+        tag.src = "https://www.youtube.com/iframe_api";
+        document.body.appendChild(tag);
+      }
+
+      // รอให้ YT พร้อม
+      window.onYouTubeIframeAPIReady = () => {
+        playerRef.current = new window.YT.Player("yt-player", {
+          events: {
+            onStateChange: (event: any) => {
+              // 0 = ended
+              if (event.data === 0) {
+                setShowPosttest(true);
+              }
+            },
+          },
+        });
+      };
+
+      // ถ้า YT โหลดแล้ว
+      if (window.YT && window.YT.Player) {
+        playerRef.current = new window.YT.Player("yt-player", {
+          events: {
+            onStateChange: (event: any) => {
+              if (event.data === 0) {
+                setShowPosttest(true);
+              }
+            },
+          },
+        });
+      }
+    }
+    // eslint-disable-next-line
+  }, [showVideo]);
+
   return (
     <div className="flex flex-col w-full px-8 py-4">
       <h1 className="text-3xl font-extrabold">Course</h1>
@@ -70,11 +137,30 @@ export default function CoursesPage({ params }: { params: { id: string } }) {
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-6 py-4">
         {/* LEFT */}
         <div className="flex flex-col justify-center items-center gap-6 ">
-          <Image
-            src="https://img.youtube.com/vi/hFgiweAHkXQ/0.jpg"
-            className="w-[650px] h-[350px] object-cover "
-            alt="course"
-          />
+          {!showVideo ? (
+            <Image
+              src="https://img.youtube.com/vi/hFgiweAHkXQ/0.jpg"
+              className="w-full max-w-[650px] aspect-video object-cover"
+              alt="course"
+            />
+          ) : (
+            <div className="w-full max-w-[650px] aspect-video">
+              <div id="yt-player-container" className="w-full h-full">
+                <iframe
+                  id="yt-player"
+                  width="100%"
+                  height="100%"
+                  src="https://www.youtube.com/embed/hFgiweAHkXQ?enablejsapi=1"
+                  title="course video"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="rounded-lg w-full h-full"
+                  style={{ aspectRatio: "16/9" }}
+                />
+              </div>
+            </div>
+          )}
+
           <Card className="flex py-5 px-4">
             <div className="mb-2">
               <span className="font-bold">หัวข้อ :</span>{" "}
@@ -86,9 +172,51 @@ export default function CoursesPage({ params }: { params: { id: string } }) {
               คืออุปกรณ์ที่ช่วยหรือควบคุมการหายใจของผู้ป่วยที่ไม่สามารถหายใจเองได้เพียงพอโดยควบคุมปริมาตรลมหายใจเข้า/ออก
               ความถี่และแรงดันให้เหมาะสมกับความต้องการของผู้ป่วย
             </div>
-            <Button color="primary" variant="shadow" size="md">
+            <Button color="primary" variant="shadow" size="md" onPress={onOpen}>
               สมัคร Course
             </Button>
+
+            <RegisterCourseModal
+              isOpen={isOpen}
+              onOpenChange={onOpenChange}
+              setShowPretest={setShowPretest}
+            />
+            {pretestModal({
+              showPretest,
+              setShowPretest,
+              setShowVideo,
+            })}
+
+            {posttestModal({
+              showPosttest,
+              setShowPosttest,
+              setShowAssessment,
+            })}
+
+            <Modal
+              isOpen={showAssessment}
+              placement="top-center"
+              onOpenChange={setShowAssessment}
+            >
+              <ModalContent>
+                {(onClose) => (
+                  <>
+                    <ModalHeader>แบบประเมิน หลักสูตรออนไลน์</ModalHeader>
+                    <ModalBody>
+                      <div>
+                        <p>1. ตัวอย่างคำถาม แบบประเมิน</p>
+                        <Input label="คำตอบของคุณ" />
+                      </div>
+                    </ModalBody>
+                    <ModalFooter>
+                      <Button color="primary" onPress={() => onClose()}>
+                        ส่งคำตอบ
+                      </Button>
+                    </ModalFooter>
+                  </>
+                )}
+              </ModalContent>
+            </Modal>
           </Card>
         </div>
         {/* RIGHT */}
