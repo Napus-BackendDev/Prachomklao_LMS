@@ -107,7 +107,7 @@ export default function Home() {
     <>
       <section
         id="introduction"
-        className="flex sm:flex-row flex-col-reverse items-center justify-between py-8 sm:px-14 px-4 gap-4 bg-[#EBEFFF] w-full backdrop-blur-2xl"
+        className="flex sm:flex-row flex-col-reverse items-center justify-between py-8 sm:px-14 px-4 gap-4 bg-[#EBEFFF] w-full"
       >
         <div className="inline-block max-w-xl py-2 space-y-3">
           <h1 className="text-4xl font-extrabold text-default-900">

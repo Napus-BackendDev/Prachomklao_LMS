@@ -22,19 +22,6 @@ import {
 } from "lucide-react";
 import { useMemo, useState } from "react";
 
-const statsData = [
-  { id: 1, label: "Total Users", value: 130, icon: UsersRound, color: "blue" },
-  { id: 2, label: "Total Courses", value: 5, icon: BookMarked, color: "green" },
-  {
-    id: 3,
-    label: "Total Feedback",
-    value: 5,
-    icon: MessageSquareWarning,
-    color: "yellow",
-  },
-  { id: 4, label: "Total Reports", value: 5, icon: Bug, color: "red" },
-];
-
 const rows = [
   {
     key: "1",
@@ -106,25 +93,62 @@ export default function DashboardPage() {
         <main className="flex-1 p-8">
           {/* Top Stats */}
           <div className="grid grid-cols-4 gap-6 mb-6">
-            {statsData.map((stat) => (
-              <Card
-                className="flex flex-row border border-gray-200 p-4 items-center justify-between gap-4"
-                key={stat.id}
-              >
-                <div className="flex gap-3 ">
-                  <div
-                    className={`bg-${stat.color} w-0.5 max-h-full rounded-3xl`}
-                  />
-                  <div>
-                    <h1 className="text-xl text-gray-500">{stat.label}</h1>
-                    <span className="text-xl font-bold">{stat.value}</span>
-                  </div>
+            <Card className="flex flex-row border border-gray-200 p-4 items-center justify-between gap-4">
+              <div className="flex gap-3 ">
+                <div
+                  className="bg-[#130FD9] w-0.5 max-h-14 items-center justify-center rounded-3xl"
+                />
+                <div>
+                  <h1 className="text-xl text-gray-500">Total Users</h1>
+                  <span className="text-xl font-bold">130</span>
                 </div>
-                <div className={`p-1 bg-${stat.color}-800 rounded-lg`}>
-                  <stat.icon className={`h-8 w-8 text-${stat.color}-300`} />
+              </div>
+              <div className="p-2 bg-[#130FD9]/10 rounded-lg">
+                <UsersRound className="h-8 w-8 text-[#130FD9]" />
+              </div>
+            </Card>
+            <Card className="flex flex-row border border-gray-200 p-4 items-center justify-between gap-4">
+              <div className="flex gap-3 ">
+                <div
+                  className="bg-[#0FD942] w-0.5 max-h-14 items-center justify-center rounded-3xl"
+                />
+                <div>
+                  <h1 className="text-xl text-gray-500">Total Courses</h1>
+                  <span className="text-xl font-bold">5</span>
                 </div>
-              </Card>
-            ))}
+              </div>
+              <div className="p-2 bg-[#0FD942]/10 rounded-lg">
+                <BookMarked className="h-8 w-8 text-[#0FD942]" />
+              </div>
+            </Card>
+            <Card className="flex flex-row border border-gray-200 p-4 items-center justify-between gap-4">
+              <div className="flex gap-3 ">
+                <div
+                  className="bg-[#130FD9] w-0.5 max-h-14 items-center justify-center rounded-3xl"
+                />
+                <div>
+                  <h1 className="text-xl text-gray-500">Total Feedback</h1>
+                  <span className="text-xl font-bold">5</span>
+                </div>
+              </div>
+              <div className="p-2 bg-[#130FD9]/10 rounded-lg">
+                <MessageSquareWarning className="h-8 w-8 text-[#130FD9]" />
+              </div>
+            </Card>
+            <Card className="flex flex-row border border-gray-200 p-4 items-center justify-between gap-4">
+              <div className="flex gap-3 ">
+                <div
+                  className="bg-[#F62A2A] w-0.5 max-h-14 items-center justify-center rounded-3xl"
+                />
+                <div>
+                  <h1 className="text-xl text-gray-500">Total Report</h1>
+                  <span className="text-xl font-bold">5</span>
+                </div>
+              </div>
+              <div className="p-2 bg-[#F62A2A]/10 rounded-lg">
+                <Bug className="h-8 w-8 text-[#F62A2A]" />
+              </div>
+            </Card>
           </div>
 
           {/* Middle Section */}
@@ -191,7 +215,7 @@ export default function DashboardPage() {
                   View more
                 </a>
               </CardHeader>
-              <CardBody >
+              <CardBody>
                 <Table
                   aria-label="Example table with dynamic content"
                   bottomContent={
