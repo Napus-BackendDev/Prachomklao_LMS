@@ -9,9 +9,7 @@ export class UsersService {
   private usersCollection = firestore.collection('users');
 
   async findbyEmail(email: string) {
-    const snapshot = await this.usersCollection
-      .where('email', '==', email)
-      .get();
+    const snapshot = await this.usersCollection.where('email', '==', email).get();
     if (snapshot.empty) throw new NotFoundException();
     const doc = snapshot.docs[0];
     const data = doc.data()
@@ -45,6 +43,6 @@ export class UsersService {
 
   remove(id: string) {
     this.usersCollection.doc(id).delete();
-    return { message: 'Delect complete' };
+    return { message: 'Delete User complete' };
   }
 }
