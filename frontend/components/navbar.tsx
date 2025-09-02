@@ -1,3 +1,5 @@
+"use client"
+
 import {
   Navbar as HeroUINavbar,
   NavbarContent,
@@ -12,40 +14,44 @@ import NextLink from "next/link";
 import { siteConfig } from "@/config/site";
 import { fontSans } from "@/config/fonts";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Image } from "@heroui/image";
 
-export const Navbar = () => {
+export default function Navbar() {
+  const pathName = usePathname();
+
   return (
     <HeroUINavbar
-      maxWidth="xl"
-      position="sticky"
-      className={` ${fontSans.className} py-0.5 shadow-2xs border-t-4 border-t-[#0930CF] `}
+      maxWidth="2xl"
+      position="static"
+      className={`${fontSans.className} py-2 shadow-2xs border-t-4 border-t-[#0930CF]`}
     >
       <NavbarContent
         className="basis-1/5 sm:basis-full space-x-4"
         justify="start"
       >
         <NavbarBrand className={`${fontSans.className} gap-3 max-w-fit`}>
-          <NextLink className="flex justify-start items-center gap-1" href="/">
-            <img
+          <NextLink className="flex justify-start items-center gap-4" href="/">
+            <Image
               alt="Prachomklao College of Nursing Logo"
-              className="w-12 h-12"
               src="/logo.png"
+              height={60}
             />
             <div>
-              <p className="text-sm font-semibold text-default-800">
+              <p className="text-xl font-semibold text-default-800">
                 Prachomklao
               </p>
-              <p className="text-xs text-default-400 font-medium">
+              <p className="text-md text-default-400 font-medium">
                 College of Nursing
               </p>
             </div>
           </NextLink>
         </NavbarBrand>
-        <ul className="hidden lg:flex gap-4 justify-start ml-2">
+        <ul className="hidden lg:flex gap-4 justify-start ml-4">
           {siteConfig.navItems.map((item) => (
             <NavbarItem key={item.href}>
               <NextLink
-                className="text-sm font-medium text-default-800 hover:text-primary hover:underline underline-offset-4 px-1 "
+                className={`text-lg font-medium ${pathName === item.href ? "text-primary" : "text-default-800"} hover:text-primary hover:underline underline-offset-4 px-2`}
                 href={item.href}
               >
                 {item.label}
@@ -62,7 +68,7 @@ export const Navbar = () => {
         <NavbarItem className="hidden lg:flex">
           <Link href={"/signin"}>
           <Button
-            className="text-sm font-medium px-6 border-2 border-primary"
+            className="text-sm font-medium px-6"
             variant="flat"
             color="primary"
           >
@@ -77,7 +83,7 @@ export const Navbar = () => {
             color="primary"
             variant="shadow"
           >
-            Register
+            Sign Up
           </Button>
         </NavbarItem>
       </NavbarContent>

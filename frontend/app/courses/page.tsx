@@ -1,6 +1,6 @@
 "use client";
 
-import { CourseCard } from "@/public/components/courseCard";
+import CourseCard from "@/components/ui/courseCard";
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
 import { Search } from "lucide-react";
@@ -95,6 +95,7 @@ export default function CoursesPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 py-4">
             {coursesData.map((course) => (
               <CourseCard
+                key={course.code}
                 title={course.title}
                 code={course.code}
                 url={course.url}

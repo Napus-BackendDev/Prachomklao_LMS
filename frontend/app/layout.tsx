@@ -4,7 +4,8 @@ import clsx from "clsx";
 
 import { siteConfig } from "@/config/site";
 import { fontSans, fontThai } from "@/config/fonts";
-import { Navbar } from "@/components/navbar";
+import Navbar from "@/components/navbar";
+import Footer from "@/components/footer";
 
 export const metadata: Metadata = {
   title: {
@@ -13,7 +14,7 @@ export const metadata: Metadata = {
   },
   description: siteConfig.description,
   icons: {
-    icon: "/favicon.ico",
+    icon: "/logo.png",
   },
 };
 
@@ -39,13 +40,16 @@ export default function RootLayout({
           "min-h-screen text-foreground bg-background font-sans antialiased overflow-x-hidden"
         )}
       >
-        <div className="relative flex flex-col min-w-0">
+        <div className="relative flex flex-col">
           <Navbar />
-          <main className="mx-auto flex-grow w-full max-w-screen-2xl min-w-0">
+          <main>
             {children}
           </main>
         </div>
       </body>
+      <footer>
+        <Footer />
+      </footer>
     </html>
   );
 }
