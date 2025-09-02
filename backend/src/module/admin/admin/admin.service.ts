@@ -5,7 +5,7 @@ import * as bcrypt from 'bcrypt';
 import { UpdateUserDto } from './dto/update-admin.dto';
 
 @Injectable()
-export class UsersService {
+export class AdminService {
   private usersCollection = firestore.collection('users');
 
   async findbyEmail(email: string) {

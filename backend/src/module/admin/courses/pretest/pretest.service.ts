@@ -46,12 +46,12 @@ export class PretestService {
     questionId: string,
     questions: UpdatePretestDto,
   ) {
-    const questionPayload = instanceToPlain(questions);
+    const questionPayLoad = instanceToPlain(questions);
     const results = await this.coursesCollection
       .doc(courseId)
       .collection('pretest')
       .doc(questionId)
-      .update(questionPayload);
+      .update(questionPayLoad);
     return results;
   }
 

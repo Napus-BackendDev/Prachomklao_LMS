@@ -16,11 +16,11 @@ import { Roles } from 'src/module/auth/decorators/role.decorator';
 import { Role } from 'src/module/auth/enum/role-enum';
 import { JwtAuthGuard } from 'src/module/auth/guard/jwt-auth.guard';
 import { RolesGuard } from 'src/module/auth/roles/roles.guard';
-import { UsersService } from 'src/module/admin/admin/admin.service';
+import { AdminService } from 'src/module/admin/admin/admin.service';
 
 @Controller('student')
 export class StudentsController {
-  constructor(private readonly studentsService: StudentsService , private adminService: UsersService ) {}
+  constructor(private readonly studentsService: StudentsService , private adminService: AdminService ) {}
 
   @Post()
   create(@Body() createStudentDto: CreateStudentDto) {

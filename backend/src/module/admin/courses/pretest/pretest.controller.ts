@@ -32,6 +32,11 @@ export class PrestestController {
     return this.pretestService.findAll(courseId);
   }
 
+  @Get(':courseId/:pretestId')
+  findbyId(@Param('courseId') coursesID: string, @Param('pretestId') pretestId:string) {
+    return this.pretestService.findOne(coursesID, pretestId)
+  }
+
   @Patch(':courseId/:pretestId')
   update(@Param('courseId') courseId: string, @Param('pretestId') pretestId: string , @Body() questions: UpdatePretestDto) {
     return this.pretestService.update(courseId, pretestId , questions);
