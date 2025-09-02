@@ -1,12 +1,12 @@
-import { IsString } from "class-validator";
+import { IsString } from 'class-validator';
 
 export class CreateCourseDto {
-    @IsString()
-    title: string;
+  @IsString()
+  title: string;
 
-    @IsString()
-    code:string
+  @IsString()
+  code: string;
 
-    @IsString()
-    url:string
+  @IsString()
+  url: string;
 }

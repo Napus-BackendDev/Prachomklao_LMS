@@ -17,7 +17,30 @@ export class CoursesService {
 
   async findAll() {
     const snapshot = await this.coursesCollection.get();
-    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+
+    const results = await Promise.all(
+      snapshot.docs.map(async (doc) => {
+        // variable
+        const coursesData = doc.data();
+
+        // Pretest
+        const pretestDoc = await this.coursesCollection
+          .doc(doc.id)
+          .collection('pretest')
+          .get();
+
+        const pretests = pretestDoc.docs.map((data) => ({ id: data.id, ...data.data(),
+        }));
+
+        return {
+          id: doc.id,
+          ...coursesData,
+          pretest: pretests,
+        };
+      }),
+    );
+
+    return results; // <-- ต้องคืนค่าออกไป
   }
 
   async findOne(id: string) {
