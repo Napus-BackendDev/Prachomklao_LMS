@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
 import { firestore } from 'config/firebase.config';
@@ -23,42 +23,77 @@ export class CoursesService {
         // variable
         const coursesData = doc.data();
 
-        // Pretest
-        const pretestDoc = await this.coursesCollection
-          .doc(doc.id)
-          .collection('pretest')
-          .get();
+        // Fetch sub-collection
+        const [pretestDoc, posttestDoc] = await Promise.all([
+          this.coursesCollection.doc(doc.id).collection('pretest').get(),
+          this.coursesCollection.doc(doc.id).collection('posttest').get(),
+        ]);
 
-        const pretests = pretestDoc.docs.map((data) => ({ id: data.id, ...data.data(),
+        // Map data
+        const pretests = pretestDoc.docs.map((data) => ({
+          id: data.id,
+          ...data.data(),
+        }));
+        const posttests = posttestDoc.docs.map((data) => ({
+          id: data.id,
+          ...data.data(),
         }));
 
+        // Return
         return {
           id: doc.id,
           ...coursesData,
           pretest: pretests,
+          posttest: posttests,
         };
       }),
     );
 
-    return results; // <-- ต้องคืนค่าออกไป
+    return results;
   }
 
   async findOne(id: string) {
     const course = await this.coursesCollection.doc(id).get();
-    return course.data();
+
+    if (!course.exists) throw new NotFoundException();
+
+    // variable
+    const courseData = course.data();
+
+    // Fetch sub-collection
+    const [pretestDoc, posttestDoc] = await Promise.all([
+      this.coursesCollection.doc(id).collection('pretest').get(),
+      this.coursesCollection.doc(id).collection('posttest').get(),
+    ]);
+    // Map data
+    const pretests = pretestDoc.docs.map((data) => ({ id: data.id, ...data.data() }));
+    const posttests = posttestDoc.docs.map((data) => ({ id: data.id, ...data.data() }));
+
+    // returnData
+    const results = {
+      id: id,
+      ...courseData,
+      pretest: pretests,
+      posttest: posttests,
+    }
+    return results;
   }
 
   async update(id: string, updateCourseDto: UpdateCourseDto) {
+    const course = await this.coursesCollection.doc(id).get();
+    if (!course.exists) throw new NotFoundException();
+    
     const payload = {
       ...updateCourseDto,
-      ...(updateCourseDto.url && {
-        urlPicture: `https://img.youtube.com/vi/${updateCourseDto.url.split('v=')[1]}/0.jpg`,
-      }),
+      ...(updateCourseDto.url && { urlPicture: `https://img.youtube.com/vi/${updateCourseDto.url.split('v=')[1]}/0.jpg`})
     };
-    return await this.coursesCollection.doc(id).update(payload);
+
+    const results = await this.coursesCollection.doc(id).update(payload)
+    return results;
   }
 
   remove(id: string) {
-    return this.coursesCollection.doc(id).delete();
+    this.coursesCollection.doc(id).delete()
+    return { message: 'Delete Course complete'};
   }
 }

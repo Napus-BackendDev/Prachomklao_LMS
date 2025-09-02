@@ -38,7 +38,8 @@ export class PretestService {
       .collection('pretest')
       .doc(questionId)
       .get();
-    return question.data();
+    const results = { id: question.id, ...question.data() };
+    return results;
   }
 
   async update(
@@ -56,6 +57,7 @@ export class PretestService {
   }
 
   remove(courseId: string, pretestId: string) {
-    return this.coursesCollection.doc(courseId).collection('pretest').doc(pretestId).delete();
+    this.coursesCollection.doc(courseId).collection('pretest').doc(pretestId).delete();
+    return { message: 'Delete Pretest complete'};
   }
 }

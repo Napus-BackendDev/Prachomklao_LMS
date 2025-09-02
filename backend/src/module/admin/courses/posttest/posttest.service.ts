@@ -19,7 +19,6 @@ export class PosttestService {
       batch.set(docRef, question);
     });
     await batch.commit();
-
     return { message: 'Posttest questions added successfully' };
   }
 
@@ -38,7 +37,8 @@ export class PosttestService {
       .collection('posttest')
       .doc(questionId)
       .get();
-    return question.data();
+    const results = { id: question.id , ...question.data()}
+    return results;
   }
 
   async update(
@@ -53,5 +53,10 @@ export class PosttestService {
       .doc(questionId)
       .update(questionPayLoad);
     return results;
+  }
+
+  remove(courseId: string, posttestId: string) {
+    this.coursesCollection.doc(courseId).collection('posttest').doc(posttestId).delete();
+    return { message: 'Delete Posttest complete'};
   }
 }
