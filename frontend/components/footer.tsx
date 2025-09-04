@@ -18,7 +18,7 @@ const contacts = [
 
 export default function Footer() {
   return (
-    <footer className="py-8 border-b-4 border-[#0930CF] shadow-[0_-4px_12px_-2px_rgba(0,0,0,0.1)]">
+    <footer className="w-full b-0 py-8 border-b-4 border-[#0930CF] shadow-[0_-4px_12px_-2px_rgba(0,0,0,0.1)]">
       <div className="max-w-screen-2xl grid grid-cols-3 mx-auto">
         {/* ABOUT */}
         <section
@@ -59,6 +59,7 @@ export default function Footer() {
             <div className="flex gap-2">
               {contacts.map((contact) => (
                 <Link
+                  key={contact.url}
                   href={contact.url}
                   target="_blank"
                 >

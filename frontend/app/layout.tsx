@@ -4,8 +4,6 @@ import clsx from "clsx";
 
 import { siteConfig } from "@/config/site";
 import { fontSans, fontThai } from "@/config/fonts";
-import Navbar from "@/components/navbar";
-import Footer from "@/components/footer";
 
 export const metadata: Metadata = {
   title: {
@@ -37,19 +35,15 @@ export default function RootLayout({
       </head>
       <body
         className={clsx(
-          "min-h-screen text-foreground bg-background font-sans antialiased overflow-x-hidden"
+          "flex flex-col min-h-screen text-foreground bg-background font-sans antialiased overflow-x-hidden"
         )}
       >
-        <div className="relative flex flex-col">
-          <Navbar />
+        <div className="flex-grow">
           <main>
             {children}
           </main>
         </div>
       </body>
-      <footer>
-        <Footer />
-      </footer>
     </html>
   );
 }

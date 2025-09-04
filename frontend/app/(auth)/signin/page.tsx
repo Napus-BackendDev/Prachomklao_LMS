@@ -12,68 +12,77 @@ import {
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 
 export default function SignInPage() {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [isVisible, setIsVisible] = useState(false);
   const toggleVisibility = () => setIsVisible(!isVisible);
 
   return (
-    <div className=" flex  w-full h-screen justify-center items-center">
-      <Card className="w-full max-w-md rounded-xl border border-blue-500 shadow-lg bg-white py-4 px-4">
-        <CardHeader className="flex flex-col items-center">
-          <h1 className="text-2xl font-bold text-center">
-            Access Your Learning Space
-          </h1>
-          <p className="text-center text-gray-600 mt-2">
-            Sign in to continue your courses and track your progress
-          </p>
-        </CardHeader>
-        <CardBody className="flex flex-col space-y-2 gap-4 mt-4">
-          <Input
-            id="username"
-            type="text"
-            placeholder="Enter your username"
-          />
-          <div className="relative mt-1">
-            <Input
-              endContent={
-                <button
-                  aria-label="toggle password visibility"
-                  className="focus:outline-solid outline-transparent"
-                  type="button"
-                  onClick={toggleVisibility}
-                >
-                  {isVisible ? (
-                    <EyeIcon className="text-2xl text-default-400 pointer-events-none" />
-                  ) : (
-                    <EyeOffIcon className="text-2xl text-default-400 pointer-events-none" />
-                  )}
-                </button>
-              }
-              placeholder="Enter your password"
-              type={isVisible ? "text" : "password"}
-            />
-          </div>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Checkbox id="remember" />
-              <h1 className="text-sm">Remember me</h1>
-            </div>
-            <Link
-              href="/forgot-password"
-              className="text-xs text-blue-700 hover:underline font-medium"
-            >
-              Forgot Password ?
-            </Link>
-          </div>
-          <Link href={"/signin/dashboard"}>
+    <div className="flex justify-center items-center w-screen h-screen">
+      <div className="flex flex-col justify-center items-center w-md h-full gap-4">
+        <p className="text-5xl font-bold">
+          เข้าสู่ระบบ
+        </p>
+        <Input
+          type="text"
+          placeholder="กรอกชื่อ"
+          value={username}
+          onValueChange={setUsername}
+          classNames={{
+            input: "text-lg"
+          }}
+        />
+        <Input
+          endContent={
             <Button
-              type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg py-2 text-lg"
+              aria-label="password visibility"
+              isIconOnly
+              className="bg-transparent"
+              onPress={toggleVisibility}
             >
-              Sign in
+              {isVisible ? (
+                <EyeIcon className="text-2xl text-default-400 pointer-events-none" />
+              ) : (
+                <EyeOffIcon className="text-2xl text-default-400 pointer-events-none" />
+              )}
             </Button>
+          }
+          type={isVisible ? "text" : "password"}
+          placeholder="กรอกรหัสผ่าน "
+          value={password}
+          onValueChange={setPassword}
+          classNames={{
+            input: "text-lg"
+          }}
+        />
+        <div className="flex items-center justify-between w-full text-xl">
+          <div className="flex items-center gap-2">
+            <Checkbox id="remember" />
+            <p>จดจำฉัน</p>
+          </div>
+          <Link
+            href="/forgot-password"
+            className="text-primary font-medium"
+          >
+            ลืมรหัสผ่าน?
           </Link>
-        </CardBody>
-      </Card>
+        </div>
+        <Button
+          type="submit"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg py-4 text-xl"
+        >
+          เข้าสู่ระบบ
+        </Button>
+        <div className="flex justify-center gap-4 w-full text-xl">
+          <p>ยังไม่มีบัญชีใช่หรือไม่?</p>
+          <Link
+            href="/signup"
+            className="text-primary font-medium"
+          >
+            สมัครใช้งาน
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }

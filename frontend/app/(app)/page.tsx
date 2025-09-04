@@ -17,7 +17,7 @@ import CourseCard from "@/components/ui/courseCard";
 import Link from "next/link";
 import { useState } from "react";
 
-const featuresData = [
+const features = [
   {
     icon: Clock4,
     topic: "ประหยัดเวลา",
@@ -41,7 +41,7 @@ const featuresData = [
 ];
 
 // Mockup
-const coursesData = [
+const courses = [
   {
     title: "การพยาบาลผู้ป่วยที่มีความจำเป็นต้องใช้เครื่องช่วยหายใจ ( Ventilator )",
     code: "MEDNUR-101",
@@ -68,7 +68,7 @@ const coursesData = [
   },
 ];
 
-const FeedbackData = [
+const feedbacks = [
   {
     name: "กฤตเมธ วงศ์สุวรรณ",
     subname: "การแพทย์และการพยาบาล",
@@ -92,7 +92,7 @@ export default function Home() {
     if (course > 0) setCourse(course - 1);
   };
   const handleNext = () => {
-    if (course < coursesData.length - 3) setCourse(course + 1);
+    if (course < courses.length - 3) setCourse(course + 1);
   };
 
   return (
@@ -144,7 +144,7 @@ export default function Home() {
           เพื่อพัฒนาความรู้และทักษะด้านการพยาบาลอย่างรอบด้าน ให้ผู้เรียนได้ฝึกปฏิบัติจริงและเตรียมพร้อมสู่การเป็นพยาบาลมืออาชีพ
         </p>
         <div id="features" className="flex justify-center py-6 gap-24">
-          {featuresData.map((item) => (
+          {features.map((item) => (
             <div
               className="flex flex-col items-center justify-center pt-4"
               key={item.topic}
@@ -166,7 +166,7 @@ export default function Home() {
       >
         <h1 className="text-4xl font-semibold">หลักสูตรออนไลน์ของเรา</h1>
         <div className="flex items-center">
-          {coursesData.length > 3 && (
+          {courses.length > 4 && (
             <Button
               isIconOnly
               color={course === 0 ? "default" : "primary"}
@@ -179,12 +179,13 @@ export default function Home() {
           )}
           <div className="overflow-hidden">
             <div
-              className="flex transition-transform duration-500"
-              style={{ transform: `translateX(-${course * 33.333}%)` }}
+              className="flex transition-transform duration-500 max-w-screen-2xl"
+              style={{ transform: `translateX(-${course * 25}%)` }}
             >
-              {coursesData.map((course) => (
-                <div key={course.code} className="shrink-0 w-1/3 px-2">
+              {courses.map((course) => (
+                <div className="shrink-0 w-1/4 px-4">
                   <CourseCard
+                    key={course.code}
                     title={course.title}
                     code={course.code}
                     url={course.url}
@@ -193,13 +194,13 @@ export default function Home() {
               ))}
             </div>
           </div>
-          {coursesData.length > 3 && (
+          {courses.length > 4 && (
             <Button
               isIconOnly
-              color={course === coursesData.length - 3 ? "default" : "primary"}
+              color={course === courses.length - 4 ? "default" : "primary"}
               variant="flat"
               onPress={handleNext}
-              disabled={course === (coursesData.length - 3)}
+              disabled={course === (courses.length - 4)}
             >
               <ChevronRight />
             </Button>
@@ -215,10 +216,10 @@ export default function Home() {
         <div className="flex flex-col items-center gap-6">
           <h1 className="text-4xl font-semibold">รวมความประทับใจ</h1>
           <div className="flex sm:flex-row flex-col items-stretch justify-center gap-6">
-            {FeedbackData.map((feedback) => (
+            {feedbacks.map((feedback) => (
               <Card className="gap-2 w-full" key={feedback.name}>
                 <CardHeader>
-                  <Quote color="gray"/>
+                  <Quote color="gray" />
                 </CardHeader>
                 <CardBody>
                   <p className="text-xl">{feedback.description}</p>
