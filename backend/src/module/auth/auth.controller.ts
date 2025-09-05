@@ -17,7 +17,6 @@ export class AuthController {
     return { message: 'Successfully Logging in' };
   }
 
-  @UseGuards(LocalAuthGuard)
   @Post('/logout')
   async logout() {
     return { message: 'Logout successful.' };

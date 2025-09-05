@@ -92,8 +92,9 @@ export class CoursesService {
     return results;
   }
 
-  remove(id: string) {
-    this.coursesCollection.doc(id).delete()
-    return { message: 'Delete Course complete'};
+  async remove(id: string) {
+    const coursesRef = this.coursesCollection.doc(id);
+    await this.coursesCollection.firestore.recursiveDelete(coursesRef);
+    return { message: 'Delete Course Complete'};
   }
 }
