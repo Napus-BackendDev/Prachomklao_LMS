@@ -64,7 +64,7 @@ export default function SignInPage() {
                 <div className="flex justify-center gap-4 w-full text-xl">
                     <p>มีบัญชีอยู่แล้วหรือไม่?</p>
                     <Link
-                        href="/signin"
+                        href="/login"
                         className="text-primary font-medium"
                     >
                         เข้าสู่ระบบ

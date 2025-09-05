@@ -1,6 +1,8 @@
 "use client"
 
 import {
+  Button,
+  Image,
   Navbar as HeroUINavbar,
   NavbarContent,
   NavbarMenu,
@@ -8,17 +10,22 @@ import {
   NavbarBrand,
   NavbarItem,
   NavbarMenuItem,
-} from "@heroui/navbar";
-import { Button } from "@heroui/button";
-import NextLink from "next/link";
+  Link,
+} from "@heroui/react";
 import { siteConfig } from "@/config/site";
 import { fontSans } from "@/config/fonts";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Image } from "@heroui/image";
+import useStudent from "@/hooks/useStudent";
+import { useEffect } from "react";
+import { Student } from "@/types/student";
 
 export default function Navbar() {
+  const { student, fetchStudent } = useStudent();
   const pathName = usePathname();
+
+  useEffect(() => {
+    fetchStudent();
+  }, []);
 
   return (
     <HeroUINavbar
@@ -31,7 +38,7 @@ export default function Navbar() {
         justify="start"
       >
         <NavbarBrand className={`${fontSans.className} gap-3 max-w-fit`}>
-          <NextLink className="flex justify-start items-center gap-4" href="/">
+          <Link className="flex justify-start items-center gap-4" href="/">
             <Image
               alt="Prachomklao College of Nursing Logo"
               src="/logo.png"
@@ -45,48 +52,64 @@ export default function Navbar() {
                 College of Nursing
               </p>
             </div>
-          </NextLink>
+          </Link>
         </NavbarBrand>
         <ul className="hidden lg:flex gap-4 justify-start ml-4">
           {siteConfig.navItems.map((item) => (
             <NavbarItem key={item.href}>
-              <NextLink
+              <Link
                 className={`text-lg font-medium ${pathName === item.href ? "text-primary" : "text-default-800"} hover:text-primary hover:underline underline-offset-4 px-2`}
                 href={item.href}
               >
                 {item.label}
-              </NextLink>
+              </Link>
             </NavbarItem>
           ))}
         </ul>
       </NavbarContent>
 
-      <NavbarContent
-        className="hidden sm:flex basis-1/5 sm:basis-full"
-        justify="end"
-      >
-        <NavbarItem className="hidden lg:flex">
-          <Link href={"/signin"}>
-          <Button
-            className="text-sm font-medium px-6"
-            variant="flat"
-            color="primary"
-          >
-            Sign In
-          </Button>
-          </Link>
-        </NavbarItem>
-        <NavbarItem className="hidden md:flex">
-          <Button
-            className="text-sm font-medium px-6"
-            href={"/registration"}
-            color="primary"
-            variant="shadow"
-          >
-            Sign Up
-          </Button>
-        </NavbarItem>
-      </NavbarContent>
+      {student ? (
+        <NavbarContent
+          className="hidden sm:flex basis-1/5 sm:basis-full"
+          justify="end"
+        >
+          <NavbarItem>
+            <p className="text-lg font-semibold text-default-800">
+              {(student as Student).username}
+            </p>
+            <p className="text-md text-default-400">
+              {(student as Student).role}
+            </p>
+          </NavbarItem>
+        </NavbarContent>
+      ) : (
+        <NavbarContent
+          className="hidden sm:flex basis-1/5 sm:basis-full"
+          justify="end"
+        >
+          <NavbarItem className="hidden lg:flex">
+            <Link href={"/login"}>
+              <Button
+                className="text-sm font-medium px-6"
+                variant="flat"
+                color="primary"
+              >
+                Log In
+              </Button>
+            </Link>
+          </NavbarItem>
+          <NavbarItem className="hidden md:flex">
+            <Button
+              className="text-sm font-medium px-6"
+              href={"/signup"}
+              color="primary"
+              variant="shadow"
+            >
+              Sign Up
+            </Button>
+          </NavbarItem>
+        </NavbarContent>
+      )}
 
       <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
         <NavbarMenuToggle />
@@ -96,12 +119,12 @@ export default function Navbar() {
         <div className="mx-4 mt-5 space-y-3 flex flex-col gap-2 justify-center items-center">
           {siteConfig.navMenuItems.map((item) => (
             <NavbarMenuItem key={item.href}>
-              <NextLink
+              <Link
                 className="px-2 py-4 font-medium text-default-800 hover:text-primary"
                 href={item.href}
               >
                 {item.label}
-              </NextLink>
+              </Link>
             </NavbarMenuItem>
           ))}
         </div>

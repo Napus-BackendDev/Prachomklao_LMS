@@ -20,6 +20,6 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('/logout')
   async logout() {
-    return { message: 'Logout successful. Please remove token on client side.' };
+    return { message: 'Logout successful.' };
   }
 }

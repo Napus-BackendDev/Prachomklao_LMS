@@ -88,6 +88,7 @@ const feedbacks = [
 
 export default function Home() {
   const [course, setCourse] = useState(0);
+
   const handlePrev = () => {
     if (course > 0) setCourse(course - 1);
   };
