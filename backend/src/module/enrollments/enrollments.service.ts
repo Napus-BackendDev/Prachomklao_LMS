@@ -12,17 +12,16 @@ export class EnrollmentsService {
   private coursesCollection = firestore.collection('courses');
 
   async enrollCourse(studentId: string, courseId: string) {
+    
     const courseDoc = await this.coursesCollection.doc(courseId).get();
-    if (!courseDoc.exists) throw new NotFoundException('Course not found');
-
     const courseData = courseDoc.data();
-    if (!courseData) throw new NotFoundException('Course data not found');
+    if (!courseDoc.exists || !courseData)
+      throw new NotFoundException('Course not found');
 
     const userDoc = await this.usersCollection.doc(studentId).get();
-    if (!userDoc.exists) throw new NotFoundException('User not found');
-
     const userData = userDoc.data();
-    if (!userData) throw new NotFoundException('User data not found');
+    if (!userDoc.exists || !userData) 
+      throw new NotFoundException('User not found');
 
     const enrollmentDoc = await this.usersCollection
       .doc(studentId)

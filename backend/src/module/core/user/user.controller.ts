@@ -52,20 +52,20 @@ export class AdminController {
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('student')
 export class StudentsController {
-  constructor(private readonly AdminService: UserService) {}
+  constructor(private readonly userService: UserService) {}
 
   @Get()
   getProfile(@Request() req) {
-    return this.AdminService.findById(req.user.id);
+    return this.userService.findOne(req.user.id);
   }
 
   @Patch()
   update(@Request() req, @Body() updateStudentDto: UpdateUserDto) {
-    return this.AdminService.update(req.user.id, updateStudentDto);
+    return this.userService.update(req.user.id, updateStudentDto);
   }
 
   @Delete()
   remove(@Request() req) {
-    return this.AdminService.remove(req.user.id);
+    return this.userService.remove(req.user.id);
   }
 }

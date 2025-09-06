@@ -6,7 +6,7 @@ import { AuthModule } from './module/core/auth/auth.module';
 import { EnrollmentsModule } from './module/enrollments/enrollments.module';
 import { PosttestAnswerModule } from './module/posttest/answer/posttest-answer.module';
 import { PretestAnswerModule } from './module/pretest/answer/pretest-answer.module';
-import { PosttestQuestionModule } from './module/posttest/question/posttest=question.module';
+import { PosttestQuestionModule } from './module/posttest/question/posttest-question.module';
 import { PretestQuestionModule } from './module/pretest/question/pretest-question.module';
 import { AppService } from './app.service';
 import { AppController } from './app.controller';

@@ -12,9 +12,8 @@ import { CreatePosttestQuestionDto } from "./dto/create-posttest-question.dto";
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('courses/posttest/:courseId')
 export class PosttestQuestionController {
-    
     constructor(private posttestService: PosttestQuestionService) {}
-
+    
     @Post()
     create(@Param('courseId') coursesId:string , @Body() questions: CreatePosttestQuestionDto[]) {
         return this.posttestService.create(coursesId, questions);

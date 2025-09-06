@@ -1,15 +1,12 @@
 import {
-  ConflictException,
   Injectable,
   NotFoundException,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { instanceToPlain } from 'class-transformer';
 import { firestore } from 'config/firebase.config';
 import * as bcrypt from 'bcrypt';
 import { formatDate } from 'src/common/utils/tranferDate';
 import { UpdateUserDto } from './dto/update-user.dto';
-
 
 @Injectable()
 export class UserService {
@@ -19,7 +16,8 @@ export class UserService {
     const snapshot = await this.usersCollection
       .where('email', '==', email)
       .get();
-    if (snapshot.empty) throw new NotFoundException();
+    if (snapshot.empty) 
+      throw new NotFoundException();
     const doc = snapshot.docs[0];
     const data = doc.data();
     const userData = {
@@ -37,31 +35,11 @@ export class UserService {
     return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
   }
 
-  async findOne(id: string) {
-    const user = await this.usersCollection.doc(id).get();
-    return user.data();
-  }
-
-  async update(studentId: string, updateUserDto: UpdateUserDto) {
-    const payload = instanceToPlain(updateUserDto);
-    if (payload.password)
-      payload.password = await bcrypt.hash(payload.password, 10);
-    else delete payload.password;
-    await this.usersCollection.doc(studentId).update(payload);
-    return { message: 'update complete' };
-  }
-
-  async remove(studentId: string) {
-    const studentRef = this.usersCollection.doc(studentId);
-    await this.usersCollection.firestore.recursiveDelete(studentRef);
-    return { message: 'Delete Student Complete' };
-  }
-
-  async findById(studentId: string) {
+  async findOne(studentId: string) {
     const userDoc = await this.usersCollection.doc(studentId).get();
-    if (!userDoc.exists) throw new NotFoundException('User not found');
     const userData = userDoc.data();
-    if (!userData) throw new NotFoundException('User data not found');
+    if (!userDoc.exists || !userData) 
+      throw new NotFoundException('User not found');
 
     // Fetch subcollection enroll
     const snapshot = await this.usersCollection
@@ -86,5 +64,20 @@ export class UserService {
         status: enrollment.status,
       })),
     };
+  }
+
+  async update(studentId: string, updateUserDto: UpdateUserDto) {
+    const payload = instanceToPlain(updateUserDto);
+    if (payload.password)
+      payload.password = await bcrypt.hash(payload.password, 10);
+    else delete payload.password;
+    await this.usersCollection.doc(studentId).update(payload);
+    return { message: 'update complete' };
+  }
+
+  async remove(studentId: string) {
+    const studentRef = this.usersCollection.doc(studentId);
+    await this.usersCollection.firestore.recursiveDelete(studentRef);
+    return { message: 'Delete Student Complete' };
   }
 }
