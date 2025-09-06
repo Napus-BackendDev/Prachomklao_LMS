@@ -8,6 +8,8 @@ import { PosttestAnswerModule } from './module/posttest/answer/posttest-answer.m
 import { PretestAnswerModule } from './module/pretest/answer/pretest-answer.module';
 import { PosttestQuestionModule } from './module/posttest/question/posttest=question.module';
 import { PretestQuestionModule } from './module/pretest/question/pretest-question.module';
+import { AppService } from './app.service';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -24,5 +26,7 @@ import { PretestQuestionModule } from './module/pretest/question/pretest-questio
       envFilePath: '.env',
     }),
   ],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}

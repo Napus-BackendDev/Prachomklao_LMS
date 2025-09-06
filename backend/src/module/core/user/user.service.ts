@@ -2,34 +2,23 @@ import {
   ConflictException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { instanceToPlain } from 'class-transformer';
 import { firestore } from 'config/firebase.config';
 import * as bcrypt from 'bcrypt';
 import { formatDate } from 'src/common/utils/tranferDate';
-import { Role } from '../auth/enum/role-enum';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { CreateUserDto } from './dto/create-user.dto';
+
 
 @Injectable()
 export class UserService {
   private usersCollection = firestore.collection('users');
 
-  async register(createUserDto: CreateUserDto) {
-    const email = createUserDto.email.trim().toLowerCase();
-    const snapshot = await this.usersCollection
-      .where('email', '==', email)
-      .get();
-    if (!snapshot.empty) throw new ConflictException('This email is use now');
-    const password = await bcrypt.hash(createUserDto.password, 10);
-    const userData = { ...createUserDto, password, email, role: Role.STUDENT };
-    await this.usersCollection.add(userData);
-    return { message: 'Register complete' };
-  }
-
   async findbyEmail(email: string) {
+    const useremail = email.trim().toLowerCase()
     const snapshot = await this.usersCollection
-      .where('email', '==', email)
+      .where('email', '==', useremail)
       .get();
     if (snapshot.empty) throw new NotFoundException();
     const doc = snapshot.docs[0];

@@ -49,31 +49,22 @@ export class AdminController {
   }
 }
 
+@Roles(Role.STUDENT)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('student')
 export class StudentsController {
   constructor(private readonly AdminService: UserService) {}
 
-  @Post()
-  create(@Body() createStudentDto: CreateUserDto) {
-    return this.AdminService.register(createStudentDto);
-  }
-
-  @Roles(Role.STUDENT)
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get()
   getProfile(@Request() req) {
     return this.AdminService.findById(req.user.id);
   }
 
-  @Roles(Role.STUDENT)
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Patch()
   update(@Request() req, @Body() updateStudentDto: UpdateUserDto) {
     return this.AdminService.update(req.user.id, updateStudentDto);
   }
 
-  @Roles(Role.STUDENT)
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete()
   remove(@Request() req) {
     return this.AdminService.remove(req.user.id);
