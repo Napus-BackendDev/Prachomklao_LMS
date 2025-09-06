@@ -1,8 +1,8 @@
 import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { firestore } from 'config/firebase.config';
-import { Role } from 'src/module/auth/enum/role-enum';
 import * as bcrypt from 'bcrypt'
+import { Role } from 'src/module/core/auth/enum/role-enum';
 
 @Injectable()
 export class AdminSeeder implements OnApplicationBootstrap {
