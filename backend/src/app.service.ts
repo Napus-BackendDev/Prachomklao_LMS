@@ -9,21 +9,19 @@ export class AppService {
   private usersCollection = firestore.collection('users');
 
   async register(createUserDto: CreateUserDto) {
-    const email = createUserDto.email.trim().toLowerCase();
     const snapshot = await this.usersCollection
-      .where('email', '==', email)
+      .where('email', '==', createUserDto.email)
       .get();
     if (!snapshot.empty) throw new ConflictException('This email is use now');
     const password = await bcrypt.hash(createUserDto.password, 10);
-    const userData = { ...createUserDto, password, email, role: Role.STUDENT };
+    const userData = { ...createUserDto, password, role: Role.STUDENT };
     await this.usersCollection.add(userData);
     return { message: 'Register complete' };
   }
   
   async resetPasssword(email: string, password: string) {
-    const useremail = email.trim().toLowerCase();
     const userQuery = await this.usersCollection
-      .where('email', '==', useremail)
+      .where('email', '==', email)
       .get();
     if (userQuery.empty) throw new UnauthorizedException('Invalid Email');
 

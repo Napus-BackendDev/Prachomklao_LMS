@@ -16,9 +16,8 @@ export class UserService {
   private usersCollection = firestore.collection('users');
 
   async findbyEmail(email: string) {
-    const useremail = email.trim().toLowerCase()
     const snapshot = await this.usersCollection
-      .where('email', '==', useremail)
+      .where('email', '==', email)
       .get();
     if (snapshot.empty) throw new NotFoundException();
     const doc = snapshot.docs[0];

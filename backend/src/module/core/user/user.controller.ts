@@ -14,7 +14,6 @@ import { Roles } from '../auth/decorators/role.decorator';
 import { Role } from '../auth/enum/role-enum';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles/roles.guard';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UserService } from './user.service';
 
 @Roles(Role.ADMIN)
