@@ -11,21 +11,34 @@ import {
   NavbarItem,
   NavbarMenuItem,
   Link,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
 } from "@heroui/react";
 import { siteConfig } from "@/config/site";
 import { fontSans } from "@/config/fonts";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import useStudent from "@/hooks/useStudent";
 import { useEffect } from "react";
 import { Student } from "@/types/student";
+import { ChevronDown, LogOut } from "lucide-react";
+import useAuth from "@/hooks/useAuth";
 
 export default function Navbar() {
+  const { logout } = useAuth();
   const { student, fetchStudent } = useStudent();
   const pathName = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
     fetchStudent();
   }, []);
+
+  const handleLogout = () => {
+    logout();
+    router.push("/login");
+  }
 
   return (
     <HeroUINavbar
@@ -74,12 +87,30 @@ export default function Navbar() {
           justify="end"
         >
           <NavbarItem>
-            <p className="text-lg font-semibold text-default-800">
-              {(student as Student).username}
-            </p>
-            <p className="text-md text-default-400">
-              {(student as Student).role}
-            </p>
+            <Dropdown>
+              <DropdownTrigger>
+                <div className="flex flex-col group py-2 rounded-lg cursor-pointer">
+                  <p className="text-lg font-semibold text-default-800">
+                    {(student as Student).username}
+                  </p>
+                  <p className="text-md text-default-400">
+                    {(student as Student).role}
+                  </p>
+                </div>
+              </DropdownTrigger>
+              <DropdownMenu aria-label="Static Actions">
+                <DropdownItem
+                  key="logout"
+                  startContent={<LogOut size={18} />}
+                  onPress={handleLogout}
+                  classNames={{
+                    title: "text-xl font-bold"
+                  }}
+                >
+                  Log out
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
           </NavbarItem>
         </NavbarContent>
       ) : (
@@ -99,14 +130,15 @@ export default function Navbar() {
             </Link>
           </NavbarItem>
           <NavbarItem className="hidden md:flex">
-            <Button
-              className="text-sm font-medium px-6"
-              href={"/signup"}
-              color="primary"
-              variant="shadow"
-            >
-              Sign Up
-            </Button>
+            <Link href={"/signup"}>
+              <Button
+                className="text-sm font-medium px-6"
+                color="primary"
+                variant="shadow"
+              >
+                Sign Up
+              </Button>
+            </Link>
           </NavbarItem>
         </NavbarContent>
       )}

@@ -42,6 +42,7 @@ export class StudentsService {
       id: userDoc.id,
       username: userData.username,
       email: userData.email,
+      role: userData.role,
       courses: enrollments.map((enrollment) => ({
         id: enrollment.id,
         title: enrollment.title,

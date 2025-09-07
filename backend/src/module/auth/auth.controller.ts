@@ -5,7 +5,7 @@ import { LocalAuthGuard } from './guard/local-auth.guard';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) { }
 
   @UseGuards(LocalAuthGuard)
   @Post('/login')
@@ -18,7 +18,14 @@ export class AuthController {
   }
 
   @Post('/logout')
-  async logout() {
+  async logout(@Res({ passthrough: true }) res: Response) {
+    res.clearCookie('access_Token', {
+      httpOnly: true,
+      sameSite: 'none',
+      secure: true,
+      path: '/',
+    });
+
     return { message: 'Logout successful.' };
   }
 }

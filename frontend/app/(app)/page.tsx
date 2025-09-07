@@ -66,6 +66,12 @@ const courses = [
     url: "https://img.youtube.com/vi/ck4RGeoHFko/0.jpg",
     link: "/courses/3",
   },
+  {
+    title: "การพยาบาลผู้ป่วยที่มีความจำเป็นต้องใช้เครื่องให้ความร้อนแบบแผ่รังสี ( Radiant warmer )",
+    code: "MEDNUR-405",
+    url: "https://img.youtube.com/vi/ck4RGeoHFko/0.jpg",
+    link: "/courses/3",
+  },
 ];
 
 const feedbacks = [

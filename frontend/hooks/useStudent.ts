@@ -15,7 +15,8 @@ export default function useStudent() {
             });
 
             if (!res.ok) {
-                console.error("Unauthorize");
+                const err = await res.json();
+                throw new Error(err.message || "Unauthorized");
             } else {
                 const data = await res.json();
                 setStudent(data);

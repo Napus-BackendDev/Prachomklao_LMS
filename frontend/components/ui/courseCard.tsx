@@ -14,7 +14,7 @@ export default function CourseCard({ title, code, url }: CourseCardProps) {
     <Link href={`/courses/${code}`} key={title}>
       <div
         key={title}
-        className="flex flex-col overflow-hidden max-w-xs mx-auto rounded-md group"
+        className="flex flex-col overflow-hidden mx-auto rounded-md group"
       >
         <Image
           alt={title}

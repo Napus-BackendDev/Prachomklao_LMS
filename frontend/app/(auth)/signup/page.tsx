@@ -10,12 +10,25 @@ import {
     Input,
 } from "@heroui/react";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
+import useAuth from "@/hooks/useAuth";
+import { useRouter } from "next/navigation";
 
 export default function SignInPage() {
+    const { signup } = useAuth();
+    const router = useRouter();
+
     const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [isVisible, setIsVisible] = useState(false);
     const toggleVisibility = () => setIsVisible(!isVisible);
+
+    const handleSignup = async () => {
+        if (!username || !email || !password) return console.error("enter"); // Rewrite
+
+        const res = await signup(username, email, password);
+        if (res) router.push("/");
+    }
 
     return (
         <div className="flex justify-center items-center w-screen h-screen">
@@ -28,6 +41,15 @@ export default function SignInPage() {
                     placeholder="กรอกชื่อ"
                     value={username}
                     onValueChange={setUsername}
+                    classNames={{
+                        input: "text-lg"
+                    }}
+                />
+                <Input
+                    type="text"
+                    placeholder="กรอกอีเมล"
+                    value={email}
+                    onValueChange={setEmail}
                     classNames={{
                         input: "text-lg"
                     }}
@@ -58,6 +80,7 @@ export default function SignInPage() {
                 <Button
                     type="submit"
                     className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg py-4 text-xl"
+                    onPress={handleSignup}
                 >
                     สมัครใช้งาน
                 </Button>

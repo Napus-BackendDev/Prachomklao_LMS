@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import {
   Button,
   Card,
@@ -10,10 +11,7 @@ import {
   ModalFooter,
   ModalHeader,
   useDisclosure,
-} from "@heroui/react";
-import { Image } from "@heroui/image";
-import { Users, FileText, Target, User } from "lucide-react";
-import {
+  Image,
   Table,
   TableHeader,
   TableColumn,
@@ -22,10 +20,11 @@ import {
   TableCell,
   getKeyValue,
 } from "@heroui/react";
-import { useEffect, useRef, useState } from "react";
+import { Users, FileText, Target } from "lucide-react";
 import { RegisterCourseModal } from "./components/registerCourseModal";
 import { pretestModal } from "./components/pretestModal";
 import { posttestModal } from "./components/posttestModal";
+import useStudent from "@/hooks/useStudent";
 
 declare global {
   interface Window {
@@ -34,61 +33,60 @@ declare global {
   }
 }
 
-export default function CoursesPage() {
-  // ตัวอย่างข้อมูล
-  const examList = [
-    { title: "แบบทดสอบก่อนเรียน", count: 5 },
-    { title: "แบบทดสอบหลังเรียน", count: 10 },
-    { title: "แบบประเมินบทเรียน", count: 5 },
-  ];
+// Mock up data
+const examList = [
+  { title: "แบบทดสอบก่อนเรียน", count: 5 },
+  { title: "แบบทดสอบหลังเรียน", count: 10 },
+];
 
-  const rows = [
-    {
-      key: "1",
-      name: "Tony Reichert",
-      role: "CEO",
-      status: "Active",
-    },
-    {
-      key: "2",
-      name: "Zoey Lang",
-      role: "Technical Lead",
-      status: "Paused",
-    },
-    {
-      key: "3",
-      name: "Jane Fisher",
-      role: "Senior Developer",
-      status: "Active",
-    },
-    {
-      key: "4",
-      name: "William Howard",
-      role: "Community Manager",
-      status: "Vacation",
-    },
-  ];
+const rows = [
+  {
+    key: "1",
+    name: "Tony Reichert",
+    role: "CEO",
+    status: "Active",
+  },
+  {
+    key: "2",
+    name: "Zoey Lang",
+    role: "Technical Lead",
+    status: "Paused",
+  },
+  {
+    key: "3",
+    name: "Jane Fisher",
+    role: "Senior Developer",
+    status: "Active",
+  },
+  {
+    key: "4",
+    name: "William Howard",
+    role: "Community Manager",
+    status: "Vacation",
+  },
+];
 
-  const columns = [
-    {
-      key: "name",
-      label: "NAME",
-    },
-    {
-      key: "role",
-      label: "ROLE",
-    },
-    {
-      key: "status",
-      label: "STATUS",
-    },
-  ];
+const columns = [
+  {
+    key: "name",
+    label: "NAME",
+  },
+  {
+    key: "role",
+    label: "ROLE",
+  },
+  {
+    key: "status",
+    label: "STATUS",
+  },
+];
 
+export default function CoursePage() {
+  const { student } = useStudent();
   const [showVideo, setShowVideo] = useState(false);
   const [showAssessment, setShowAssessment] = useState(false);
   const [showPosttest, setShowPosttest] = useState(false);
-  const [showPretest, setShowPretest] = useState(false);
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [showPretest, estShowPretest] = useState(false);
   const playerRef = useRef<any>(null);
 
   useEffect(() => {
@@ -127,24 +125,28 @@ export default function CoursesPage() {
         });
       }
     }
-    // eslint-disable-next-line
   }, [showVideo]);
 
+  const handleEnroll = () => {
+    if (!student) return; // Login page
+
+    
+  }
+
   return (
-    <div className="flex flex-col w-full px-8 py-4">
-      <h1 className="text-3xl font-extrabold">Course</h1>
-      <hr className="flex-1 border-t border-gray-300" aria-hidden="true" />
+    <div className="flex flex-col max-w-screen-2xl mx-auto py-4">
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-6 py-4">
         {/* LEFT */}
-        <div className="flex flex-col justify-center items-center gap-6 ">
+        <div className="flex flex-col justify-center items-center gap-2 w-full">
           {!showVideo ? (
             <Image
+              removeWrapper
               src="https://img.youtube.com/vi/hFgiweAHkXQ/0.jpg"
-              className="w-full max-w-[650px] aspect-video object-cover"
+              className="w-full aspect-video object-cover"
               alt="course"
             />
           ) : (
-            <div className="w-full max-w-[650px] aspect-video">
+            <div className="w-full aspect-video">
               <div id="yt-player-container" className="w-full h-full">
                 <iframe
                   id="yt-player"
@@ -160,38 +162,26 @@ export default function CoursesPage() {
               </div>
             </div>
           )}
-
-          <Card className="flex py-5 px-4">
-            <div className="mb-2">
-              <span className="font-bold">หัวข้อ :</span>{" "}
-              การพยาบาลผู้ป่วยที่มีความจำเป็นต้องใช้เครื่องช่วยหายใจ(Ventilator)
-            </div>
-            <div className="mb-2">
-              <span className="font-bold">รายละเอียด :</span>{" "}
-              เครื่องช่วยหายใจ(Ventilator)
+          <div className="flex self-start gap-2">
+            <p className="text-2xl font-bold self-start">หัวข้อ :</p>
+            <p className="text-2xl self-start">Course name</p>
+          </div>
+          <Card className="flex self-start gap-2 p-4">
+            <p className="text-2xl font-bold self-start">รายละเอียด</p>
+            <p className="text-xl self-start">
+              เครื่องช่วยหายใจ (Ventilator)
               คืออุปกรณ์ที่ช่วยหรือควบคุมการหายใจของผู้ป่วยที่ไม่สามารถหายใจเองได้เพียงพอโดยควบคุมปริมาตรลมหายใจเข้า/ออก
               ความถี่และแรงดันให้เหมาะสมกับความต้องการของผู้ป่วย
-            </div>
-            <Button color="primary" variant="shadow" size="md" onPress={onOpen}>
+            </p>
+            <Button
+              color="primary"
+              variant="shadow"
+              radius="sm"
+              className="text-xl font-semibold"
+              onPress={handleEnroll}
+            >
               สมัคร Course
             </Button>
-
-            <RegisterCourseModal
-              isOpen={isOpen}
-              onOpenChange={onOpenChange}
-              setShowPretest={setShowPretest}
-            />
-            {pretestModal({
-              showPretest,
-              setShowPretest,
-              setShowVideo,
-            })}
-
-            {posttestModal({
-              showPosttest,
-              setShowPosttest,
-              setShowAssessment,
-            })}
 
             <Modal
               isOpen={showAssessment}
@@ -220,7 +210,7 @@ export default function CoursesPage() {
           </Card>
         </div>
         {/* RIGHT */}
-        <Card className="flex flex-col justify-between px-6 py-4 gap-4">
+        <Card className="flex flex-col px-6 py-4 gap-4">
           {/* Exams */}
           <div className="flex flex-col justify-between space-y-4">
             <div className="flex items-center justify-between mb-4">
@@ -242,10 +232,10 @@ export default function CoursesPage() {
             ))}
           </div>
           {/* Users */}
-          <div className="py-4">
+          {/* <div className="py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-primary font-semibold">
-                <Users /> จำนวน คนที่สมัครคอร์สนี้ไปแล้ว
+                <Users /> จำนวนคนที่สมัครคอร์สนี้ไปแล้ว
               </div>
               <span className="text-blue-600 font-semibold">จำนวน 10 คน</span>
             </div>
@@ -268,9 +258,26 @@ export default function CoursesPage() {
                 )}
               </TableBody>
             </Table>
-          </div>
+          </div> */}
         </Card>
       </section>
+
+      {/* <RegisterCourseModal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        setShowPretest={setShowPretest}
+      />
+      {pretestModal({
+        showPretest,
+        setShowPretest,
+        setShowVideo,
+      })}
+
+      {posttestModal({
+        showPosttest,
+        setShowPosttest,
+        setShowAssessment,
+      })} */}
     </div>
   );
 }
