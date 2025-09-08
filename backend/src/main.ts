@@ -34,7 +34,7 @@ async function createNestApp() {
   app.useGlobalPipes(new ValidationPipe());
   app.use(cookieParser());
   app.enableCors();
-  await app.init(); // important: init app without listen()
+  await app.init();
 }
 
 createNestApp();
