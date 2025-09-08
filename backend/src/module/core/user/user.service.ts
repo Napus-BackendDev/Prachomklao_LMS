@@ -1,25 +1,24 @@
-import {
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { instanceToPlain } from 'class-transformer';
 import { firestore } from 'config/firebase.config';
 import * as bcrypt from 'bcrypt';
 import { formatDate } from 'src/common/utils/tranferDate';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UserData, UserDataWithCourses } from 'src/common/types/user-type';
+import { Courses } from 'src/common/types/couse-type';
+import { Enrollment } from 'src/common/types/enrollments-type';
 
 @Injectable()
 export class UserService {
   private usersCollection = firestore.collection('users');
 
-  async findbyEmail(email: string) {
+  async findbyEmail(email: string): Promise<UserData> {
     const snapshot = await this.usersCollection
       .where('email', '==', email)
       .get();
-    if (snapshot.empty) 
-      throw new NotFoundException();
+    if (snapshot.empty) throw new NotFoundException();
     const doc = snapshot.docs[0];
-    const data = doc.data();
+    const data = doc.data() as UserData;
     const userData = {
       id: doc.id,
       email: data.email,
@@ -30,15 +29,17 @@ export class UserService {
     return userData;
   }
 
-  async findAll() {
+  async findAll(): Promise<UserData[]> {
     const snapshot = await this.usersCollection.get();
-    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    return snapshot.docs.map(
+      (doc) => ({ id: doc.id, ...doc.data() }) as UserData,
+    );
   }
 
-  async findOne(studentId: string) {
+  async findOne(studentId: string): Promise<UserDataWithCourses> {
     const userDoc = await this.usersCollection.doc(studentId).get();
-    const userData = userDoc.data();
-    if (!userDoc.exists || !userData) 
+    const userData = userDoc.data() as UserData;
+    if (!userDoc.exists || !userData)
       throw new NotFoundException('User not found');
 
     // Fetch subcollection enroll
@@ -48,7 +49,7 @@ export class UserService {
       .limit(3)
       .get();
     const enrollments = await Promise.all(
-      snapshot.docs.map((doc) => doc.data()),
+      snapshot.docs.map((doc) => doc.data()) as Enrollment[],
     );
 
     return {
@@ -66,16 +67,19 @@ export class UserService {
     };
   }
 
-  async update(studentId: string, updateUserDto: UpdateUserDto) {
+  async update(
+    studentId: string,
+    updateUserDto: UpdateUserDto,
+  ): Promise<{ message: string }> {
     const payload = instanceToPlain(updateUserDto);
     if (payload.password)
-      payload.password = await bcrypt.hash(payload.password, 10);
+      payload.password = (await bcrypt.hash(payload.password, 10)) as string;
     else delete payload.password;
     await this.usersCollection.doc(studentId).update(payload);
     return { message: 'update complete' };
   }
 
-  async remove(studentId: string) {
+  async remove(studentId: string): Promise<{ message: string }> {
     const studentRef = this.usersCollection.doc(studentId);
     await this.usersCollection.firestore.recursiveDelete(studentRef);
     return { message: 'Delete Student Complete' };

@@ -1,6 +1,15 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { firestore } from 'config/firebase.config';
 import { CreatePretestAnswerDto } from './dto/create-pretest-answer.dto';
+import {
+  PretestAnswer,
+  PretestQuestion,
+  PretestScore,
+} from 'src/common/types/pretest-type';
 
 @Injectable()
 export class PretestAnswerService {
@@ -11,7 +20,7 @@ export class PretestAnswerService {
     studentId: string,
     courseId: string,
     answers: CreatePretestAnswerDto[],
-  ) {
+  ): Promise<{ message: string; result: PretestAnswer[] }> {
     const [userDocRef, courseDocRef, pretestDoc] = await Promise.all([
       this.usersCollection
         .doc(studentId)
@@ -27,10 +36,10 @@ export class PretestAnswerService {
     ]);
 
     if (!pretestDoc || pretestDoc.empty)
-      throw new NotFoundException('Pretest not found for this course')
+      throw new NotFoundException('Pretest not found for this course');
 
     const pretests = pretestDoc.docs.map((doc) => {
-      const pretestData = doc.data();
+      const pretestData = doc.data() as PretestQuestion;
 
       return {
         id: doc.id,
@@ -40,8 +49,10 @@ export class PretestAnswerService {
       };
     });
 
-    const invalidAnswers = answers.filter((a) => !pretests.some((p) => p.question === a.question),);
-    if (invalidAnswers.length > 0) 
+    const invalidAnswers = answers.filter(
+      (a) => !pretests.some((p) => p.question === a.question),
+    );
+    if (invalidAnswers.length > 0)
       throw new BadRequestException('Some answers are invalid');
 
     const batch = this.coursesCollection.firestore.batch();
@@ -55,7 +66,7 @@ export class PretestAnswerService {
         options: pretest.options,
         answer: answer?.answer,
         correctAnswer: pretest.correctAnswer,
-      };
+      } as PretestAnswer;
     });
 
     result.forEach((result) => {
@@ -64,16 +75,24 @@ export class PretestAnswerService {
     });
 
     await batch.commit();
-    return { message: 'Pretest answers submitted successfully' };
+    return { message: 'Pretest answers submitted successfully', result };
   }
 
-  async gradePretestAnswer(studentId: string, courseId: string) {
-    const pretestDoc = await this.usersCollection.doc(studentId).collection('enrollments').doc(courseId).collection('pretestAnswers').get();
+  async gradePretestAnswer(
+    studentId: string,
+    courseId: string,
+  ): Promise<PretestScore> {
+    const pretestDoc = await this.usersCollection
+      .doc(studentId)
+      .collection('enrollments')
+      .doc(courseId)
+      .collection('pretestAnswers')
+      .get();
     if (pretestDoc.empty)
-      throw new NotFoundException('Not found pretest answer')
+      throw new NotFoundException('Not found pretest answer');
     let score = 0;
 
-    await pretestDoc.docs.forEach((doc) => {
+    pretestDoc.docs.forEach((doc) => {
       const studentData = doc.data();
       if (studentData.answer === studentData.correctAnswer) {
         score++;
