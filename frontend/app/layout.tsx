@@ -4,6 +4,8 @@ import clsx from "clsx";
 
 import { siteConfig } from "@/config/site";
 import { fontSans, fontThai } from "@/config/fonts";
+import Footer from "@/components/footer";
+import Navbar from "@/components/navbar";
 
 export const metadata: Metadata = {
   title: {
@@ -38,11 +40,11 @@ export default function RootLayout({
           "flex flex-col min-h-screen text-foreground bg-background font-sans antialiased overflow-x-hidden"
         )}
       >
+        <Navbar />
         <div className="flex-grow">
-          <main>
-            {children}
-          </main>
+          {children}
         </div>
+        <Footer />
       </body>
     </html>
   );

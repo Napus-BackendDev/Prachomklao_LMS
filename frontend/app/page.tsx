@@ -1,8 +1,6 @@
 "use client";
 
-import { Image } from "@heroui/image";
 import { siteConfig } from "@/config/site";
-import { Button } from "@heroui/button";
 import {
   Clock4,
   Smile,
@@ -12,10 +10,13 @@ import {
   ChevronRight,
   Quote,
 } from "lucide-react";
-import { Card, CardBody, CardFooter, CardHeader } from "@heroui/react";
+import { Button, Card, CardBody, CardFooter, CardHeader, Image } from "@heroui/react";
 import CourseCard from "@/components/ui/courseCard";
 import Link from "next/link";
 import { useState } from "react";
+import useCourses from "@/hooks/useCourses";
+import { Course } from "@/types/couse";
+import useEnroll from "@/hooks/useEnroll";
 
 const features = [
   {
@@ -40,40 +41,7 @@ const features = [
   },
 ];
 
-// Mockup
-const courses = [
-  {
-    title: "การพยาบาลผู้ป่วยที่มีความจำเป็นต้องใช้เครื่องช่วยหายใจ ( Ventilator )",
-    code: "MEDNUR-101",
-    url: "https://img.youtube.com/vi/hFgiweAHkXQ/0.jpg",
-    link: "/courses/",
-  },
-  {
-    title: "การพยาบาลผู้ป่วยที่มีความจำเป็นต้องใช้ตู้อบ (Incubator)",
-    code: "HSC-201",
-    url: "https://img.youtube.com/vi/PEYZoVI9M_c/0.jpg",
-    link: "/courses/1",
-  },
-  {
-    title: "การพยาบาลผู้ป่วยที่ได้รับการรักษาภาวะตัวเหลืองด้วยเครื่องส่องไฟ Phototherapy",
-    code: "CLNC-310",
-    url: "https://img.youtube.com/vi/JHm4GsMhygM/0.jpg",
-    link: "/courses/2",
-  },
-  {
-    title: "การพยาบาลผู้ป่วยที่มีความจำเป็นต้องใช้เครื่องให้ความร้อนแบบแผ่รังสี ( Radiant warmer )",
-    code: "MEDNUR-405",
-    url: "https://img.youtube.com/vi/ck4RGeoHFko/0.jpg",
-    link: "/courses/3",
-  },
-  {
-    title: "การพยาบาลผู้ป่วยที่มีความจำเป็นต้องใช้เครื่องให้ความร้อนแบบแผ่รังสี ( Radiant warmer )",
-    code: "MEDNUR-405",
-    url: "https://img.youtube.com/vi/ck4RGeoHFko/0.jpg",
-    link: "/courses/3",
-  },
-];
-
+// Mock up
 const feedbacks = [
   {
     name: "กฤตเมธ วงศ์สุวรรณ",
@@ -93,13 +61,17 @@ const feedbacks = [
 ];
 
 export default function Home() {
-  const [course, setCourse] = useState(0);
+  const { courses } = useCourses();
+  // const { enrolled } = useEnroll();
+
+  const [displayCourse, setDisplayCourse] = useState(0);
+  const displayAmount = 4;
 
   const handlePrev = () => {
-    if (course > 0) setCourse(course - 1);
+    if (displayCourse > 0) setDisplayCourse(displayCourse - 1);
   };
   const handleNext = () => {
-    if (course < courses.length - 3) setCourse(course + 1);
+    if (displayCourse < courses.length - 3) setDisplayCourse(displayCourse + 1);
   };
 
   return (
@@ -166,6 +138,26 @@ export default function Home() {
         </div>
       </section>
 
+      {/* KEEP LEARNING */}
+      {/* {enrolled.length > 0 && (
+        <section
+          id="keep-learning"
+          className="flex flex-col justify-center max-w-screen-2xl mx-auto space-y-12 py-12"
+        >
+          <p className="text-5xl font-semibold">เรียนต่อ</p>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-screen-xl mx-auto px-4">
+            {enrolled.map((course) => (
+              <CourseCard
+                key={course.id}
+                id={course.id}
+                title={course.title}
+                picture={course.urlPicture}
+              />
+            ))}
+          </div>
+        </section>
+      )} */}
+
       {/* COURSES */}
       <section
         id="courses"
@@ -173,41 +165,41 @@ export default function Home() {
       >
         <h1 className="text-4xl font-semibold">หลักสูตรออนไลน์ของเรา</h1>
         <div className="flex items-center">
-          {courses.length > 4 && (
+          {courses.length > displayAmount && (
             <Button
               isIconOnly
-              color={course === 0 ? "default" : "primary"}
+              color={displayCourse === 0 ? "default" : "primary"}
               variant="flat"
               onPress={handlePrev}
-              disabled={course === 0}
+              disabled={displayCourse === 0}
             >
               <ChevronLeft />
             </Button>
           )}
-          <div className="overflow-hidden">
+          <div>
             <div
               className="flex transition-transform duration-500 max-w-screen-2xl"
-              style={{ transform: `translateX(-${course * 25}%)` }}
+              style={{ transform: `translateX(-${displayCourse * 25}%)` }}
             >
-              {courses.map((course) => (
-                <div className="shrink-0 w-1/4 px-4">
+              {courses.map((course: Course) => (
+                <div className="shrink-0 flex-grow basis-1/4 px-4">
                   <CourseCard
-                    key={course.code}
+                    key={course.id}
                     title={course.title}
-                    code={course.code}
-                    url={course.url}
+                    id={course.id}
+                    picture={course.urlPicture}
                   />
                 </div>
               ))}
             </div>
           </div>
-          {courses.length > 4 && (
+          {courses.length > displayAmount && (
             <Button
               isIconOnly
-              color={course === courses.length - 4 ? "default" : "primary"}
+              color={displayCourse === courses.length - displayAmount ? "default" : "primary"}
               variant="flat"
               onPress={handleNext}
-              disabled={course === (courses.length - 4)}
+              disabled={displayCourse === (courses.length - displayAmount)}
             >
               <ChevronRight />
             </Button>

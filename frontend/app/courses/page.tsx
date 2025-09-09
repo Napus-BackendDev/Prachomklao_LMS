@@ -1,56 +1,21 @@
 "use client";
 
 import CourseCard from "@/components/ui/courseCard";
+import UseCourses from "@/hooks/useCourses";
+import { Course } from "@/types/couse";
 import { Divider, Input, Pagination } from "@heroui/react";
 import { Search } from "lucide-react";
 import { useMemo, useState } from "react";
 
-// Mock up
-const courses = [
-  {
-    title:
-      "การพยาบาลผู้ป่วยที่มีความจำเป็นต้องใช้เครื่องช่วยหายใจ ( Ventilator )",
-    code: "MEDNUR-101",
-    url: "https://img.youtube.com/vi/hFgiweAHkXQ/0.jpg",
-    link: "/courses/MEDNUR-101",
-  },
-  {
-    title: "การพยาบาลผู้ป่วยที่มีความจำเป็นต้องใช้ตู้อบ (Incubator)",
-    code: "HSC-201",
-    url: "https://img.youtube.com/vi/PEYZoVI9M_c/0.jpg",
-    link: "/courses/HSC-201",
-  },
-  {
-    title:
-      "การพยาบาลผู้ป่วยที่ได้รับการรักษาภาวะตัวเหลืองด้วยเครื่องส่องไฟ Phototherapy",
-    code: "CLNC-310",
-    url: "https://img.youtube.com/vi/JHm4GsMhygM/0.jpg",
-    link: "/courses/CLNC-310",
-  },
-  {
-    title:
-      "การพยาบาลผู้ป่วยที่มีความจำเป็นต้องใช้เครื่องให้ความร้อนแบบแผ่รังสี ( Radiant warmer )",
-    code: "MEDNUR-405",
-    url: "https://img.youtube.com/vi/ck4RGeoHFko/0.jpg",
-    link: "/courses/MEDNUR-405",
-  },
-  {
-    title:
-      "Pagination Test",
-    code: "TEST-01",
-    url: "https://img.youtube.com/vi/ck4RGeoHFko/0.jpg",
-    link: "/courses/TEST-01",
-  },
-];
-
 export default function CoursesPage() {
+  const { courses } = UseCourses();
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
 
   const filteredCourses = useMemo(() => {
     let filtered = [...courses];
 
-    filtered = filtered.filter((course) =>
+    filtered = filtered.filter((course: Course) =>
       course.title.toLowerCase().includes(search.toLowerCase())
     )
 
@@ -81,12 +46,12 @@ export default function CoursesPage() {
         <p className="text-xl">ผลลัพธ์จำนวน {filteredCourses.length} วิชา</p>
         <Divider className="my-2" />
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 py-4">
-          {filteredCourses.slice(startCourse, endCourse).map((course) => (
+          {filteredCourses.slice(startCourse, endCourse).map((course: Course) => (
             <CourseCard
-              key={course.code}
+              key={course.id}
               title={course.title}
-              code={course.code}
-              url={course.url}
+              id={course.id}
+              picture={course.urlPicture}
             />
           ))}
         </div>

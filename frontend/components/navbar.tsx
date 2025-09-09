@@ -18,27 +18,92 @@ import {
 } from "@heroui/react";
 import { siteConfig } from "@/config/site";
 import { fontSans } from "@/config/fonts";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import useStudent from "@/hooks/useStudent";
-import { useEffect } from "react";
-import { Student } from "@/types/student";
-import { ChevronDown, LogOut } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { LogOut } from "lucide-react";
 import useAuth from "@/hooks/useAuth";
+import LogInModal from "./ui/loginModal";
+import SignUpModal from "./ui/signupModal";
 
 export default function Navbar() {
   const { logout } = useAuth();
-  const { student, fetchStudent } = useStudent();
+  const { student, setStudent, fetchStudent } = useStudent();
   const pathName = usePathname();
-  const router = useRouter();
+
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [isSignupOpen, setIsSignupOpen] = useState(false);
 
   useEffect(() => {
     fetchStudent();
   }, []);
 
-  const handleLogout = () => {
-    logout();
-    router.push("/login");
+  const handleLogout = async () => {
+    const res = await logout();
+    if (res) setStudent(null);
   }
+
+  const profileContent = useMemo(() => {
+    if (student) {
+      return (
+        <NavbarContent
+          className="hidden sm:flex basis-1/5 sm:basis-full"
+          justify="end"
+        >
+          <NavbarItem>
+            <Dropdown>
+              <DropdownTrigger>
+                <div className="flex flex-col group py-2 rounded-lg cursor-pointer">
+                  <p className="text-lg font-semibold text-default-800">
+                    {student.username}
+                  </p>
+                  <p className="text-md text-default-400">{student.role}</p>
+                </div>
+              </DropdownTrigger>
+              <DropdownMenu aria-label="Static Actions">
+                <DropdownItem
+                  key="logout"
+                  startContent={<LogOut size={18} />}
+                  onPress={handleLogout}
+                  classNames={{ title: "text-xl font-bold" }}
+                >
+                  Log out
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          </NavbarItem>
+        </NavbarContent>
+      );
+    } else {
+      return (
+        <NavbarContent
+          className="hidden sm:flex basis-1/5 sm:basis-full"
+          justify="end"
+        >
+          <NavbarItem className="hidden lg:flex">
+            <Button
+              className="text-sm font-medium px-6"
+              variant="flat"
+              color="primary"
+              onPress={() => setIsLoginOpen(true)}
+            >
+              Log In
+            </Button>
+          </NavbarItem>
+          <NavbarItem className="hidden md:flex">
+            <Button
+              className="text-sm font-medium px-6"
+              color="primary"
+              variant="shadow"
+              onPress={() => setIsSignupOpen(true)}
+            >
+              Sign Up
+            </Button>
+          </NavbarItem>
+        </NavbarContent>
+      );
+    }
+  }, [student, setIsLoginOpen, setIsSignupOpen, handleLogout]);
 
   return (
     <HeroUINavbar
@@ -81,67 +146,7 @@ export default function Navbar() {
         </ul>
       </NavbarContent>
 
-      {student ? (
-        <NavbarContent
-          className="hidden sm:flex basis-1/5 sm:basis-full"
-          justify="end"
-        >
-          <NavbarItem>
-            <Dropdown>
-              <DropdownTrigger>
-                <div className="flex flex-col group py-2 rounded-lg cursor-pointer">
-                  <p className="text-lg font-semibold text-default-800">
-                    {(student as Student).username}
-                  </p>
-                  <p className="text-md text-default-400">
-                    {(student as Student).role}
-                  </p>
-                </div>
-              </DropdownTrigger>
-              <DropdownMenu aria-label="Static Actions">
-                <DropdownItem
-                  key="logout"
-                  startContent={<LogOut size={18} />}
-                  onPress={handleLogout}
-                  classNames={{
-                    title: "text-xl font-bold"
-                  }}
-                >
-                  Log out
-                </DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
-          </NavbarItem>
-        </NavbarContent>
-      ) : (
-        <NavbarContent
-          className="hidden sm:flex basis-1/5 sm:basis-full"
-          justify="end"
-        >
-          <NavbarItem className="hidden lg:flex">
-            <Link href={"/login"}>
-              <Button
-                className="text-sm font-medium px-6"
-                variant="flat"
-                color="primary"
-              >
-                Log In
-              </Button>
-            </Link>
-          </NavbarItem>
-          <NavbarItem className="hidden md:flex">
-            <Link href={"/signup"}>
-              <Button
-                className="text-sm font-medium px-6"
-                color="primary"
-                variant="shadow"
-              >
-                Sign Up
-              </Button>
-            </Link>
-          </NavbarItem>
-        </NavbarContent>
-      )}
+      {profileContent}
 
       <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
         <NavbarMenuToggle />
@@ -161,6 +166,19 @@ export default function Navbar() {
           ))}
         </div>
       </NavbarMenu>
+
+      <LogInModal
+        isOpen={isLoginOpen}
+        onClose={() => setIsLoginOpen(false)}
+        onOpenSignup={() => setIsSignupOpen(true)}
+      />
+
+      <SignUpModal
+        isOpen={isSignupOpen}
+        onClose={() => setIsSignupOpen(false)}
+        onOpenLogin={() => setIsLoginOpen(true)}
+      />
+
     </HeroUINavbar>
   );
 };

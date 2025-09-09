@@ -1,9 +1,10 @@
 import { useState } from "react";
+import useStudent from "./useStudent";
 
 export default function useAuth() {
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
-
+    
     const login = async (email: string, password: string) => {
         setError(null);
         setLoading(true);
@@ -19,12 +20,11 @@ export default function useAuth() {
                 }),
                 credentials: "include"
             });
+            const data = await res.json();
 
             if (!res.ok) {
-                const err = await res.json();
-                throw new Error(err.message || "Login failed");
+                throw new Error(data.message || "Login failed");
             } else {
-                const data = await res.json();
                 return data;
             }
         } catch (err) {
@@ -53,13 +53,12 @@ export default function useAuth() {
                     password
                 }),
             })
+            const data = await res.json();
 
             if (!res.ok) {
-                const err = await res.json();
-                throw new Error(err.message || "Signup failed");
+                throw new Error(data.message || "Signup failed");
             } else {
-                const data = await res.json();
-                if (data) return await login(email, password);
+                await login(email, password);
             }
         } catch (err) {
             setError(
@@ -77,10 +76,12 @@ export default function useAuth() {
             method: "POST",
             credentials: "include"
         })
+        const data = await res.json();
 
         if (!res.ok) {
-            const err = await res.json();
-            throw new Error(err.message || "Logout failed");
+            throw new Error(data.message || "Logout failed");
+        } else {
+            return data;
         }
     };
 

@@ -5,20 +5,20 @@ import { Image } from "@heroui/image";
 
 type CourseCardProps = {
   title: string;
-  code: string;
-  url: string;
+  id: string;
+  picture: string;
 };
 
-export default function CourseCard({ title, code, url }: CourseCardProps) {
+export default function CourseCard({ title, id, picture }: CourseCardProps) {
   return (
-    <Link href={`/courses/${code}`} key={title}>
+    <Link href={`/courses/${id}`} key={title}>
       <div
         key={title}
         className="flex flex-col overflow-hidden mx-auto rounded-md group"
       >
         <Image
           alt={title}
-          src={url}
+          src={picture}
           radius="sm"
           className="transition duration-300 group-hover:brightness-60"
         />

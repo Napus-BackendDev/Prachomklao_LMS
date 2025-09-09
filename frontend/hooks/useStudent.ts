@@ -1,7 +1,8 @@
+import { Student } from "@/types/student";
 import { useEffect, useState } from "react"
 
 export default function useStudent() {
-    const [student, setStudent] = useState(null);
+    const [student, setStudent] = useState<Student | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
 
@@ -13,12 +14,11 @@ export default function useStudent() {
                 method: "GET",
                 credentials: "include"
             });
-
+            const data = await res.json();
+            
             if (!res.ok) {
-                const err = await res.json();
-                throw new Error(err.message || "Unauthorized");
+                throw new Error(data.message || "Failed to fetch students");
             } else {
-                const data = await res.json();
                 setStudent(data);
             }
         } catch (err) {
@@ -32,8 +32,13 @@ export default function useStudent() {
         }
     }
 
+    useEffect(() => {
+        fetchStudent();
+    }, []);
+
     return {
         student,
+        setStudent,
         fetchStudent,
         error,
         loading
