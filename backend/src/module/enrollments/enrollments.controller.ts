@@ -5,13 +5,14 @@ import {
   Post,
   UseGuards,
   Request,
+  Patch,
 } from '@nestjs/common';
 import { EnrollmentsService } from './enrollments.service';
 import { Roles } from '../core/auth/decorators/role.decorator';
 import { Role } from '../core/auth/enum/role-enum';
 import { JwtAuthGuard } from '../core/auth/guard/jwt-auth.guard';
 import { RolesGuard } from '../core/auth/roles/roles.guard';
-import { User } from 'src/common/types/user-type';
+import { User } from 'src/common/interface/user-interface';
 
 @Roles(Role.STUDENT)
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -22,6 +23,11 @@ export class EnrollmentsController {
   @Post(':courseId')
   enrollCourse(@Request() req: User, @Param('courseId') courseId: string) {
     return this.enrollmentsService.enrollCourse(req.user.id, courseId);
+  }
+
+  @Patch(':courseId')
+  changeEnrollCourse(@Request() req: User, @Param('courseId') courseId: string) {
+    return this.enrollmentsService.updateEnrollStatus(req.user.id , courseId)
   }
 
   @Get()

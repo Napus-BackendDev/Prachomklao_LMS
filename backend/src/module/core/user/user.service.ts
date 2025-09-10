@@ -4,9 +4,9 @@ import { firestore } from 'config/firebase.config';
 import * as bcrypt from 'bcrypt';
 import { formatDate } from 'src/common/utils/tranferDate';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { UserData, UserDataWithCourses } from 'src/common/types/user-type';
-import { Courses } from 'src/common/types/couse-type';
-import { Enrollment } from 'src/common/types/enrollments-type';
+import { UserData, UserDataWithCourses } from 'src/common/interface/user-interface';
+import { Courses } from 'src/common/interface/couse-interface';
+import { Enrollment } from 'src/common/interface/enrollments-interface';
 
 @Injectable()
 export class UserService {
@@ -60,7 +60,6 @@ export class UserService {
       courses: enrollments.map((enrollment) => ({
         id: enrollment.id,
         title: enrollment.title,
-        code: enrollment.code,
         enrollment: formatDate(enrollment.enrolledAt.toDate()),
         status: enrollment.status,
       })),

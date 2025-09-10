@@ -14,7 +14,7 @@ import { Role } from '../auth/enum/role-enum';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles/roles.guard';
 import { UserService } from './user.service';
-import { User } from 'src/common/types/user-type';
+import { User } from 'src/common/interface/user-interface';
 
 @Roles(Role.ADMIN)
 @UseGuards(JwtAuthGuard, RolesGuard)

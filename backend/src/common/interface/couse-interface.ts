@@ -1,11 +1,10 @@
 import { Timestamp } from 'firebase-admin/firestore';
-import { PosttestQuestion } from './posttest-type';
-import { PretestQuestion } from './pretest-type';
+import { PosttestQuestion } from './posttest-interface';
+import { PretestQuestion } from './pretest-interface';
 
 export interface Courses {
   id?: string;
   title?: string;
-  code?: string;
   url?: string;
   urlPicture?: string;
 }
@@ -13,7 +12,6 @@ export interface Courses {
 export interface CourseDetail {
   id: string;
   title: string;
-  code: string;
   url: string;
   urlPicture: string;
   students: Student[];

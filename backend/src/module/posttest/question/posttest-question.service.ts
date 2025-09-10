@@ -3,7 +3,7 @@ import { firestore } from 'config/firebase.config';
 import { instanceToPlain } from 'class-transformer';
 import { CreatePosttestQuestionDto } from './dto/create-posttest-question.dto';
 import { UpdatePosttestQuestionDto } from './dto/update-posttest-question.dto';
-import { PosttestQuestion } from 'src/common/types/posttest-type';
+import { PosttestQuestion } from 'src/common/interface/posttest-interface';
 
 @Injectable()
 export class PosttestQuestionService {

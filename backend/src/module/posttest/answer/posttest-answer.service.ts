@@ -9,7 +9,7 @@ import {
   PosttestAnswer,
   PosttestQuestion,
   PosttestScore,
-} from 'src/common/types/posttest-type';
+} from 'src/common/interface/posttest-interface';
 
 @Injectable()
 export class PosttestAnswerService {

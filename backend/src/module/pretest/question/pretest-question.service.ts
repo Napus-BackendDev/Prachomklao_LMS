@@ -3,7 +3,7 @@ import { firestore } from 'config/firebase.config';
 import { instanceToPlain } from 'class-transformer';
 import { CreatePretestQuestionDto } from './dto/create-pretest-question.dto';
 import { UpdatePretestQuestionDto } from './dto/update-pretest-question.dto';
-import { PretestQuestion } from 'src/common/types/pretest-type';
+import { PretestQuestion } from 'src/common/interface/pretest-interface';
 
 @Injectable()
 export class PretestQuestionService {

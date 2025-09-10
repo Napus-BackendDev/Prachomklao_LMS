@@ -1,4 +1,4 @@
-import { Courses } from './couse-type';
+import { Courses } from './couse-interface';
 
 export interface UserData {
   id: string;

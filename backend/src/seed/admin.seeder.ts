@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { firestore } from 'config/firebase.config';
 import * as bcrypt from 'bcrypt';
 import { Role } from 'src/module/core/auth/enum/role-enum';
-import { UserData } from 'src/common/types/user-type';
+import { UserData } from 'src/common/interface/user-interface';
 
 @Injectable()
 export class AdminSeeder implements OnApplicationBootstrap {
@@ -20,9 +20,6 @@ export class AdminSeeder implements OnApplicationBootstrap {
     } as UserData;
 
     this.logger.log(`🌱 เริ่มการ Seed Admin Account`);
-    this.logger.log(
-      `📡 กำลังเชื่อมต่อกับ MongoDB:${this.configService.get<string>('MONGO_URL')}`,
-    );
     this.logger.log(`👤 Admin_Username:${adminData.email}`);
     this.logger.log(`🔑 Admin_Password:${password}`);
     this.logger.log(`🔧 Admin_Role:${adminData.role}`);

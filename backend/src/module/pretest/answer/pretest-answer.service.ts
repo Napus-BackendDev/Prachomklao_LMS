@@ -9,7 +9,7 @@ import {
   PretestAnswer,
   PretestQuestion,
   PretestScore,
-} from 'src/common/types/pretest-type';
+} from 'src/common/interface/pretest-interface';
 
 @Injectable()
 export class PretestAnswerService {

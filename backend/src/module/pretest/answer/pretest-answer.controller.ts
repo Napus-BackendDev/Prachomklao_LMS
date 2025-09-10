@@ -13,7 +13,7 @@ import { Roles } from 'src/module/core/auth/decorators/role.decorator';
 import { Role } from 'src/module/core/auth/enum/role-enum';
 import { JwtAuthGuard } from 'src/module/core/auth/guard/jwt-auth.guard';
 import { RolesGuard } from 'src/module/core/auth/roles/roles.guard';
-import { User } from 'src/common/types/user-type';
+import { User } from 'src/common/interface/user-interface';
 
 @Roles(Role.STUDENT)
 @UseGuards(JwtAuthGuard, RolesGuard)

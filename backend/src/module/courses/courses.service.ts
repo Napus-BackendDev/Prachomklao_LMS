@@ -8,23 +8,31 @@ import {
   CourseDetail,
   Student,
   StudentData,
-} from 'src/common/types/couse-type';
-import { PosttestQuestion } from 'src/common/types/posttest-type';
-import { PretestQuestion } from 'src/common/types/pretest-type';
+} from 'src/common/interface/couse-interface';
+import { PosttestQuestion } from 'src/common/interface/posttest-interface';
+import { PretestQuestion } from 'src/common/interface/pretest-interface';
 
 @Injectable()
 export class CoursesService {
   private coursesCollection = firestore.collection('courses');
 
-  async create(
-    createCourseDto: CreateCourseDto,
-  ): Promise<{ message: string; course: Courses }> {
-    const payload = {
-      ...createCourseDto,
-      urlPicture: `https://img.youtube.com/vi/${createCourseDto.url.split('v=')[1]}/0.jpg`,
+  async create(createCourseDto: CreateCourseDto[]): Promise<Courses[]> {
+    if (createCourseDto.length === 0)
+      throw new NotFoundException('Couser Empty');
+
+    const mainCourse = {
+      ...createCourseDto[0],
+      urlPicture: `https://img.youtube.com/vi/${createCourseDto[0].url.split('v=')[1]}/0.jpg`,
+      context: createCourseDto.slice(1).map((course) => ({
+        ...course,
+        urlPicture: `https://img.youtube.com/vi/${course.url.split('v=')[1]}/0.jpg`,
+      })),
     };
-    await this.coursesCollection.add(payload);
-    return { message: 'Create Cousere complete', course: payload };
+
+    const docRef = this.coursesCollection.doc();
+    await docRef.set(mainCourse);
+
+    return [mainCourse];
   }
 
   async findAll(): Promise<Courses[]> {
@@ -70,7 +78,6 @@ export class CoursesService {
     return {
       id: id,
       title: courseData.title!,
-      code: courseData.code!,
       url: courseData.url!,
       urlPicture: courseData.urlPicture!,
       students: students,
@@ -81,22 +88,25 @@ export class CoursesService {
     };
   }
 
-  async update(
-    id: string,
-    updateCourseDto: UpdateCourseDto,
-  ): Promise<{ message: string; course: Courses }> {
-    const course = await this.coursesCollection.doc(id).get();
-    if (!course.exists) throw new NotFoundException('Not found Course');
-
-    const payload = {
-      ...updateCourseDto,
-      ...(updateCourseDto.url && {
-        urlPicture: `https://img.youtube.com/vi/${updateCourseDto.url.split('v=')[1]}/0.jpg`,
+  async update( id: string, updateCourseDto: UpdateCourseDto[]): Promise<{ message: string; course: Courses }> {;
+    if (updateCourseDto.length === 0) 
+    throw new NotFoundException('Course Empty');
+  
+    const mainCourse = {
+    ...updateCourseDto[0],
+    ...(updateCourseDto[0].url && {
+      urlPicture: `https://img.youtube.com/vi/${updateCourseDto[0].url.split('v=')[1]}/0.jpg`,
+    }),
+    context: updateCourseDto.slice(1).map((course) => ({
+      ...course,
+      ...(course.url && {
+        urlPicture: `https://img.youtube.com/vi/${course.url.split('v=')[1]}/0.jpg`,
       }),
-    };
+    })),
+  };
 
-    await this.coursesCollection.doc(id).update(payload);
-    return { message: 'Update Course complete', course: payload };
+    await this.coursesCollection.doc(id).set(mainCourse, { merge: true });
+    return { message: 'Update Course complete', course: mainCourse };
   }
 
   async remove(id: string): Promise<{ message: string }> {

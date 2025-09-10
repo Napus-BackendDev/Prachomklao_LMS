@@ -7,7 +7,7 @@ import { Role } from './module/core/auth/enum/role-enum';
 import { CreateUserDto } from './module/core/user/dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
 import { firestore } from 'config/firebase.config';
-import { UserData } from './common/types/user-type';
+import { UserData } from './common/interface/user-interface';
 
 @Injectable()
 export class AppService {

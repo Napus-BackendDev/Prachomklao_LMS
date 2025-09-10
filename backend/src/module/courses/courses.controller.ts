@@ -22,12 +22,12 @@ export class CoursesController {
   constructor(private readonly coursesService: CoursesService) {}
 
   @Post()
-  create(@Body() createCourseDto: CreateCourseDto) {
+  create(@Body() createCourseDto: CreateCourseDto[]) {
     return this.coursesService.create(createCourseDto);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCourseDto: UpdateCourseDto) {
+  update(@Param('id') id: string, @Body() updateCourseDto: UpdateCourseDto[]) {
     return this.coursesService.update(id, updateCourseDto);
   }
 
