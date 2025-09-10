@@ -7,13 +7,19 @@ export interface Courses {
   title?: string;
   url?: string;
   urlPicture?: string;
+  content?: content[];
 }
 
+interface content {
+  id?: string;
+  title?: string;
+  url?: string;
+  urlPicture?: string;
+}
+
+
 export interface CourseDetail {
-  id: string;
-  title: string;
-  url: string;
-  urlPicture: string;
+  Courses: Courses;
   students: Student[];
   pretest: PretestQuestion[];
   posttest: PosttestQuestion[];

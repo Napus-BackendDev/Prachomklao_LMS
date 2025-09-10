@@ -23,7 +23,8 @@ export class CoursesService {
     const mainCourse = {
       ...createCourseDto[0],
       urlPicture: `https://img.youtube.com/vi/${createCourseDto[0].url.split('v=')[1]}/0.jpg`,
-      context: createCourseDto.slice(1).map((course) => ({
+      content: createCourseDto.slice(1).map((course) => ({
+        id: this.coursesCollection.doc().id,
         ...course,
         urlPicture: `https://img.youtube.com/vi/${course.url.split('v=')[1]}/0.jpg`,
       })),
@@ -37,12 +38,23 @@ export class CoursesService {
 
   async findAll(): Promise<Courses[]> {
     const snapshot = await this.coursesCollection.get();
-    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    const result = snapshot.docs.map((doc) => { 
+      const courseData = doc.data() as Courses;
+      return { 
+        id: doc.id, 
+        title: courseData.title,
+        url: courseData.url,
+        urlPicture: courseData.urlPicture
+      } as Courses;
+    });
+
+    return result;
   }
 
   async findOne(id: string): Promise<CourseDetail> {
     const course = await this.coursesCollection.doc(id).get();
-    if (!course.exists) throw new NotFoundException();
+    if (!course.exists) 
+      throw new NotFoundException();
 
     const courseData = course.data() as Courses;
 
@@ -52,20 +64,8 @@ export class CoursesService {
       this.coursesCollection.doc(id).collection('students').limit(5).get(),
     ]);
 
-    const pretests = pretestDoc.docs.map(
-      (data) =>
-        ({
-          id: data.id,
-          ...data.data(),
-        }) as PretestQuestion,
-    );
-    const posttests = posttestDoc.docs.map(
-      (data) =>
-        ({
-          id: data.id,
-          ...data.data(),
-        }) as PosttestQuestion,
-    );
+    const pretests = pretestDoc.docs.map((data) =>({ id: data.id,...data.data() }) as PretestQuestion );
+    const posttests = posttestDoc.docs.map((data) => ({ id: data.id, ...data.data() }) as PosttestQuestion);
     const students = studentsDoc.docs.map((data) => {
       const studentData = data.data() as StudentData;
       return {
@@ -76,10 +76,7 @@ export class CoursesService {
     }) as Student[];
 
     return {
-      id: id,
-      title: courseData.title!,
-      url: courseData.url!,
-      urlPicture: courseData.urlPicture!,
+      Courses: { id: course.id, ...courseData },
       students: students,
       pretest: pretests,
       posttest: posttests,
@@ -88,29 +85,53 @@ export class CoursesService {
     };
   }
 
-  async update( id: string, updateCourseDto: UpdateCourseDto[]): Promise<{ message: string; course: Courses }> {;
-    if (updateCourseDto.length === 0) 
-    throw new NotFoundException('Course Empty');
-  
+  async updateCourse( courseId: string, updateCourseDto: UpdateCourseDto): Promise<{ message: string; course: Courses }> {
+
+    const courseDoc = this.coursesCollection.doc(courseId);
     const mainCourse = {
-    ...updateCourseDto[0],
-    ...(updateCourseDto[0].url && {
+    ...updateCourseDto,
+    ...(updateCourseDto.url && {
       urlPicture: `https://img.youtube.com/vi/${updateCourseDto[0].url.split('v=')[1]}/0.jpg`,
     }),
-    context: updateCourseDto.slice(1).map((course) => ({
-      ...course,
-      ...(course.url && {
-        urlPicture: `https://img.youtube.com/vi/${course.url.split('v=')[1]}/0.jpg`,
-      }),
-    })),
   };
 
-    await this.coursesCollection.doc(id).set(mainCourse, { merge: true });
-    return { message: 'Update Course complete', course: mainCourse };
+    await courseDoc.update(mainCourse);
+
+    const courseSnapshot  = await courseDoc.get();
+    if (!courseSnapshot.exists) throw new NotFoundException('Course not found');
+
+    const courseData = courseSnapshot.data() as Courses;
+    return { message: 'Update Course complete', course: courseData };
   }
 
-  async remove(id: string): Promise<{ message: string }> {
-    const coursesRef = this.coursesCollection.doc(id);
+  async updateContent( courseId: string, contentId: string, updateCourseDto: UpdateCourseDto): Promise<{ message: string; content: Courses }> {
+
+    const courseDoc = this.coursesCollection.doc(courseId);
+    const courseSnapshot  = await courseDoc.get();
+    if (!courseSnapshot.exists) throw new NotFoundException('Course not found');
+    
+    const courseData = courseSnapshot.data() as Courses;
+    if (!courseData.content) throw new NotFoundException('Content not found');
+
+    const contentIndex = courseData.content.findIndex((c) => c.id === contentId);
+    if (contentIndex === -1) throw new NotFoundException('Content not found');
+
+    const updatedContent = {
+      ...courseData.content[contentIndex],
+      ...updateCourseDto,
+      ...(updateCourseDto.url && {
+        urlPicture: `https://img.youtube.com/vi/${updateCourseDto.url.split('v=')[1]}/0.jpg`,
+      }),
+    };
+
+    courseData.content[contentIndex] = updatedContent;
+    await courseDoc.update({ content: courseData.content });
+
+    return { message: 'Update Content complete', content: updatedContent };
+  }
+
+  async remove(courseId: string): Promise<{ message: string }> {
+    const coursesRef = this.coursesCollection.doc(courseId);
     await this.coursesCollection.firestore.recursiveDelete(coursesRef);
     return { message: 'Delete Course Complete' };
   }
