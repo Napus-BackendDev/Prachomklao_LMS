@@ -64,7 +64,7 @@ export class PretestAnswerService {
         id: pretest.id,
         question: pretest.question,
         options: pretest.options,
-        answer: answer?.answer,
+        answer: answer?.answer ?? null,
         correctAnswer: pretest.correctAnswer,
       } as PretestAnswer;
     });

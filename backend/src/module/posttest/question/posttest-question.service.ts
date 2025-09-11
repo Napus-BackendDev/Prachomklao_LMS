@@ -13,9 +13,7 @@ export class PosttestQuestionService {
     coursesId: string,
     question: CreatePosttestQuestionDto[],
   ): Promise<{ message: string }> {
-    const posttestCollection = this.coursesCollection
-      .doc(coursesId)
-      .collection('posttest');
+    const posttestCollection = this.coursesCollection.doc(coursesId).collection('posttest');
     const batch = this.coursesCollection.firestore.batch();
     question.forEach((question) => {
       batch.set(posttestCollection.doc(), question);

@@ -64,7 +64,7 @@ export class PosttestAnswerService {
         id: posttest.id,
         question: posttest.question,
         options: posttest.options,
-        answer: answer?.answer,
+        answer: answer?.answer ?? null,
         correctAnswer: posttest.correctAnswer,
       } as PosttestAnswer;
     });
