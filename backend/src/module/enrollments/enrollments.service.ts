@@ -11,6 +11,7 @@ import {
 import { UserData } from 'src/common/interface/user-interface';
 import { formatDate } from 'src/common/utils/tranferDate';
 import { Status } from './enum/status-enum';
+import { Courses } from 'src/common/interface/couse-interface';
 
 @Injectable()
 export class EnrollmentsService {
@@ -22,7 +23,7 @@ export class EnrollmentsService {
     courseId: string,
   ): Promise<{ message: string }> {
     const courseDoc = await this.coursesCollection.doc(courseId).get();
-    const courseData = courseDoc.data() as Enrollment;
+    const courseData = courseDoc.data() as Courses;
     if (!courseDoc.exists || !courseData)
       throw new NotFoundException('Course not found');
 
@@ -50,6 +51,7 @@ export class EnrollmentsService {
         urlPicture: courseData.urlPicture,
         enrolledAt: new Date(),
         status: Status.IN_PROGRESS,
+        progress: { current: 0, total: courseData?.content?.length || 1 }, 
       });
 
     await this.coursesCollection
@@ -62,14 +64,49 @@ export class EnrollmentsService {
         email: userData.email,
         enrolledAt: new Date(),
         status: Status.IN_PROGRESS,
+        progress: { current: 0, total: courseData?.content?.length || 1 }, 
       });
     return { message: 'Enrollment successful' };
+  }
+
+  async updateProcessCourse(studentId: string, courseId: string) {
+    const courseDoc = await this.coursesCollection.doc(courseId).get();
+    const courseData = courseDoc.data() as Courses;
+    if (!courseDoc.exists || !courseData)
+      throw new NotFoundException('Course not found');
+    
+    const userDoc = await this.usersCollection.doc(studentId).get();
+    const userData = userDoc.data() as UserData;
+    if (!userDoc.exists || !userData)
+      throw new NotFoundException('User not found');
+
+    const enrollmentRef = this.usersCollection
+      .doc(studentId)
+      .collection('enrollments')
+      .doc(courseId);
+    const enrollmentDoc = await enrollmentRef.get();
+
+    if (!enrollmentDoc.exists)
+      throw new NotFoundException('User not enrolled in this course');
+
+    const enrollmentData = enrollmentDoc.data() as Enrollment;
+    const currentProgress = enrollmentData.progress?.current || 0;
+    const totalProgress = enrollmentData.progress?.total || 1;
+
+    const newProgress = Math.min(currentProgress + 1, totalProgress);
+    
+    await enrollmentRef.update({
+      progress: { current: newProgress, total: totalProgress },
+      status: newProgress === totalProgress ? Status.COMPLETED : Status.IN_PROGRESS,
+    }); 
+    const result = await enrollmentRef.get();
+    return result.data() as Enrollment;
   }
 
   async updateEnrollStatus(
     studentId: string,
     courseId: string,
-  ): Promise<Enrollment> {
+  ): Promise<EnrollmentData> {
     const courseDoc = await this.coursesCollection.doc(courseId).get();
     const courseData = courseDoc.data() as Enrollment;
     if (!courseDoc.exists || !courseData)
@@ -98,7 +135,13 @@ export class EnrollmentsService {
     await studentRef.update({ status: Status.COMPLETED });
 
     const updatedEnrollment = await enrollmentRef.get();
-    return updatedEnrollment.data() as Enrollment;
+    const updatedData = updatedEnrollment.data() as Enrollment;
+    return {
+      id: updatedData.id,
+      title: updatedData.title,
+      enrolledAt: formatDate(updatedData.enrolledAt.toDate()),
+      status: updatedData.status,
+    };
   }
 
   async getEnrollments(studentId: string): Promise<EnrollmentData[]> {
@@ -109,6 +152,17 @@ export class EnrollmentsService {
     const enrollments = await Promise.all(
       snapshot.docs.map((doc) => {
         const enrollmentData = doc.data() as Enrollment;
+
+        if (enrollmentData.status === Status.IN_PROGRESS)
+          return {
+            id: enrollmentData.id,
+            title: enrollmentData.title,
+            urlPicture: enrollmentData.urlPicture,
+            enrolledAt: formatDate(enrollmentData.enrolledAt.toDate()),
+            status: enrollmentData.status,
+            progress: enrollmentData.progress,
+          };
+  
         return {
           id: enrollmentData.id,
           title: enrollmentData.title,

@@ -25,13 +25,19 @@ export class EnrollmentsController {
     return this.enrollmentsService.enrollCourse(req.user.id, courseId);
   }
 
-  @Patch(':courseId')
-  changeEnrollCourse(@Request() req: User, @Param('courseId') courseId: string) {
-    return this.enrollmentsService.updateEnrollStatus(req.user.id , courseId)
-  }
-
   @Get()
   getEnrollments(@Request() req: User) {
     return this.enrollmentsService.getEnrollments(req.user.id);
   }
+  
+  @Patch(':courseId')
+  changeEnrollCourse(@Request() req: User, @Param('courseId') courseId: string) {
+    return this.enrollmentsService.updateEnrollStatus(req.user.id , courseId)
+  }
+  
+  @Patch('progress/:courseId')
+  updateProcessCourse(@Request() req: User, @Param('courseId') courseId: string) {
+    return this.enrollmentsService.updateProcessCourse(req.user.id , courseId)
+  }
+  
 }
