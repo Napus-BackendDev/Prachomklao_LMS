@@ -28,7 +28,7 @@ import SignUpModal from "./ui/signupModal";
 
 export default function Navbar() {
   const { logout } = useAuth();
-  const { student, setStudent, fetchStudent } = useStudent();
+  const { student, loading, setStudent, fetchStudent } = useStudent();
   const pathName = usePathname();
 
   const [isLoginOpen, setIsLoginOpen] = useState(false);

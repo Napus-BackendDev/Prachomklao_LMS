@@ -1,14 +1,16 @@
+import { Content } from "./content"
 import { Student } from "./student"
+import { Test } from "./test"
 
 export type Course = {
     id: string,
-    code: string,
     title: string,
-    urlPicture: string
+    urlPicture: string,
     url: string,
     students: Record<string, Student>,
-    pretest: Record<string, string>,
-    posttest: Record<string, string>,
+    pretest: Record<string, Test>,
+    posttest: Record<string, Test>,
+    content: Content[],
     pretest_Totle: number,
-    posttest_Totle: number
+    posttest_Totle: number,
 }

@@ -42,7 +42,7 @@ export default function SignUpModal({ isOpen, onClose, onOpenLogin }: SignUpModa
     }
 
     return (
-        <Modal isOpen={isOpen} onOpenChange={onClose} placement="center" size="md">
+        <Modal isOpen={isOpen} onOpenChange={onClose} backdrop="blur" placement="center" size="md">
             <ModalContent>
                 {() => (
                     <>

@@ -71,7 +71,7 @@ export default function Home() {
     if (displayCourse > 0) setDisplayCourse(displayCourse - 1);
   };
   const handleNext = () => {
-    if (displayCourse < courses.length - 3) setDisplayCourse(displayCourse + 1);
+    if (displayCourse < courses?.length - 3) setDisplayCourse(displayCourse + 1);
   };
 
   return (
@@ -165,7 +165,7 @@ export default function Home() {
       >
         <h1 className="text-4xl font-semibold">หลักสูตรออนไลน์ของเรา</h1>
         <div className="flex items-center">
-          {courses.length > displayAmount && (
+          {courses?.length > displayAmount && (
             <Button
               isIconOnly
               color={displayCourse === 0 ? "default" : "primary"}
@@ -181,7 +181,7 @@ export default function Home() {
               className="flex transition-transform duration-500 max-w-screen-2xl"
               style={{ transform: `translateX(-${displayCourse * 25}%)` }}
             >
-              {courses.map((course: Course) => (
+              {courses as Course[] && courses.map((course: Course) => (
                 <div className="shrink-0 flex-grow basis-1/4 px-4">
                   <CourseCard
                     key={course.id}

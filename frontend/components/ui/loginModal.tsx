@@ -48,7 +48,7 @@ export default function LogInModal({ isOpen, onClose, onOpenSignup }: LogInModal
   }
 
   return (
-    <Modal isOpen={isOpen} onOpenChange={onClose} placement="center" size="md">
+    <Modal isOpen={isOpen} onOpenChange={onClose} backdrop="blur" placement="center" size="md">
       <ModalContent>
         {() => (
           <>

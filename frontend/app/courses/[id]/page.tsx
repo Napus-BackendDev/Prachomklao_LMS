@@ -5,38 +5,38 @@ import {
   Button,
   Card,
   Image,
+  Skeleton,
 } from "@heroui/react";
 import { Users, FileText, Target } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import useStudent from "@/hooks/useStudent";
 import useCourses from "@/hooks/useCourses";
-import { Course } from "@/types/couse";
 import LogInModal from "@/components/ui/loginModal";
 import SignUpModal from "@/components/ui/signupModal";
 import useEnroll from "@/hooks/useEnroll";
 
 export default function CoursePage() {
-  const { student } = useStudent();
-  const { fetchCourseById } = useCourses();
+  const { student, loading: studentLoading } = useStudent();
+  const { courses, loading: coursesLoading, fetchCourseById } = useCourses();
   const { createEnroll } = useEnroll();
   const router = useRouter();
   const pathName = usePathname();
   const courseId = pathName.split("/").pop()
+  const isLoading = studentLoading || coursesLoading;
 
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isSignupOpen, setIsSignupOpen] = useState(false);
 
-  const [course, setCourse] = useState<Course | null>(null);
-  const examList = [
-    { title: "แบบทดสอบก่อนเรียน", count: course?.pretest_Totle },
-    { title: "แบบทดสอบหลังเรียน", count: course?.posttest_Totle },
+  const contentList = [
+    { title: "แบบทดสอบก่อนเรียน", count: courses[0]?.pretest_Totle ?? 0 },
+    { title: "บทเรียน", count: courses[0]?.content?.length ?? 0 },
+    { title: "แบบทดสอบหลังเรียน", count: courses[0]?.posttest_Totle ?? 0 },
   ];
 
   useEffect(() => {
     const fetchData = async () => {
       if (courseId) {
-        const course = await fetchCourseById(courseId);
-        setCourse(course);
+        await fetchCourseById(courseId);
       }
     };
 
@@ -47,21 +47,25 @@ export default function CoursePage() {
     if (!student) return setIsLoginOpen(true);
 
     if (courseId) {
-      await createEnroll(courseId);
-      router.push(`/enroll/${courseId}`);
+      const res = await createEnroll(courseId);
+      if (res) router.push(`/enroll/${courseId}`);
     }
   }
 
   return (
-    <div className="flex max-w-screen-2xl gap-8 mx-auto py-4">
+    <div className="flex max-w-screen-2xl gap-8 mx-auto py-8">
       {/* Left Content */}
       <div className="flex-grow">
-        <Image
-          removeWrapper
-          alt="course"
-          src={course?.urlPicture}
-          className="w-full h-full aspect-video object-cover"
-        />
+        {isLoading ? (
+          <Skeleton className="w-full aspect-video rounded-lg" />
+        ) : (
+          <Image
+            removeWrapper
+            alt="course"
+            src={courses[0]?.urlPicture}
+            className="w-full h-full aspect-video object-cover rounded-lg"
+          />
+        )}
       </div>
 
       {/* Right Content */}
@@ -74,7 +78,7 @@ export default function CoursePage() {
                 <Target /> รายละเอียดแบบทดสอบในคอร์สนี้
               </div>
             </div>
-            {examList.map((item, idx) => (
+            {contentList.map((item, idx) => (
               <div
                 key={idx}
                 className="flex items-center justify-between border border-blue-400 rounded px-3 py-2"
@@ -94,7 +98,7 @@ export default function CoursePage() {
               <Users /> จำนวนคนที่สมัครคอร์สนี้ไปแล้ว
             </div>
             <p className="text-blue-600 font-semibold text-xl">
-              จำนวน {Object.keys(course?.students ?? {}).length} คน
+              จำนวน {Object.keys(courses[0]?.students ?? {}).length} คน
             </p>
           </div>
         </Card>
@@ -103,7 +107,7 @@ export default function CoursePage() {
         <Card className="flex self-start w-full gap-2 p-4">
           <div>
             <p className="text-2xl font-bold self-start">หัวข้อ :</p>
-            <p className="text-2xl self-start">{course?.title}</p>
+            <p className="text-2xl self-start">{courses[0]?.title}</p>
           </div>
           <Button
             color="primary"
