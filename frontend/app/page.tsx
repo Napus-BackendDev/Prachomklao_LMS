@@ -62,7 +62,7 @@ const feedbacks = [
 
 export default function Home() {
   const { courses } = useCourses();
-  // const { enrolled } = useEnroll();
+  const { enrolled } = useEnroll();
 
   const [displayCourse, setDisplayCourse] = useState(0);
   const displayAmount = 4;
@@ -139,31 +139,49 @@ export default function Home() {
       </section>
 
       {/* KEEP LEARNING */}
-      {/* {enrolled.length > 0 && (
+      {enrolled.length > 0 && (
         <section
           id="keep-learning"
-          className="flex flex-col justify-center max-w-screen-2xl mx-auto space-y-12 py-12"
+          className="flex flex-col justify-center max-w-screen-xl mx-auto space-y-12 py-12"
         >
-          <p className="text-5xl font-semibold">เรียนต่อ</p>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-screen-xl mx-auto px-4">
-            {enrolled.map((course) => (
-              <CourseCard
-                key={course.id}
-                id={course.id}
-                title={course.title}
-                picture={course.urlPicture}
-              />
-            ))}
+          <p className="text-5xl font-semibold">เรียนรู้ต่อ</p>
+          <div className="flex justify-between gap-6 w-full max-w-screen-xl mx-auto items-center">
+            {enrolled.map((course) =>
+              course.status === "In progress" ? (
+                <CourseCard
+                  key={course.id}
+                  id={course.id}
+                  title={course.title}
+                  picture={course.urlPicture}
+                  enrolledAt={course.enrolledAt}
+                />
+              ) : null
+            )}
+
+            <div className="flex items-center gap-2 cursor-pointer hover:text-primary transition-colors group">
+              <p className="text-xl font-medium">All progress course</p>
+              <Button
+                isIconOnly
+                radius="full"
+                variant="bordered"
+                className="group-hover:text-primary group-hover:border-primary"
+              >
+                <ChevronRight />
+              </Button>
+            </div>
+
           </div>
+
+
         </section>
-      )} */}
+      )}
 
       {/* COURSES */}
       <section
         id="courses"
         className="flex flex-col items-center justify-center py-12 space-y-12 bg-[#EBEFFF]"
       >
-        <h1 className="text-4xl font-semibold">หลักสูตรออนไลน์ของเรา</h1>
+        <h1 className="text-4xl font-semibold">หลักสูตรของเรา</h1>
         <div className="flex items-center">
           {courses?.length > displayAmount && (
             <Button

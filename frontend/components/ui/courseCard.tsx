@@ -7,9 +7,10 @@ type CourseCardProps = {
   title: string;
   id: string;
   picture: string;
+  enrolledAt?: Date;
 };
 
-export default function CourseCard({ title, id, picture }: CourseCardProps) {
+export default function CourseCard({ title, id, picture, enrolledAt }: CourseCardProps) {
   return (
     <Link href={`/courses/${id}`} key={title}>
       <div
@@ -20,9 +21,21 @@ export default function CourseCard({ title, id, picture }: CourseCardProps) {
           alt={title}
           src={picture}
           radius="sm"
-          className="transition duration-300 group-hover:brightness-60"
+          className="transition duration-300 mb-1 group-hover:brightness-60"
         />
-        <p className="text-2xl font-semibold mt-2 group-hover:text-primary">{title}</p>
+        {enrolledAt ? (
+          <div className="flex ">
+            <p className="text-lg text-default-600">เริ่มสมัครเรียนเมื่อ</p>
+            <p className="text-lg text-default-600">
+              {new Date(enrolledAt).toLocaleDateString("th-TH", {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              })}
+            </p>
+          </div>
+        ) : ""}
+        <p className="text-2xl font-semibold group-hover:text-primary">{title}</p>
       </div>
     </Link>
   );
