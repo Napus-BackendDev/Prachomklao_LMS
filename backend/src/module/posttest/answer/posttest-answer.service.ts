@@ -1,6 +1,15 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { firestore } from 'config/firebase.config';
 import { CreatePosttestAnswerDto } from './dto/create-posttest-answer.dto';
+import {
+  PosttestAnswer,
+  PosttestQuestion,
+  PosttestScore,
+} from 'src/common/interface/posttest-interface';
 
 @Injectable()
 export class PosttestAnswerService {
@@ -11,7 +20,7 @@ export class PosttestAnswerService {
     studentId: string,
     courseId: string,
     answers: CreatePosttestAnswerDto[],
-  ) {
+  ): Promise<{ message: string; results: PosttestAnswer[] }> {
     const [userDocRef, courseDocRef, posttestDoc] = await Promise.all([
       this.usersCollection
         .doc(studentId)
@@ -30,7 +39,7 @@ export class PosttestAnswerService {
       throw new NotFoundException('Posttest not found for this course');
 
     const posttests = posttestDoc.docs.map((doc) => {
-      const posttestData = doc.data();
+      const posttestData = doc.data() as PosttestQuestion;
 
       return {
         id: doc.id,
@@ -40,10 +49,12 @@ export class PosttestAnswerService {
       };
     });
 
-    const invalidAnswers = answers.filter((a) => !posttests.some((p) => p.question === a.question),);
-    if (invalidAnswers.length > 0) 
+    const invalidAnswers = answers.filter(
+      (a) => !posttests.some((p) => p.question === a.question),
+    );
+    if (invalidAnswers.length > 0)
       throw new BadRequestException('Some answers are invalid');
-    
+
     const batch = this.coursesCollection.firestore.batch();
     const results = posttests.map((posttest) => {
       const answer = answers.find(
@@ -53,27 +64,35 @@ export class PosttestAnswerService {
         id: posttest.id,
         question: posttest.question,
         options: posttest.options,
-        answer: answer?.answer,
+        answer: answer?.answer ?? null,
         correctAnswer: posttest.correctAnswer,
-      };
+      } as PosttestAnswer;
     });
 
-    results.forEach(result => {
+    results.forEach((result) => {
       batch.set(userDocRef.doc(result.id), result);
       batch.set(courseDocRef.doc(result.id), result);
     });
 
     await batch.commit();
-    return { message: 'Posttest answers submitted successfully' };
+    return { message: 'Posttest answers submitted successfully', results };
   }
 
-  async gradePosttestAnswers(studentId: string, courseId: string) {
-    const posttestDoc = await this.usersCollection.doc(studentId).collection('enrollments').doc(courseId).collection('posttestAnswers').get();
-    if (posttestDoc.empty) 
-      throw new NotFoundException('Not found posttest answer')
+  async gradePosttestAnswers(
+    studentId: string,
+    courseId: string,
+  ): Promise<PosttestScore> {
+    const posttestDoc = await this.usersCollection
+      .doc(studentId)
+      .collection('enrollments')
+      .doc(courseId)
+      .collection('posttestAnswers')
+      .get();
+    if (posttestDoc.empty)
+      throw new NotFoundException('Not found posttest answer');
     let score = 0;
 
-    await posttestDoc.docs.forEach((doc) => {
+    posttestDoc.docs.forEach((doc) => {
       const studentData = doc.data();
       if (studentData.answer === studentData.correctAnswer) {
         score++;

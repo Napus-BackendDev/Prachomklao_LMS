@@ -1,6 +1,5 @@
 import {
   Controller,
-  Get,
   Post,
   Body,
   Patch,
@@ -23,17 +22,22 @@ export class CoursesController {
   constructor(private readonly coursesService: CoursesService) {}
 
   @Post()
-  create(@Body() createCourseDto: CreateCourseDto) {
+  create(@Body() createCourseDto: CreateCourseDto[]) {
     return this.coursesService.create(createCourseDto);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCourseDto: UpdateCourseDto) {
-    return this.coursesService.update(id, updateCourseDto);
+  @Patch(':courseId')
+  updateCourse(@Param('courseId') courseId: string, @Body() updateCourseDto: UpdateCourseDto) {
+    return this.coursesService.updateCourse(courseId, updateCourseDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.coursesService.remove(id);
+  @Patch(':courseId/content/:contentId')
+  updateContent(@Param('courseId') courseId: string, @Param('contentId') contentId: string, @Body() updateCourseDto: UpdateCourseDto) {
+    return this.coursesService.updateContent(courseId, contentId, updateCourseDto);
+  }
+
+  @Delete(':courseId')
+  remove(@Param('courseId') courseId: string) {
+    return this.coursesService.remove(courseId);
   }
 }

@@ -1,7 +1,6 @@
 import {
   Controller,
   Get,
-  Post,
   Body,
   Patch,
   Param,
@@ -15,6 +14,7 @@ import { Role } from '../auth/enum/role-enum';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles/roles.guard';
 import { UserService } from './user.service';
+import { User } from 'src/common/interface/user-interface';
 
 @Roles(Role.ADMIN)
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -55,17 +55,17 @@ export class StudentsController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
-  getProfile(@Request() req) {
+  getProfile(@Request() req: User) {
     return this.userService.findOne(req.user.id);
   }
 
   @Patch()
-  update(@Request() req, @Body() updateStudentDto: UpdateUserDto) {
+  update(@Request() req: User, @Body() updateStudentDto: UpdateUserDto) {
     return this.userService.update(req.user.id, updateStudentDto);
   }
 
   @Delete()
-  remove(@Request() req) {
+  remove(@Request() req: User) {
     return this.userService.remove(req.user.id);
   }
 }

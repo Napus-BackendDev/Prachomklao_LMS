@@ -23,7 +23,10 @@ export class PrestestQuestionController {
   constructor(private pretestService: PretestQuestionService) {}
 
   @Post()
-  create(@Param('courseId') courseId: string, @Body() questions: CreatePretestQuestionDto[]) {
+  create(
+    @Param('courseId') courseId: string,
+    @Body() questions: CreatePretestQuestionDto[],
+  ) {
     return this.pretestService.create(courseId, questions);
   }
 
@@ -33,17 +36,27 @@ export class PrestestQuestionController {
   }
 
   @Get(':pretestId')
-  findbyId(@Param('courseId') coursesID: string, @Param('pretestId') pretestId:string) {
-    return this.pretestService.findOne(coursesID, pretestId)
+  findbyId(
+    @Param('courseId') coursesID: string,
+    @Param('pretestId') pretestId: string,
+  ) {
+    return this.pretestService.findOne(coursesID, pretestId);
   }
 
   @Patch(':pretestId')
-  update(@Param('courseId') courseId: string, @Param('pretestId') pretestId: string , @Body() questions: UpdatePretestQuestionDto) {
-    return this.pretestService.update(courseId, pretestId , questions);
+  update(
+    @Param('courseId') courseId: string,
+    @Param('pretestId') pretestId: string,
+    @Body() questions: UpdatePretestQuestionDto,
+  ) {
+    return this.pretestService.update(courseId, pretestId, questions);
   }
 
   @Delete(':pretestId')
-  remove(@Param('courseId') courseId: string, @Param('pretestId') pretestId: string) {
-    return this.pretestService.remove(courseId , pretestId);
+  remove(
+    @Param('courseId') courseId: string,
+    @Param('pretestId') pretestId: string,
+  ) {
+    return this.pretestService.remove(courseId, pretestId);
   }
 }
