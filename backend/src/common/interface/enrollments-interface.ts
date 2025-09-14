@@ -4,7 +4,7 @@ export interface Enrollment {
   id: string;
   title: string;
   urlPicture?: string;
-  enrolledAt: Timestamp;
+  enrolledAt: string | Timestamp;
   status: string;
   progress: { current: number; total: number };
 }
@@ -12,6 +12,7 @@ export interface Enrollment {
 export interface EnrollmentData {
   id: string;
   title: string;
-  enrolledAt: string;
+  urlPicture?: string;
+  enrolledAt: string | Timestamp;
   status: string;
 }

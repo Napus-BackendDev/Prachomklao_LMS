@@ -12,40 +12,30 @@ import {
   ModalFooter,
 } from "@heroui/react";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
-import useAuth from "@/hooks/useAuth";
-import { useRouter } from "next/navigation";
-import useStudent from "@/hooks/useStudent";
 
 type LogInModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  onOpenSignup: () => void;
+  email: string
+  setEmail: (value: string) => void;
+  password: string
+  setPassword: (value: string) => void;
+  handleLogin: () => void;
+  handleOpenSignup: () => void;
 };
 
-export default function LogInModal({ isOpen, onClose, onOpenSignup }: LogInModalProps) {
-  const { login } = useAuth();
-  const { fetchStudent } = useStudent();
-
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+export default function LogInModal({
+  isOpen,
+  onClose,
+  email,
+  setEmail,
+  password,
+  setPassword,
+  handleLogin,
+  handleOpenSignup
+}: LogInModalProps) {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-
   const toggleVisibility = () => setIsPasswordVisible(!isPasswordVisible);
-
-  const handleLogin = async () => {
-    if (!email || !password) return console.error("กรอกอีเมล/รหัสผ่านก่อน");
-
-    const res = await login(email, password);
-    if (res) {
-      await fetchStudent();
-      onClose();
-    };
-  };
-
-  const handleOpenSignup = () => {
-    onClose();
-    onOpenSignup();
-  }
 
   return (
     <Modal isOpen={isOpen} onOpenChange={onClose} backdrop="blur" placement="center" size="md">

@@ -1,8 +1,8 @@
-import { Course } from "@/types/couse";
+import { Courses, CourseData } from "@/types/couses";
 import { useEffect, useState } from "react";
 
 export default function useCourses() {
-    const [courses, setCourses] = useState<Course[]>([]);
+    const [courses, setCourses] = useState<Courses[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
 
@@ -45,8 +45,7 @@ export default function useCourses() {
             if (!res.ok) {
                 throw new Error(data.message || "Failed to fetch this course")
             } else {
-                setCourses([data]);
-                return data;
+                return data as CourseData;
             }
         } catch (err) {
             setError(

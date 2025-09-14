@@ -6,7 +6,7 @@ import { siteConfig } from "@/config/site";
 import { fontSans, fontThai } from "@/config/fonts";
 import Footer from "@/components/footer";
 import Navbar from "@/components/navbar";
-
+ 
 export const metadata: Metadata = {
   title: {
     default: siteConfig.name,

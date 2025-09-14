@@ -76,7 +76,7 @@ export class CoursesService {
     }) as Student[];
 
     return {
-      Courses: { id: course.id, ...courseData },
+      courses: { id: course.id, ...courseData },
       students: students,
       pretest: pretests,
       posttest: posttests,

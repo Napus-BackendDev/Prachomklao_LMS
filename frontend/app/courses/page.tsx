@@ -2,7 +2,7 @@
 
 import CourseCard from "@/components/ui/courseCard";
 import UseCourses from "@/hooks/useCourses";
-import { Course } from "@/types/couse";
+import { Courses } from "@/types/couses";
 import { Divider, Input, Pagination } from "@heroui/react";
 import { Search } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -15,7 +15,7 @@ export default function CoursesPage() {
   const filteredCourses = useMemo(() => {
     let filtered = [...courses];
 
-    filtered = filtered.filter((course: Course) =>
+    filtered = filtered.filter((course: Courses) =>
       course.title.toLowerCase().includes(search.toLowerCase())
     )
 
@@ -46,7 +46,7 @@ export default function CoursesPage() {
         <p className="text-xl">ผลลัพธ์จำนวน {filteredCourses.length} วิชา</p>
         <Divider className="my-2" />
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 py-4">
-          {filteredCourses.slice(startCourse, endCourse).map((course: Course) => (
+          {filteredCourses.slice(startCourse, endCourse).map((course: Courses) => (
             <CourseCard
               key={course.id}
               title={course.title}

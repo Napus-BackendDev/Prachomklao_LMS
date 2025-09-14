@@ -19,7 +19,7 @@ interface content {
 
 
 export interface CourseDetail {
-  Courses: Courses;
+  courses: Courses;
   students: Student[];
   pretest: PretestQuestion[];
   posttest: PosttestQuestion[];

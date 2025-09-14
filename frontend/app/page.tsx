@@ -10,13 +10,12 @@ import {
   ChevronRight,
   Quote,
 } from "lucide-react";
-import { Button, Card, CardBody, CardFooter, CardHeader, Image } from "@heroui/react";
+import { Button, Card, CardBody, CardFooter, CardHeader, Image, Link } from "@heroui/react";
 import CourseCard from "@/components/ui/courseCard";
-import Link from "next/link";
 import { useState } from "react";
 import useCourses from "@/hooks/useCourses";
-import { Course } from "@/types/couse";
 import useEnroll from "@/hooks/useEnroll";
+import { Courses } from "@/types/couses";
 
 const features = [
   {
@@ -61,11 +60,12 @@ const feedbacks = [
 ];
 
 export default function Home() {
-  const { courses } = useCourses();
-  const { enrolled } = useEnroll();
+  const { courses, loading: coursesLoading } = useCourses();
+  const { enrolled, loading: enrolledLoading } = useEnroll();
 
   const [displayCourse, setDisplayCourse] = useState(0);
-  const displayAmount = 4;
+  const displayAmount = 3;
+  const isLoading = coursesLoading || enrolledLoading;
 
   const handlePrev = () => {
     if (displayCourse > 0) setDisplayCourse(displayCourse - 1);
@@ -142,37 +142,50 @@ export default function Home() {
       {enrolled.length > 0 && (
         <section
           id="keep-learning"
-          className="flex flex-col justify-center max-w-screen-xl mx-auto space-y-12 py-12"
+          className="flex flex-col justify-center max-w-screen-lg mx-auto space-y-12 py-12"
         >
-          <p className="text-5xl font-semibold">เรียนรู้ต่อ</p>
-          <div className="flex justify-between gap-6 w-full max-w-screen-xl mx-auto items-center">
-            {enrolled.map((course) =>
-              course.status === "In progress" ? (
-                <CourseCard
-                  key={course.id}
-                  id={course.id}
-                  title={course.title}
-                  picture={course.urlPicture}
-                  enrolledAt={course.enrolledAt}
-                />
-              ) : null
-            )}
-
-            <div className="flex items-center gap-2 cursor-pointer hover:text-primary transition-colors group">
-              <p className="text-xl font-medium">All progress course</p>
-              <Button
-                isIconOnly
-                radius="full"
-                variant="bordered"
-                className="group-hover:text-primary group-hover:border-primary"
-              >
-                <ChevronRight />
-              </Button>
+          <p className="text-5xl font-semibold text-center">เรียนรู้ต่อ</p>
+          <div className="flex flex-col items-center gap-16 w-full mx-auto">
+            <div className="flex gap-8">
+              {/* Course Card */}
+              {enrolled
+                .filter((course) => course?.status === "In progress")
+                .slice(0, 2)
+                .map((course) => (
+                  <div key={course.id}>
+                    <CourseCard
+                      key={course.id}
+                      id={course.id}
+                      title={course.title}
+                      picture={course.urlPicture}
+                      enrolledAt={course.enrolledAt}
+                    />
+                    {/* Progress Bar */}
+                    <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
+                      <div
+                        className="bg-primary h-4 rounded-full transition-all duration-300"
+                        style={{
+                          width: `${((course.progress?.current ?? 0) / (course.progress?.total ?? 1)) * 100}%`,
+                        }}
+                      />
+                    </div>
+                    <p className="text-md text-default-500 font-medium mt-1">
+                      {course.progress?.current ?? 0} / {course.progress?.total ?? 0} บท
+                    </p>
+                  </div>
+                )
+                )}
             </div>
-
+            {/* All Enroll Button */}
+            <Link
+              color="foreground"
+              href="/"
+              className="flex items-center gap-2 cursor-pointer hover:text-primary transition-colors group"
+            >
+              <p className="text-2xl font-semibold">หลักสูตรที่สมัครเรียนแล้ว</p>
+              <ChevronRight />
+            </Link>
           </div>
-
-
         </section>
       )}
 
@@ -194,15 +207,17 @@ export default function Home() {
               <ChevronLeft />
             </Button>
           )}
-          <div>
+          <div className="max-w-screen-2xl overflow-hidden">
             <div
-              className="flex transition-transform duration-500 max-w-screen-2xl"
-              style={{ transform: `translateX(-${displayCourse * 25}%)` }}
+              className="flex transition-transform duration-500"
+              style={{ transform: `translateX(-${displayCourse * (100 / displayAmount)}%)` }}
             >
-              {courses as Course[] && courses.map((course: Course) => (
-                <div className="shrink-0 flex-grow basis-1/4 px-4">
+              {courses?.map((course: Courses) => (
+                <div
+                  key={course.id}
+                  className={`shrink-0 flex-grow basis-1/${displayAmount} px-4`}
+                >
                   <CourseCard
-                    key={course.id}
                     title={course.title}
                     id={course.id}
                     picture={course.urlPicture}
@@ -211,6 +226,7 @@ export default function Home() {
               ))}
             </div>
           </div>
+
           {courses.length > displayAmount && (
             <Button
               isIconOnly
@@ -223,6 +239,15 @@ export default function Home() {
             </Button>
           )}
         </div>
+        {/* All Courses Button */}
+        <Link
+          color="foreground"
+          href="/courses"
+          className="flex items-center gap-2 cursor-pointer hover:text-primary transition-colors group"
+        >
+          <p className="text-2xl font-semibold">หลักสูตรทั้งหมด</p>
+          <ChevronRight />
+        </Link>
       </section>
 
       {/* FEEDBACK */}

@@ -7,7 +7,7 @@ type CourseCardProps = {
   title: string;
   id: string;
   picture: string;
-  enrolledAt?: Date;
+  enrolledAt?: string;
 };
 
 export default function CourseCard({ title, id, picture, enrolledAt }: CourseCardProps) {
@@ -24,7 +24,7 @@ export default function CourseCard({ title, id, picture, enrolledAt }: CourseCar
           className="transition duration-300 mb-1 group-hover:brightness-60"
         />
         {enrolledAt ? (
-          <div className="flex ">
+          <div className="flex gap-1">
             <p className="text-lg text-default-600">เริ่มสมัครเรียนเมื่อ</p>
             <p className="text-lg text-default-600">
               {new Date(enrolledAt).toLocaleDateString("th-TH", {

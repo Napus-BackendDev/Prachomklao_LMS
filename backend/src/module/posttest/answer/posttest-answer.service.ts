@@ -20,7 +20,7 @@ export class PosttestAnswerService {
     studentId: string,
     courseId: string,
     answers: CreatePosttestAnswerDto[],
-  ): Promise<{ message: string; results: PosttestAnswer[] }> {
+  ): Promise<{ message: string; result: PosttestAnswer[] }> {
     const [userDocRef, courseDocRef, posttestDoc] = await Promise.all([
       this.usersCollection
         .doc(studentId)
@@ -56,7 +56,7 @@ export class PosttestAnswerService {
       throw new BadRequestException('Some answers are invalid');
 
     const batch = this.coursesCollection.firestore.batch();
-    const results = posttests.map((posttest) => {
+    const result = posttests.map((posttest) => {
       const answer = answers.find(
         (answer) => answer.question === posttest.question,
       );
@@ -69,13 +69,13 @@ export class PosttestAnswerService {
       } as PosttestAnswer;
     });
 
-    results.forEach((result) => {
+    result.forEach((result) => {
       batch.set(userDocRef.doc(result.id), result);
       batch.set(courseDocRef.doc(result.id), result);
     });
 
     await batch.commit();
-    return { message: 'Posttest answers submitted successfully', results };
+    return { message: 'Posttest answers submitted successfully', result };
   }
 
   async gradePosttestAnswers(

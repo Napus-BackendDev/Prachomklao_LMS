@@ -12,6 +12,7 @@ import { UserData } from 'src/common/interface/user-interface';
 import { formatDate } from 'src/common/utils/tranferDate';
 import { Status } from './enum/status-enum';
 import { Courses } from 'src/common/interface/couse-interface';
+import { Timestamp } from 'firebase-admin/firestore';
 
 @Injectable()
 export class EnrollmentsService {
@@ -51,7 +52,7 @@ export class EnrollmentsService {
         urlPicture: courseData.urlPicture,
         enrolledAt: new Date(),
         status: Status.IN_PROGRESS,
-        progress: { current: 0, total: courseData?.content?.length || 1 }, 
+        progress: { current: 0, total: courseData?.content?.length || 1 },
       });
 
     await this.coursesCollection
@@ -64,7 +65,7 @@ export class EnrollmentsService {
         email: userData.email,
         enrolledAt: new Date(),
         status: Status.IN_PROGRESS,
-        progress: { current: 0, total: courseData?.content?.length || 1 }, 
+        progress: { current: 0, total: courseData?.content?.length || 1 },
       });
     return { message: 'Enrollment successful' };
   }
@@ -74,7 +75,7 @@ export class EnrollmentsService {
     const courseData = courseDoc.data() as Courses;
     if (!courseDoc.exists || !courseData)
       throw new NotFoundException('Course not found');
-    
+
     const userDoc = await this.usersCollection.doc(studentId).get();
     const userData = userDoc.data() as UserData;
     if (!userDoc.exists || !userData)
@@ -94,11 +95,11 @@ export class EnrollmentsService {
     const totalProgress = enrollmentData.progress?.total || 1;
 
     const newProgress = Math.min(currentProgress + 1, totalProgress);
-    
+
     await enrollmentRef.update({
       progress: { current: newProgress, total: totalProgress },
       status: newProgress === totalProgress ? Status.COMPLETED : Status.IN_PROGRESS,
-    }); 
+    });
     const result = await enrollmentRef.get();
     return result.data() as Enrollment;
   }
@@ -139,7 +140,7 @@ export class EnrollmentsService {
     return {
       id: updatedData.id,
       title: updatedData.title,
-      enrolledAt: formatDate(updatedData.enrolledAt.toDate()),
+      enrolledAt: formatDate((updatedData.enrolledAt as Timestamp).toDate()),
       status: updatedData.status,
     };
   }
@@ -153,25 +154,43 @@ export class EnrollmentsService {
       snapshot.docs.map((doc) => {
         const enrollmentData = doc.data() as Enrollment;
 
-        if (enrollmentData.status === Status.IN_PROGRESS)
-          return {
-            id: enrollmentData.id,
-            title: enrollmentData.title,
-            urlPicture: enrollmentData.urlPicture,
-            enrolledAt: formatDate(enrollmentData.enrolledAt.toDate()),
-            status: enrollmentData.status,
-            progress: enrollmentData.progress,
-          };
-  
         return {
           id: enrollmentData.id,
           title: enrollmentData.title,
           urlPicture: enrollmentData.urlPicture,
-          enrolledAt: formatDate(enrollmentData.enrolledAt.toDate()),
+          enrolledAt: formatDate((enrollmentData.enrolledAt as Timestamp).toDate()),
           status: enrollmentData.status,
+          progress: enrollmentData.progress,
         };
       }),
     );
     return enrollments;
   }
+
+  async getEnrollmentById(
+    studentId: string,
+    courseId: string,
+  ): Promise<Enrollment> {
+    const enrollmentRef = this.usersCollection
+      .doc(studentId)
+      .collection('enrollments')
+      .doc(courseId);
+    const enrollmentDoc = await enrollmentRef.get();
+
+    if (!enrollmentDoc.exists) {
+      throw new NotFoundException('Enrollment not found');
+    }
+
+    const enrollmentData = enrollmentDoc.data() as Enrollment;
+
+    return {
+      id: enrollmentData.id,
+      title: enrollmentData.title,
+      urlPicture: enrollmentData.urlPicture,
+      enrolledAt: formatDate((enrollmentData.enrolledAt as Timestamp).toDate()),
+      status: enrollmentData.status,
+      progress: enrollmentData.progress,
+    };
+  }
+
 }

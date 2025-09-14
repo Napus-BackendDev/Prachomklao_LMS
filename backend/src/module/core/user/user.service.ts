@@ -7,6 +7,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UserData, UserDataWithCourses } from 'src/common/interface/user-interface';
 import { Courses } from 'src/common/interface/couse-interface';
 import { Enrollment } from 'src/common/interface/enrollments-interface';
+import { Timestamp } from 'firebase-admin/firestore';
 
 @Injectable()
 export class UserService {
@@ -60,7 +61,7 @@ export class UserService {
       courses: enrollments.map((enrollment) => ({
         id: enrollment.id,
         title: enrollment.title,
-        enrollment: formatDate(enrollment.enrolledAt.toDate()),
+        enrollment: formatDate((enrollment.enrolledAt as Timestamp).toDate()),
         status: enrollment.status,
       })),
     };

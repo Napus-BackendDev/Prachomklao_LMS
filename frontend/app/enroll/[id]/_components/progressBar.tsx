@@ -28,7 +28,7 @@ export default function ProgressBar({ currentStep, progressValue, steps }: Progr
                         return (
                             <div
                                 key={step.id}
-                                className="flex flex-col items-center -translate-y-2"
+                                className="flex flex-col items-center w-8 -translate-y-2"
                             >
                                 {/* Circle */}
                                 <div
@@ -40,7 +40,7 @@ export default function ProgressBar({ currentStep, progressValue, steps }: Progr
                                     {step.id}
                                 </div>
                                 {/* Title */}
-                                <span className={`text-xl font-bold ${isActive ? "text-primary" : ""}`}>
+                                <span className={`text-xl font-bold whitespace-nowrap ${isActive ? "text-primary" : ""}`}>
                                     {step.title}
                                 </span>
                             </div>

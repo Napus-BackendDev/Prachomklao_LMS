@@ -29,6 +29,11 @@ export class EnrollmentsController {
   getEnrollments(@Request() req: User) {
     return this.enrollmentsService.getEnrollments(req.user.id);
   }
+
+  @Get(':courseId')
+  getEnrollmentById(@Request() req: User, @Param('courseId') courseId: string) {
+    return this.enrollmentsService.getEnrollmentById(req.user.id, courseId);
+  }
   
   @Patch(':courseId')
   changeEnrollCourse(@Request() req: User, @Param('courseId') courseId: string) {

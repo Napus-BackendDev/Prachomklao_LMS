@@ -1,10 +1,9 @@
 import { useState } from "react";
-import useStudent from "./useStudent";
 
 export default function useAuth() {
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
-    
+
     const login = async (email: string, password: string) => {
         setError(null);
         setLoading(true);
@@ -24,9 +23,9 @@ export default function useAuth() {
 
             if (!res.ok) {
                 throw new Error(data.message || "Login failed");
-            } else {
-                return data;
             }
+            
+            return data;
         } catch (err) {
             setError(
                 err && typeof err === 'object' && 'message' in err
@@ -42,7 +41,7 @@ export default function useAuth() {
         setError(null);
         setLoading(true);
         try {
-            const res = await fetch(`${process.env.API_URL}/student`, {
+            const res = await fetch(`${process.env.API_URL}/register`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -58,7 +57,8 @@ export default function useAuth() {
             if (!res.ok) {
                 throw new Error(data.message || "Signup failed");
             } else {
-                await login(email, password);
+                const res = await login(email, password);
+                if (res) return data;
             }
         } catch (err) {
             setError(

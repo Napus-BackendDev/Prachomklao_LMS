@@ -18,7 +18,7 @@ import {
 } from "@heroui/react";
 import { siteConfig } from "@/config/site";
 import { fontSans } from "@/config/fonts";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import useStudent from "@/hooks/useStudent";
 import { useEffect, useMemo, useState } from "react";
 import { LogOut } from "lucide-react";
@@ -27,10 +27,14 @@ import LogInModal from "./ui/loginModal";
 import SignUpModal from "./ui/signupModal";
 
 export default function Navbar() {
-  const { logout } = useAuth();
-  const { student, loading, setStudent, fetchStudent } = useStudent();
+  const { login, signup, logout } = useAuth();
+  const { student, setStudent, fetchStudent } = useStudent();
   const pathName = usePathname();
+  const router = useRouter();
 
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isSignupOpen, setIsSignupOpen] = useState(false);
 
@@ -38,9 +42,43 @@ export default function Navbar() {
     fetchStudent();
   }, []);
 
+  const handleClear = () => {
+    setUsername("");
+    setEmail("");
+    setPassword("");
+  }
+
+  const handleOpenLogin = () => {
+    setIsSignupOpen(false);
+    setIsLoginOpen(true);
+  }
+
+  const handleOpenSignup = () => {
+    setIsLoginOpen(false);
+    setIsSignupOpen(true);
+  }
+
+  const handleLogin = async () => {
+    if (!email || !password) return console.error("กรอกอีเมล/รหัสผ่านก่อน");
+
+    const res = await login(email, password);
+    if (res) window.location.reload();
+  };
+
+  const handleSignup = async () => {
+    if (!username || !email || !password) return console.error("กรอกข้อมูลให้ครบ");
+
+    const res = await signup(username, email, password);
+    if (res) window.location.reload();
+  };
+
   const handleLogout = async () => {
     const res = await logout();
-    if (res) setStudent(null);
+    if (res) {
+      setStudent(null);
+      router.push("/");
+      setIsLoginOpen(true);
+    };
   }
 
   const profileContent = useMemo(() => {
@@ -170,13 +208,25 @@ export default function Navbar() {
       <LogInModal
         isOpen={isLoginOpen}
         onClose={() => setIsLoginOpen(false)}
-        onOpenSignup={() => setIsSignupOpen(true)}
+        email={email}
+        setEmail={setEmail}
+        password={password}
+        setPassword={setPassword}
+        handleLogin={handleLogin}
+        handleOpenSignup={handleOpenSignup}
       />
 
       <SignUpModal
         isOpen={isSignupOpen}
         onClose={() => setIsSignupOpen(false)}
-        onOpenLogin={() => setIsLoginOpen(true)}
+        username={username}
+        setUsername={setUsername}
+        email={email}
+        setEmail={setEmail}
+        password={password}
+        setPassword={setPassword}
+        handleSignup={handleSignup}
+        handleOpenLogin={handleOpenLogin}
       />
 
     </HeroUINavbar>

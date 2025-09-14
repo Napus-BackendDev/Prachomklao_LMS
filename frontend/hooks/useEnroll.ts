@@ -1,8 +1,8 @@
-import { Course } from "@/types/couse";
+import { EnrolledCourse } from "@/types/couses";
 import { useState, useEffect } from "react";
 
 export default function useEnroll() {
-    const [enrolled, setEnrolled] = useState<Course[]>([]);
+    const [enrolled, setEnrolled] = useState<EnrolledCourse[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
 
@@ -21,6 +21,33 @@ export default function useEnroll() {
                 throw new Error(data.message || "Failed to fetch enrolled courses");
             } else {
                 setEnrolled(data);
+            }
+        } catch (err) {
+            setError(
+                err && typeof err === "object" && "message" in err
+                    ? (err as { message?: string }).message || "Failed to fetch enrolled courses"
+                    : "Failed to fetch enrolled courses"
+            );
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const fetchEnrolledById = async (courseId: string) => {
+        setLoading(true);
+        setError(null);
+        try {
+            const res = await fetch(`${process.env.API_URL}/student/courses/enroll/${courseId}`, {
+                method: "GET",
+                credentials: "include",
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(data.message || "Failed to fetch enrolled courses");
+            } else {
+                return data;
             }
         } catch (err) {
             setError(
@@ -60,6 +87,33 @@ export default function useEnroll() {
         }
     };
 
+    const updateEnrollProgress = async (courseId: string) => {
+        setLoading(true);
+        setError(null);
+        try {
+            const res = await fetch(`${process.env.API_URL}/student/courses/enroll/progress/${courseId}`, {
+                method: "PATCH",
+                credentials: "include",
+            });
+            const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(data.message || "Failed to update progress");
+            } else {
+                await fetchEnrolled();
+                return data;
+            }
+        } catch (err) {
+            setError(
+                err && typeof err === "object" && "message" in err
+                    ? (err as { message?: string }).message || "Failed to update progress"
+                    : "Failed to update progress"
+            );
+        } finally {
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
         fetchEnrolled();
     }, []);
@@ -70,5 +124,7 @@ export default function useEnroll() {
         loading,
         fetchEnrolled,
         createEnroll,
+        fetchEnrolledById,
+        updateEnrollProgress,
     };
 }

@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-import Link from "next/link";
 import {
     Button,
     Input,
@@ -11,35 +10,34 @@ import {
     ModalFooter,
 } from "@heroui/react";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
-import useAuth from "@/hooks/useAuth";
-import { useRouter } from "next/navigation";
 
 type SignUpModalProps = {
     isOpen: boolean;
     onClose: () => void;
-    onOpenLogin: () => void;
+    username: string;
+    setUsername: (value: string) => void;
+    email: string;
+    setEmail: (value: string) => void;
+    password: string;
+    setPassword: (value: string) => void;
+    handleSignup: () => void;
+    handleOpenLogin: () => void;
 };
 
-export default function SignUpModal({ isOpen, onClose, onOpenLogin }: SignUpModalProps) {
-    const { signup } = useAuth();
-    const router = useRouter();
-
-    const [username, setUsername] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [isVisible, setIsVisible] = useState(false);
-    const toggleVisibility = () => setIsVisible(!isVisible);
-
-    const handleSignup = async () => {
-        if (!username || !email || !password) return console.error("กรอกข้อมูลให้ครบ");
-
-        await signup(username, email, password);
-    };
-
-    const handleOpenLogin = () => {
-        onClose();
-        onOpenLogin();
-    }
+export default function SignUpModal({
+    isOpen,
+    onClose,
+    username,
+    setUsername,
+    email,
+    setEmail,
+    password,
+    setPassword,
+    handleSignup,
+    handleOpenLogin,
+}: SignUpModalProps) {
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+    const toggleVisibility = () => setIsPasswordVisible(!isPasswordVisible);
 
     return (
         <Modal isOpen={isOpen} onOpenChange={onClose} backdrop="blur" placement="center" size="md">
@@ -72,14 +70,14 @@ export default function SignUpModal({ isOpen, onClose, onOpenLogin }: SignUpModa
                                         className="bg-transparent"
                                         onPress={toggleVisibility}
                                     >
-                                        {isVisible ? (
+                                        {isPasswordVisible ? (
                                             <EyeIcon className="text-2xl text-default-400 pointer-events-none" />
                                         ) : (
                                             <EyeOffIcon className="text-2xl text-default-400 pointer-events-none" />
                                         )}
                                     </Button>
                                 }
-                                type={isVisible ? "text" : "password"}
+                                type={isPasswordVisible ? "text" : "password"}
                                 placeholder="กรอกรหัสผ่าน"
                                 value={password}
                                 onValueChange={setPassword}
