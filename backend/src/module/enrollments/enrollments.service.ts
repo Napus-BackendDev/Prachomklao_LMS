@@ -11,7 +11,7 @@ import {
 import { UserData } from 'src/common/interface/user-interface';
 import { formatDate } from 'src/common/utils/tranferDate';
 import { Status } from './enum/status-enum';
-import { Courses } from 'src/common/interface/couse-interface';
+import { CourseDetail, Courses } from 'src/common/interface/couse-interface';
 
 @Injectable()
 export class EnrollmentsService {
@@ -23,7 +23,7 @@ export class EnrollmentsService {
     courseId: string,
   ): Promise<{ message: string }> {
     const courseDoc = await this.coursesCollection.doc(courseId).get();
-    const courseData = courseDoc.data() as Courses;
+    const courseData = courseDoc.data() as CourseDetail;
     if (!courseDoc.exists || !courseData)
       throw new NotFoundException('Course not found');
 
@@ -47,12 +47,15 @@ export class EnrollmentsService {
       .doc(courseId)
       .set({
         id: courseId,
-        title: courseData.title,
-        urlPicture: courseData.urlPicture,
+        title: courseData.Courses.title,
+        urlPicture: courseData.Courses.urlPicture,
         enrolledAt: new Date(),
         status: Status.IN_PROGRESS,
-        progress: { current: 0, total: courseData?.content?.length || 1 }, 
+        progress: { current: 0, total: courseData?.Courses?.content?.length || 1 },
       });
+    // คำนวณ total progress
+    const contentLength = courseData?.Courses?.content?.length || 1;
+    const total = contentLength + (courseData.pretest ? 1 : 0) + (courseData.posttest ? 1 : 0);
 
     await this.coursesCollection
       .doc(courseId)
@@ -64,7 +67,7 @@ export class EnrollmentsService {
         email: userData.email,
         enrolledAt: new Date(),
         status: Status.IN_PROGRESS,
-        progress: { current: 0, total: courseData?.content?.length || 1 }, 
+        progress: { current: 0, total }, 
       });
     return { message: 'Enrollment successful' };
   }
