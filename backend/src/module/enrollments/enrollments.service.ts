@@ -11,8 +11,7 @@ import {
 import { UserData } from 'src/common/interface/user-interface';
 import { formatDate } from 'src/common/utils/tranferDate';
 import { Status } from './enum/status-enum';
-import { Courses } from 'src/common/interface/couse-interface';
-import { Timestamp } from 'firebase-admin/firestore';
+import { CourseDetail, Courses } from 'src/common/interface/couse-interface';
 
 @Injectable()
 export class EnrollmentsService {
@@ -24,7 +23,7 @@ export class EnrollmentsService {
     courseId: string,
   ): Promise<{ message: string }> {
     const courseDoc = await this.coursesCollection.doc(courseId).get();
-    const courseData = courseDoc.data() as Courses;
+    const courseData = courseDoc.data() as CourseDetail;
     if (!courseDoc.exists || !courseData)
       throw new NotFoundException('Course not found');
 
@@ -48,12 +47,15 @@ export class EnrollmentsService {
       .doc(courseId)
       .set({
         id: courseId,
-        title: courseData.title,
-        urlPicture: courseData.urlPicture,
+        title: courseData.courses.title,
+        urlPicture: courseData.courses.urlPicture,
         enrolledAt: new Date(),
         status: Status.IN_PROGRESS,
-        progress: { current: 0, total: courseData?.content?.length || 1 },
+        progress: { current: 0, total: courseData?.courses?.content?.length || 1 },
       });
+    // คำนวณ total progress
+    const contentLength = courseData?.courses?.content?.length || 1;
+    const total = contentLength + (courseData.pretest ? 1 : 0) + (courseData.posttest ? 1 : 0);
 
     await this.coursesCollection
       .doc(courseId)
@@ -65,7 +67,7 @@ export class EnrollmentsService {
         email: userData.email,
         enrolledAt: new Date(),
         status: Status.IN_PROGRESS,
-        progress: { current: 0, total: courseData?.content?.length || 1 },
+        progress: { current: 0, total }, 
       });
     return { message: 'Enrollment successful' };
   }
@@ -140,7 +142,7 @@ export class EnrollmentsService {
     return {
       id: updatedData.id,
       title: updatedData.title,
-      enrolledAt: formatDate((updatedData.enrolledAt as Timestamp).toDate()),
+      enrolledAt: formatDate(updatedData.enrolledAt.toDate()),
       status: updatedData.status,
     };
   }
@@ -158,7 +160,7 @@ export class EnrollmentsService {
           id: enrollmentData.id,
           title: enrollmentData.title,
           urlPicture: enrollmentData.urlPicture,
-          enrolledAt: formatDate((enrollmentData.enrolledAt as Timestamp).toDate()),
+          enrolledAt: formatDate(enrollmentData.enrolledAt.toDate()),
           status: enrollmentData.status,
           progress: enrollmentData.progress,
         };
@@ -187,7 +189,7 @@ export class EnrollmentsService {
       id: enrollmentData.id,
       title: enrollmentData.title,
       urlPicture: enrollmentData.urlPicture,
-      enrolledAt: formatDate((enrollmentData.enrolledAt as Timestamp).toDate()),
+      enrolledAt: enrollmentData.enrolledAt,
       status: enrollmentData.status,
       progress: enrollmentData.progress,
     };
