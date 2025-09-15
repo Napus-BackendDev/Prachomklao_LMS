@@ -46,7 +46,6 @@ export class UserService {
     const snapshot = await this.usersCollection
       .doc(studentId)
       .collection('enrollments')
-      .limit(3)
       .get();
     const enrollments = await Promise.all(
       snapshot.docs.map((doc) => doc.data()) as Enrollment[],

@@ -54,11 +54,6 @@ export class AdminController {
 export class StudentsController {
   constructor(private readonly userService: UserService) {}
 
-  @Get()
-  getProfile(@Request() req: User) {
-    return this.userService.findOne(req.user.id);
-  }
-
   @Patch()
   update(@Request() req: User, @Body() updateStudentDto: UpdateUserDto) {
     return this.userService.update(req.user.id, updateStudentDto);
