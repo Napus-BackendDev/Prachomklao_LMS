@@ -18,7 +18,7 @@ export default function EnrollCoursePage() {
     const { fetchCourseById, loading: coursesLoading } = useCourses();
     const { createPretestAnswer, loading: pretestLoading } = usePretest();
     const { createPosttestAnswer, loading: posttestLoading } = usePosttest();
-    const { updateEnrollProgress, loading: enrolledLoading } = useEnroll();
+    const { fetchEnrolledById, updateEnrollProgress, loading: enrolledLoading } = useEnroll();
     const pathName = usePathname();
     const router = useRouter();
     const courseId = pathName.split("/").pop()
@@ -40,11 +40,14 @@ export default function EnrollCoursePage() {
     const progressValue = ((currentStep - 1) / (steps.length - 1)) * 100;
 
     useEffect(() => {
+        if (!courseId) return;
+
         const fetchData = async () => {
-            if (courseId) {
-                const res = await fetchCourseById(courseId);
-                setCourse(res);
-            }
+            const course = await fetchCourseById(courseId);
+            setCourse(course);
+
+            const enrolled = await fetchEnrolledById(courseId);
+            setCurrentStep(enrolled.progress.current + 1);
         };
 
         fetchData();

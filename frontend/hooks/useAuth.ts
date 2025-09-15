@@ -24,7 +24,7 @@ export default function useAuth() {
             if (!res.ok) {
                 throw new Error(data.message || "Login failed");
             }
-            
+
             return data;
         } catch (err) {
             setError(
@@ -54,12 +54,10 @@ export default function useAuth() {
             })
             const data = await res.json();
 
-            if (!res.ok) {
-                throw new Error(data.message || "Signup failed");
-            } else {
-                const res = await login(email, password);
-                if (res) return data;
-            }
+            if (!res.ok) throw new Error(data.message || "Signup failed");
+
+            await login(email, password);
+            return data;
         } catch (err) {
             setError(
                 err && typeof err === "object" && "message" in err
@@ -72,18 +70,59 @@ export default function useAuth() {
     }
 
     const logout = async () => {
-        const res = await fetch(`${process.env.API_URL}/auth/logout`, {
-            method: "POST",
-            credentials: "include"
-        })
-        const data = await res.json();
+        setError(null);
+        setLoading(true);
+        try {
+            const res = await fetch(`${process.env.API_URL}/auth/logout`, {
+                method: "POST",
+                credentials: "include"
+            })
+            const data = await res.json();
 
-        if (!res.ok) {
-            throw new Error(data.message || "Logout failed");
-        } else {
+            if (!res.ok) throw new Error(data.message || "Logout failed");
+
             return data;
+        } catch (err) {
+            setError(
+                err && typeof err === "object" && "message" in err
+                    ? (err as { message?: string }).message || "Logout failed"
+                    : "Logout failed"
+            );
+        } finally {
+            setLoading(false);
         }
     };
+
+    const resetPassword = async (email: string, password: string) => {
+        setError(null);
+        setLoading(true);
+        try {
+            const res = await fetch(`${process.env.API_URL}/resetpassword`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    email,
+                    password,
+                }),
+                credentials: "include"
+            })
+            const data = await res.json();
+
+            if (!res.ok) throw new Error(data.message || "Reset password failed");
+
+            return data;
+        } catch (err) {
+            setError(
+                err && typeof err === "object" && "message" in err
+                    ? (err as { message?: string }).message || "Reset password failed"
+                    : "Reset password failed"
+            );
+        } finally {
+            setLoading(false);
+        }
+    }
 
     return {
         error,
@@ -91,5 +130,6 @@ export default function useAuth() {
         login,
         signup,
         logout,
+        resetPassword,
     }
 }

@@ -25,9 +25,10 @@ import { LogOut } from "lucide-react";
 import useAuth from "@/hooks/useAuth";
 import LogInModal from "./ui/loginModal";
 import SignUpModal from "./ui/signupModal";
+import ResetPassword from "./ui/resetPasswordModal";
 
 export default function Navbar() {
-  const { login, signup, logout } = useAuth();
+  const { login, signup, logout, resetPassword } = useAuth();
   const { student, setStudent, fetchStudent } = useStudent();
   const pathName = usePathname();
   const router = useRouter();
@@ -35,8 +36,10 @@ export default function Navbar() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isSignupOpen, setIsSignupOpen] = useState(false);
+  const [isResetOpen, setIsResetOpen] = useState(false);
 
   useEffect(() => {
     fetchStudent();
@@ -58,6 +61,11 @@ export default function Navbar() {
     setIsSignupOpen(true);
   }
 
+  const handleOpenReset = () => {
+    setIsLoginOpen(false);
+    setIsResetOpen(true);
+  }
+
   const handleLogin = async () => {
     if (!email || !password) return console.error("กรอกอีเมล/รหัสผ่านก่อน");
 
@@ -76,8 +84,20 @@ export default function Navbar() {
     const res = await logout();
     if (res) {
       setStudent(null);
-      router.push("/");
       setIsLoginOpen(true);
+      handleClear();
+      router.push("/");
+    };
+  }
+
+  const handleResetPassword = async (email: string, newPassword: string) => {
+    if (!email || !newPassword) return;
+
+    const res = await resetPassword(email, newPassword);
+    if (res) {
+      setIsResetOpen(false);
+      setIsLoginOpen(true);
+      handleClear();
     };
   }
 
@@ -207,18 +227,19 @@ export default function Navbar() {
 
       <LogInModal
         isOpen={isLoginOpen}
-        onClose={() => setIsLoginOpen(false)}
+        onClose={() => { setIsLoginOpen(false); handleClear(); }}
         email={email}
         setEmail={setEmail}
         password={password}
         setPassword={setPassword}
         handleLogin={handleLogin}
         handleOpenSignup={handleOpenSignup}
+        handleOpenReset={handleOpenReset}
       />
 
       <SignUpModal
         isOpen={isSignupOpen}
-        onClose={() => setIsSignupOpen(false)}
+        onClose={() => { setIsSignupOpen(false); handleClear(); }}
         username={username}
         setUsername={setUsername}
         email={email}
@@ -227,6 +248,16 @@ export default function Navbar() {
         setPassword={setPassword}
         handleSignup={handleSignup}
         handleOpenLogin={handleOpenLogin}
+      />
+
+      <ResetPassword
+        isOpen={isResetOpen}
+        onClose={() => { setIsResetOpen(false); setIsLoginOpen(true); handleClear(); }}
+        email={email}
+        setEmail={setEmail}
+        newPassword={newPassword}
+        setNewPassword={setNewPassword}
+        handleResetPassword={handleResetPassword}
       />
 
     </HeroUINavbar>

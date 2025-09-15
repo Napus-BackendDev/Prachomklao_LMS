@@ -22,6 +22,7 @@ type LogInModalProps = {
   setPassword: (value: string) => void;
   handleLogin: () => void;
   handleOpenSignup: () => void;
+  handleOpenReset: () => void;
 };
 
 export default function LogInModal({
@@ -32,7 +33,8 @@ export default function LogInModal({
   password,
   setPassword,
   handleLogin,
-  handleOpenSignup
+  handleOpenSignup,
+  handleOpenReset,
 }: LogInModalProps) {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const toggleVisibility = () => setIsPasswordVisible(!isPasswordVisible);
@@ -78,15 +80,9 @@ export default function LogInModal({
                   input: "text-lg",
                 }}
               />
-              <div className="flex items-center justify-between text-lg">
-                <div className="flex items-center gap-2">
-                  <Checkbox id="remember" />
-                  <p>จดจำฉัน</p>
-                </div>
-                <Link href="/forgot-password" className="text-primary font-medium">
-                  ลืมรหัสผ่าน?
-                </Link>
-              </div>
+              <p className="text-primary font-medium cursor-pointer text-end" onClick={handleOpenReset}>
+                ลืมรหัสผ่าน?
+              </p>
             </ModalBody>
             <ModalFooter className="flex flex-col gap-4">
               <Button

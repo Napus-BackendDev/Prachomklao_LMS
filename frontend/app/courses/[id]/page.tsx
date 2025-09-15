@@ -81,26 +81,18 @@ export default function CoursePage() {
   }
 
   useEffect(() => {
+    if (!courseId) return;
+
     const fetchData = async () => {
-      if (courseId) {
-        const course = await fetchCourseById(courseId);
-        setCourse(course);
-      }
+      const course = await fetchCourseById(courseId);
+      setCourse(course);
+
+      const enrolled = await fetchEnrolledById(courseId);
+      setEnrolled(enrolled);
     };
 
     fetchData();
-  }, [pathName]);
-
-  useEffect(() => {
-    if (!courseId) return;
-
-    const fetchEnrolled = async () => {
-      const enrolled = await fetchEnrolledById(courseId);
-      if (enrolled) setEnrolled(enrolled);
-    }
-
-    fetchEnrolled();
-  }, [courseId])
+  }, [courseId]);
 
   return (
     <div className="flex max-w-screen-2xl gap-8 mx-auto py-8">

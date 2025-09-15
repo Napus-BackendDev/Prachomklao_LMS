@@ -23,7 +23,7 @@ export class EnrollmentsService {
     courseId: string,
   ): Promise<{ message: string }> {
     const courseDoc = await this.coursesCollection.doc(courseId).get();
-    const courseData = courseDoc.data() as CourseDetail;
+    const courseData = courseDoc.data() as Courses;
     if (!courseDoc.exists || !courseData)
       throw new NotFoundException('Course not found');
 
@@ -38,8 +38,11 @@ export class EnrollmentsService {
       .doc(courseId)
       .get();
 
-    if (enrollmentDoc.exists)
-      throw new ConflictException('User already enrolled in this course');
+    if (enrollmentDoc.exists) throw new ConflictException('User already enrolled in this course');
+
+    // คำนวณ total progress
+    const contentLength = courseData?.content?.length || 1;
+    const total = contentLength + 3; // +3 สำหรับบทเรียนหลักและ pretest และ posttest
 
     await this.usersCollection
       .doc(studentId)
@@ -47,15 +50,12 @@ export class EnrollmentsService {
       .doc(courseId)
       .set({
         id: courseId,
-        title: courseData.courses.title,
-        urlPicture: courseData.courses.urlPicture,
+        title: courseData.title,
+        urlPicture: courseData.urlPicture,
         enrolledAt: new Date(),
         status: Status.IN_PROGRESS,
-        progress: { current: 0, total: courseData?.courses?.content?.length || 1 },
+        progress: { current: 0, total },
       });
-    // คำนวณ total progress
-    const contentLength = courseData?.courses?.content?.length || 1;
-    const total = contentLength + (courseData.pretest ? 1 : 0) + (courseData.posttest ? 1 : 0);
 
     await this.coursesCollection
       .doc(courseId)
@@ -67,8 +67,9 @@ export class EnrollmentsService {
         email: userData.email,
         enrolledAt: new Date(),
         status: Status.IN_PROGRESS,
-        progress: { current: 0, total }, 
+        progress: { current: 0, total },
       });
+
     return { message: 'Enrollment successful' };
   }
 

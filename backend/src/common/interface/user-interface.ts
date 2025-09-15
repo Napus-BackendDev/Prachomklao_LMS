@@ -19,8 +19,9 @@ export interface UserDataWithCourses {
 export interface User {
   user: {
     id: string;
-    email: string;
     username: string;
+    email: string;
+    password: string;
     role: string;
   };
 }
