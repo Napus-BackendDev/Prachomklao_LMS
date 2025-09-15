@@ -11,7 +11,7 @@ import {
 import { UserData } from 'src/common/interface/user-interface';
 import { formatDate } from 'src/common/utils/tranferDate';
 import { Status } from './enum/status-enum';
-import { CourseDetail, Courses } from 'src/common/interface/couse-interface';
+import { Courses } from 'src/common/interface/couse-interface';
 
 @Injectable()
 export class EnrollmentsService {
@@ -44,17 +44,30 @@ export class EnrollmentsService {
     const contentLength = courseData?.content?.length || 1;
     const total = contentLength + 3; // +3 สำหรับบทเรียนหลักและ pretest และ posttest
 
+    const [pretestDoc, posttestDoc] = await Promise.all([
+      this.coursesCollection.doc(courseId).collection('pretest').get(),
+      this.coursesCollection.doc(courseId).collection('posttest').get(),
+    ]);
+
     await this.usersCollection
       .doc(studentId)
       .collection('enrollments')
       .doc(courseId)
       .set({
         id: courseId,
-        title: courseData.title,
-        urlPicture: courseData.urlPicture,
+        title: courseData.title ?? '',
+        courseCode: courseData.courseCode ?? '',
+        urlPicture: courseData.urlPicture ?? '',
         enrolledAt: new Date(),
         status: Status.IN_PROGRESS,
-        progress: { current: 0, total },
+        progress: {
+          current: 0,
+          total:
+            (courseData?.content?.length ?? 0) +
+            1 +
+            (pretestDoc.empty ? 0 : 1) +
+            (posttestDoc.empty ? 0 : 1),
+        },
       });
 
     await this.coursesCollection
@@ -67,7 +80,14 @@ export class EnrollmentsService {
         email: userData.email,
         enrolledAt: new Date(),
         status: Status.IN_PROGRESS,
-        progress: { current: 0, total },
+        progress: {
+          current: 0,
+          total:
+            (courseData?.content?.length ?? 0) +
+            1 +
+            (pretestDoc.empty ? 0 : 1) +
+            (posttestDoc.empty ? 0 : 1),
+        },
       });
 
     return { message: 'Enrollment successful' };
@@ -94,57 +114,22 @@ export class EnrollmentsService {
       throw new NotFoundException('User not enrolled in this course');
 
     const enrollmentData = enrollmentDoc.data() as Enrollment;
-    const currentProgress = enrollmentData.progress?.current || 0;
-    const totalProgress = enrollmentData.progress?.total || 1;
-
+    const currentProgress = enrollmentData.progress?.current ?? 0;
+    const totalProgress = enrollmentData.progress?.total ?? 0;
     const newProgress = Math.min(currentProgress + 1, totalProgress);
 
     await enrollmentRef.update({
       progress: { current: newProgress, total: totalProgress },
-      status: newProgress === totalProgress ? Status.COMPLETED : Status.IN_PROGRESS,
+      status:
+        newProgress === totalProgress ? Status.COMPLETED : Status.IN_PROGRESS,
     });
     const result = await enrollmentRef.get();
-    return result.data() as Enrollment;
-  }
-
-  async updateEnrollStatus(
-    studentId: string,
-    courseId: string,
-  ): Promise<EnrollmentData> {
-    const courseDoc = await this.coursesCollection.doc(courseId).get();
-    const courseData = courseDoc.data() as Enrollment;
-    if (!courseDoc.exists || !courseData)
-      throw new NotFoundException('Course not found');
-
-    const userDoc = await this.usersCollection.doc(studentId).get();
-    const userData = userDoc.data() as UserData;
-    if (!userDoc.exists || !userData)
-      throw new NotFoundException('User not found');
-
-    const enrollmentRef = this.usersCollection
-      .doc(studentId)
-      .collection('enrollments')
-      .doc(courseId);
-    const enrollmentDoc = await enrollmentRef.get();
-
-    if (!enrollmentDoc.exists)
-      throw new ConflictException('User already enrolled in this course');
-
-    await enrollmentRef.update({ status: Status.COMPLETED });
-
-    const studentRef = this.coursesCollection
-      .doc(courseId)
-      .collection('students')
-      .doc(studentId);
-    await studentRef.update({ status: Status.COMPLETED });
-
-    const updatedEnrollment = await enrollmentRef.get();
-    const updatedData = updatedEnrollment.data() as Enrollment;
+    const resultData = result.data() as Enrollment;
     return {
-      id: updatedData.id,
-      title: updatedData.title,
-      enrolledAt: formatDate(updatedData.enrolledAt.toDate()),
-      status: updatedData.status,
+      enrollment: {
+        ...resultData,
+        enrolledAt: formatDate(resultData.enrolledAt.toDate()),
+      },
     };
   }
 
@@ -157,9 +142,20 @@ export class EnrollmentsService {
       snapshot.docs.map((doc) => {
         const enrollmentData = doc.data() as Enrollment;
 
+        if (enrollmentData.status === Status.IN_PROGRESS)
+          return {
+            id: enrollmentData.id,
+            title: enrollmentData.title,
+            urlPicture: enrollmentData.urlPicture,
+            enrolledAt: formatDate(enrollmentData.enrolledAt.toDate()),
+            status: enrollmentData.status,
+            progress: enrollmentData.progress,
+          };
+
         return {
           id: enrollmentData.id,
           title: enrollmentData.title,
+          courseCode: enrollmentData.courseCode,
           urlPicture: enrollmentData.urlPicture,
           enrolledAt: formatDate(enrollmentData.enrolledAt.toDate()),
           status: enrollmentData.status,

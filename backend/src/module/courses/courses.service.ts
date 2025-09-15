@@ -38,15 +38,21 @@ export class CoursesService {
 
   async findAll(): Promise<Courses[]> {
     const snapshot = await this.coursesCollection.get();
-    const result = snapshot.docs.map((doc) => { 
-      const courseData = doc.data() as Courses;
-      return { 
-        id: doc.id, 
-        title: courseData.title,
-        url: courseData.url,
-        urlPicture: courseData.urlPicture
-      } as Courses;
-    });
+    const result = await Promise.all(
+      snapshot.docs.map(async (doc) => { 
+        const courseData = doc.data() ;
+        const totalStudent = this.coursesCollection.doc(doc.id).collection('students').get();
+        const totalStudentCount = (await totalStudent).docs.length;
+        return { 
+          id: doc.id, 
+          title: courseData.title,
+          courseCode: courseData.courseCode,
+          url: courseData.url,
+          urlPicture: courseData.urlPicture,
+          totalStudent: totalStudentCount
+        } as Courses;
+      })
+    );
 
     return result;
   }
@@ -58,10 +64,11 @@ export class CoursesService {
 
     const courseData = course.data() as Courses;
 
-    const [pretestDoc, posttestDoc, studentsDoc] = await Promise.all([
+    const [pretestDoc, posttestDoc, studentsDoc, totalStudent] = await Promise.all([
       this.coursesCollection.doc(id).collection('pretest').get(),
       this.coursesCollection.doc(id).collection('posttest').get(),
       this.coursesCollection.doc(id).collection('students').limit(5).get(),
+      this.coursesCollection.doc(id).collection('students').get().then((snapshot) => snapshot.docs.length),
     ]);
 
     const pretests = pretestDoc.docs.map((data) =>({ id: data.id,...data.data() }) as PretestQuestion );
@@ -78,6 +85,7 @@ export class CoursesService {
     return {
       courses: { id: course.id, ...courseData },
       students: students,
+      totalStudent: totalStudent,
       pretest: pretests,
       posttest: posttests,
       pretest_totle: pretests.length,
@@ -126,7 +134,6 @@ export class CoursesService {
 
     courseData.content[contentIndex] = updatedContent;
     await courseDoc.update({ content: courseData.content });
-
     return { message: 'Update Content complete', content: updatedContent };
   }
 

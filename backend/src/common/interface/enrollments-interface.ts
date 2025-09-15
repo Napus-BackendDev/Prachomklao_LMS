@@ -3,6 +3,7 @@ import { Timestamp } from 'firebase-admin/firestore';
 export interface Enrollment {
   id: string;
   title: string;
+  courseCode?: string;
   urlPicture?: string;
   enrolledAt: Timestamp;
   status: string;
@@ -11,6 +12,7 @@ export interface Enrollment {
 
 export interface EnrollmentData {
   id: string;
+  courseCode?: string;
   title: string;
   urlPicture?: string;
   enrolledAt: string;

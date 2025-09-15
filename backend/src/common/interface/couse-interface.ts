@@ -5,8 +5,10 @@ import { PretestQuestion } from './pretest-interface';
 export interface Courses {
   id?: string;
   title?: string;
+  courseCode?: string;
   url?: string;
   urlPicture?: string;
+  totalStudent?: number;
   content?: content[];
 }
 
@@ -17,10 +19,10 @@ interface content {
   urlPicture?: string;
 }
 
-
 export interface CourseDetail {
   courses: Courses;
   students: Student[];
+  totalStudent: number;
   pretest: PretestQuestion[];
   posttest: PosttestQuestion[];
   pretest_totle: number;
