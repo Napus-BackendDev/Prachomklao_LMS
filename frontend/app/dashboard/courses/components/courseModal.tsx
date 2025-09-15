@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   Modal,
   ModalContent,
@@ -9,19 +8,17 @@ import {
   Input,
 } from "@heroui/react";
 
-interface CreateCourseModalProps {
+interface CourseModalProps {
   isOpen: boolean;
-  onOpenChange: (open: boolean) => void;
 }
 
-export function CreateCourseModal({
+export function courseModal({
   isOpen,
-  onOpenChange,
-}: CreateCourseModalProps) {
+}: CourseModalProps) {
 
   return (
     <>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+      <Modal isOpen={isOpen}>
         <ModalContent className="max-w-full px-2">
           {(onClose) => (
             <>

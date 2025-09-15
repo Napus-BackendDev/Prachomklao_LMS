@@ -1,9 +1,7 @@
 "use client";
 import { useState } from "react";
-import Link from "next/link";
 import {
   Button,
-  Checkbox,
   Input,
   Modal,
   ModalContent,
@@ -20,9 +18,9 @@ type LogInModalProps = {
   setEmail: (value: string) => void;
   password: string
   setPassword: (value: string) => void;
-  handleLogin: () => void;
-  handleOpenSignup: () => void;
-  handleOpenReset: () => void;
+  onLogin: () => void;
+  onOpenSignup: () => void;
+  onOpenReset: () => void;
 };
 
 export default function LogInModal({
@@ -32,9 +30,9 @@ export default function LogInModal({
   setEmail,
   password,
   setPassword,
-  handleLogin,
-  handleOpenSignup,
-  handleOpenReset,
+  onLogin,
+  onOpenSignup,
+  onOpenReset,
 }: LogInModalProps) {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const toggleVisibility = () => setIsPasswordVisible(!isPasswordVisible);
@@ -80,7 +78,7 @@ export default function LogInModal({
                   input: "text-lg",
                 }}
               />
-              <p className="text-primary font-medium cursor-pointer text-end" onClick={handleOpenReset}>
+              <p className="text-primary font-medium cursor-pointer text-end" onClick={onOpenReset}>
                 ลืมรหัสผ่าน?
               </p>
             </ModalBody>
@@ -88,13 +86,13 @@ export default function LogInModal({
               <Button
                 type="submit"
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg py-3 text-lg"
-                onPress={handleLogin}
+                onPress={onLogin}
               >
                 เข้าสู่ระบบ
               </Button>
               <div className="flex justify-center gap-2 w-full text-lg">
                 <p>ยังไม่มีบัญชีใช่หรือไม่?</p>
-                <p className="text-primary font-medium cursor-pointer" onClick={handleOpenSignup}>
+                <p className="text-primary font-medium cursor-pointer" onClick={onOpenSignup}>
                   สมัครใช้งาน
                 </p>
               </div>

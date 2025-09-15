@@ -5,6 +5,7 @@ export type Courses = {
   title: string,
   urlPicture: string,
   url: string,
+  code?: string,
 };
 
 export type EnrolledCourse = {

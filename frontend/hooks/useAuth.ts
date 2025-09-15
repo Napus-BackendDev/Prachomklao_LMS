@@ -1,8 +1,37 @@
-import { useState } from "react";
+import { User } from "@/types/user";
+import { useEffect, useState } from "react";
 
 export default function useAuth() {
+    const [user, setUser] = useState<User | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
+
+    const fetchProfile = async () => {
+        setError(null);
+        setLoading(true);
+        try {
+            const res = await fetch(`${process.env.API_URL}/auth/profile`, {
+                method: "GET",
+                credentials: "include"
+            });
+            const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(data.message || "Login failed");
+            }
+
+            setUser(data);
+            return data;
+        } catch (err) {
+            setError(
+                err && typeof err === 'object' && 'message' in err
+                    ? (err as { message?: string }).message || "Login failed"
+                    : 'Login failed'
+            )
+        } finally {
+            setLoading(false);
+        }
+    }
 
     const login = async (email: string, password: string) => {
         setError(null);
@@ -25,6 +54,7 @@ export default function useAuth() {
                 throw new Error(data.message || "Login failed");
             }
 
+            fetchProfile();
             return data;
         } catch (err) {
             setError(
@@ -124,7 +154,13 @@ export default function useAuth() {
         }
     }
 
+    useEffect(() => {
+        fetchProfile();
+    }, [])
+
     return {
+        user,
+        setUser,
         error,
         loading,
         login,

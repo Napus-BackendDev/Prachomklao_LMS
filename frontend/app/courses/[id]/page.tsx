@@ -9,23 +9,28 @@ import {
 } from "@heroui/react";
 import { Users, FileText, Target } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
-import useStudent from "@/hooks/useStudent";
 import useCourses from "@/hooks/useCourses";
 import LogInModal from "@/components/ui/loginModal";
 import SignUpModal from "@/components/ui/signupModal";
 import useEnroll from "@/hooks/useEnroll";
 import { CourseData, EnrolledCourse } from "@/types/couses";
 import useAuth from "@/hooks/useAuth";
+import ResetPassword from "@/components/ui/resetPasswordModal";
 
 export default function CoursePage() {
-  const { login, signup } = useAuth();
+  const {
+    user,
+    loading: authLoading,
+    login,
+    signup,
+    resetPassword,
+  } = useAuth();
   const { fetchCourseById } = useCourses();
   const { createEnroll, fetchEnrolledById, loading: enrolledLoading } = useEnroll();
-  const { student, fetchStudent, loading: studentLoading } = useStudent();
   const router = useRouter();
   const pathName = usePathname();
   const courseId = pathName.split("/").pop()
-  const isLoading = enrolledLoading || studentLoading;
+  const isLoading = enrolledLoading || authLoading;
 
   const [course, setCourse] = useState<CourseData>();
   const [enrolled, setEnrolled] = useState<EnrolledCourse>();
@@ -34,12 +39,19 @@ export default function CoursePage() {
   const [password, setPassword] = useState("");
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isSignupOpen, setIsSignupOpen] = useState(false);
+  const [isResetOpen, setIsResetOpen] = useState(false);
 
   const contentList = [
     { title: "แบบทดสอบก่อนเรียน", count: course?.pretest_totle ?? 0 },
     { title: "บทเรียน", count: (course?.courses.content?.length ?? 0) + 1 },
     { title: "แบบทดสอบหลังเรียน", count: course?.posttest_totle ?? 0 },
   ];
+
+  const handleClear = () => {
+    setUsername("");
+    setEmail("");
+    setPassword("");
+  }
 
   const handleOpenLogin = () => {
     setIsSignupOpen(false);
@@ -51,13 +63,18 @@ export default function CoursePage() {
     setIsSignupOpen(true);
   }
 
+  const handleOpenReset = () => {
+    setIsLoginOpen(false);
+    setIsResetOpen(true);
+  }
+
   const handleLogin = async () => {
     if (!email || !password) return console.error("กรอกอีเมล/รหัสผ่านก่อน");
 
     const res = await login(email, password);
     if (res) {
-      await fetchStudent();
       setIsLoginOpen(false);
+      handleClear();
     };
   };
 
@@ -67,8 +84,19 @@ export default function CoursePage() {
     await signup(username, email, password);
   };
 
+  const handleResetPassword = async (email: string, newPassword: string) => {
+    if (!email || !newPassword) return;
+
+    const res = await resetPassword(email, newPassword);
+    if (res) {
+      setIsResetOpen(false);
+      setIsLoginOpen(true);
+      handleClear();
+    };
+  }
+
   const handleEnroll = async () => {
-    if (!student) return setIsLoginOpen(true);
+    if (!user) return setIsLoginOpen(true);
 
     if (!courseId) return;
 
@@ -176,8 +204,9 @@ export default function CoursePage() {
         setEmail={setEmail}
         password={password}
         setPassword={setPassword}
-        handleLogin={handleLogin}
-        handleOpenSignup={handleOpenSignup}
+        onLogin={handleLogin}
+        onOpenSignup={handleOpenSignup}
+        onOpenReset={handleOpenReset}
       />
 
       <SignUpModal
@@ -191,6 +220,16 @@ export default function CoursePage() {
         setPassword={setPassword}
         handleSignup={handleSignup}
         handleOpenLogin={handleOpenLogin}
+      />
+
+      <ResetPassword
+        isOpen={isResetOpen}
+        onClose={() => { setIsResetOpen(false); setIsLoginOpen(true); handleClear(); }}
+        email={email}
+        setEmail={setEmail}
+        newPassword={password}
+        setNewPassword={setPassword}
+        handleResetPassword={handleResetPassword}
       />
     </div>
   );

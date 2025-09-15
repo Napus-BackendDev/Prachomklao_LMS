@@ -19,8 +19,7 @@ import {
 import { siteConfig } from "@/config/site";
 import { fontSans } from "@/config/fonts";
 import { usePathname, useRouter } from "next/navigation";
-import useStudent from "@/hooks/useStudent";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { LogOut } from "lucide-react";
 import useAuth from "@/hooks/useAuth";
 import LogInModal from "./ui/loginModal";
@@ -28,22 +27,22 @@ import SignUpModal from "./ui/signupModal";
 import ResetPassword from "./ui/resetPasswordModal";
 
 export default function Navbar() {
-  const { login, signup, logout, resetPassword } = useAuth();
-  const { student, setStudent, fetchStudent } = useStudent();
+  const {
+    user,
+    setUser,
+    login, signup,
+    logout,
+    resetPassword
+  } = useAuth();
   const pathName = usePathname();
   const router = useRouter();
 
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isSignupOpen, setIsSignupOpen] = useState(false);
   const [isResetOpen, setIsResetOpen] = useState(false);
-
-  useEffect(() => {
-    fetchStudent();
-  }, []);
 
   const handleClear = () => {
     setUsername("");
@@ -83,7 +82,7 @@ export default function Navbar() {
   const handleLogout = async () => {
     const res = await logout();
     if (res) {
-      setStudent(null);
+      setUser(null);
       setIsLoginOpen(true);
       handleClear();
       router.push("/");
@@ -101,8 +100,52 @@ export default function Navbar() {
     };
   }
 
+  const navigateContent = useMemo(() => {
+    return (
+      <NavbarContent
+        className="basis-1/5 sm:basis-full space-x-4"
+        justify="start"
+      >
+        <NavbarBrand className={`${fontSans.className} gap-3 max-w-fit`}>
+          <Link className="flex justify-start items-center gap-4" href="/">
+            <Image
+              alt="Prachomklao College of Nursing Logo"
+              src="/logo.png"
+              height={60}
+            />
+            <div>
+              <p className="text-xl font-semibold text-default-800">
+                Prachomklao
+              </p>
+              <p className="text-md text-default-400 font-medium">
+                College of Nursing
+              </p>
+            </div>
+          </Link>
+        </NavbarBrand>
+        <ul className="hidden lg:flex gap-4 justify-start ml-4">
+          {siteConfig.navItems
+            .filter((item) => {
+              if (item.label === "Dashboard") return user?.role === "Admin";
+              return true;
+            })
+            .map((item) => (
+              <NavbarItem key={item.href}>
+                <Link
+                  className={`text-lg font-medium ${pathName === item.href ? "text-primary" : "text-default-800"} hover:text-primary hover:underline underline-offset-4 px-2`}
+                  href={item.href}
+                >
+                  {item.label}
+                </Link>
+              </NavbarItem>
+            ))}
+        </ul>
+      </NavbarContent>
+    )
+  }, [user, setIsLoginOpen, setIsSignupOpen, handleLogout]);
+
   const profileContent = useMemo(() => {
-    if (student) {
+    if (user) {
       return (
         <NavbarContent
           className="hidden sm:flex basis-1/5 sm:basis-full"
@@ -113,9 +156,9 @@ export default function Navbar() {
               <DropdownTrigger>
                 <div className="flex flex-col group py-2 rounded-lg cursor-pointer">
                   <p className="text-lg font-semibold text-default-800">
-                    {student.username}
+                    {user.username}
                   </p>
-                  <p className="text-md text-default-400">{student.role}</p>
+                  <p className="text-md text-default-400">{user.role}</p>
                 </div>
               </DropdownTrigger>
               <DropdownMenu aria-label="Static Actions">
@@ -161,7 +204,7 @@ export default function Navbar() {
         </NavbarContent>
       );
     }
-  }, [student, setIsLoginOpen, setIsSignupOpen, handleLogout]);
+  }, [user, setIsLoginOpen, setIsSignupOpen, handleLogout]);
 
   return (
     <HeroUINavbar
@@ -169,61 +212,11 @@ export default function Navbar() {
       position="static"
       className={`${fontSans.className} py-2 shadow-2xs border-t-4 border-t-[#0930CF]`}
     >
-      <NavbarContent
-        className="basis-1/5 sm:basis-full space-x-4"
-        justify="start"
-      >
-        <NavbarBrand className={`${fontSans.className} gap-3 max-w-fit`}>
-          <Link className="flex justify-start items-center gap-4" href="/">
-            <Image
-              alt="Prachomklao College of Nursing Logo"
-              src="/logo.png"
-              height={60}
-            />
-            <div>
-              <p className="text-xl font-semibold text-default-800">
-                Prachomklao
-              </p>
-              <p className="text-md text-default-400 font-medium">
-                College of Nursing
-              </p>
-            </div>
-          </Link>
-        </NavbarBrand>
-        <ul className="hidden lg:flex gap-4 justify-start ml-4">
-          {siteConfig.navItems.map((item) => (
-            <NavbarItem key={item.href}>
-              <Link
-                className={`text-lg font-medium ${pathName === item.href ? "text-primary" : "text-default-800"} hover:text-primary hover:underline underline-offset-4 px-2`}
-                href={item.href}
-              >
-                {item.label}
-              </Link>
-            </NavbarItem>
-          ))}
-        </ul>
-      </NavbarContent>
+      {/* Navigate */}
+      {navigateContent}
 
+      {/* Profile */}
       {profileContent}
-
-      <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
-        <NavbarMenuToggle />
-      </NavbarContent>
-
-      <NavbarMenu>
-        <div className="mx-4 mt-5 space-y-3 flex flex-col gap-2 justify-center items-center">
-          {siteConfig.navMenuItems.map((item) => (
-            <NavbarMenuItem key={item.href}>
-              <Link
-                className="px-2 py-4 font-medium text-default-800 hover:text-primary"
-                href={item.href}
-              >
-                {item.label}
-              </Link>
-            </NavbarMenuItem>
-          ))}
-        </div>
-      </NavbarMenu>
 
       <LogInModal
         isOpen={isLoginOpen}
@@ -232,9 +225,9 @@ export default function Navbar() {
         setEmail={setEmail}
         password={password}
         setPassword={setPassword}
-        handleLogin={handleLogin}
-        handleOpenSignup={handleOpenSignup}
-        handleOpenReset={handleOpenReset}
+        onLogin={handleLogin}
+        onOpenSignup={handleOpenSignup}
+        onOpenReset={handleOpenReset}
       />
 
       <SignUpModal
@@ -255,11 +248,10 @@ export default function Navbar() {
         onClose={() => { setIsResetOpen(false); setIsLoginOpen(true); handleClear(); }}
         email={email}
         setEmail={setEmail}
-        newPassword={newPassword}
-        setNewPassword={setNewPassword}
+        newPassword={password}
+        setNewPassword={setPassword}
         handleResetPassword={handleResetPassword}
       />
-
     </HeroUINavbar>
   );
 };
