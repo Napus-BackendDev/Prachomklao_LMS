@@ -31,11 +31,6 @@ export class EnrollmentsController {
   }
   
   @Patch(':courseId')
-  changeEnrollCourse(@Request() req: User, @Param('courseId') courseId: string) {
-    return this.enrollmentsService.updateEnrollStatus(req.user.id , courseId)
-  }
-  
-  @Patch('progress/:courseId')
   updateProcessCourse(@Request() req: User, @Param('courseId') courseId: string) {
     return this.enrollmentsService.updateProcessCourse(req.user.id , courseId)
   }
