@@ -19,9 +19,9 @@ export default function useEnroll() {
 
             if (!res.ok) {
                 throw new Error(data.message || "Failed to fetch enrolled courses");
-            } else {
-                setEnrolled(data);
             }
+
+            setEnrolled(data);
         } catch (err) {
             setError(
                 err && typeof err === "object" && "message" in err
@@ -46,9 +46,9 @@ export default function useEnroll() {
 
             if (!res.ok) {
                 throw new Error(data.message || "Failed to fetch enrolled courses");
-            } else {
-                return data;
             }
+
+            return data;
         } catch (err) {
             setError(
                 err && typeof err === "object" && "message" in err
@@ -72,10 +72,10 @@ export default function useEnroll() {
 
             if (!res.ok) {
                 throw new Error(data.message || "Failed to enroll course");
-            } else {
-                await fetchEnrolled();
-                return data;
             }
+
+            await fetchEnrolled();
+            return data;
         } catch (err) {
             setError(
                 err && typeof err === "object" && "message" in err
@@ -99,10 +99,10 @@ export default function useEnroll() {
 
             if (!res.ok) {
                 throw new Error(data.message || "Failed to update progress");
-            } else {
-                await fetchEnrolled();
-                return data;
             }
+
+            await fetchEnrolled();
+            return data;
         } catch (err) {
             setError(
                 err && typeof err === "object" && "message" in err

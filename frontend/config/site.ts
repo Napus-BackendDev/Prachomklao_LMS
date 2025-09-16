@@ -13,8 +13,8 @@ export const siteConfig = {
       href: "/courses",
     },
     {
-      label: "Dashboard",
-      href: "/dashboard",
+      label: "Admin",
+      href: "/admin",
     }
   ],
   links: {

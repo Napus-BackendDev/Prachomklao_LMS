@@ -13,36 +13,37 @@ export const Sidebar = () => {
   const path = pathName.split("/").pop();
 
   return (
-    <aside className="w-56 bg-[#e3e7fa] p-6 flex flex-col gap-5 max-h-full">
-      <div className="flex flex-col space-y-3 font-semibold">
+    <aside className="flex flex-col gap-1 w-56 h-screen bg-[#e3e7fa] p-2 max-h-full border-r border-default-300">
         <Button
-          variant="flat"
-          color={path === "dashboard" ? "primary" : "default"}
-          className="flex justify-start px-4 py-2"
-          onPress={() => router.push("/dashboard")}
+          variant="light"
+          radius="sm"
+          color="primary"
+          className={`flex justify-start px-4 py-2 ${path === "admin" ? "bg-primary text-white" : null}`}
+          onPress={() => router.push("/admin")}
         >
           <LayoutDashboard className="h-5 w-5" />
           Dashboard
         </Button>
         <Button
-          variant="flat"
-          color={path === "courses" ? "primary" : "default"}
-          className="flex justify-start px-4 py-2"
-          onPress={() => router.push("/dashboard/courses")}
+          variant="light"
+          radius="sm"
+          color="primary"
+          className={`flex justify-start px-4 py-2 ${path === "courses" ? "bg-primary text-white" : null}`}
+          onPress={() => router.push("/admin/courses")}
         >
           <BookMarked className="h-5 w-5" />
           Courses
         </Button>
         <Button
-          variant="flat"
-          color={path === "users" ? "primary" : "default"}
-          className="flex justify-start px-4 py-2"
-          onPress={() => router.push("/dashboard/users")}
+          variant="light"
+          radius="sm"
+          color="primary"
+          className={`flex justify-start px-4 py-2 ${path === "users" ? "bg-primary text-white" : null}`}
+          onPress={() => router.push("/admin/users")}
         >
           <UsersRound className="h-5 w-5" />
           Users
         </Button>
-      </div>
     </aside>
   );
 };

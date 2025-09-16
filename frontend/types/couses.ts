@@ -1,11 +1,13 @@
+import { Content } from "./content";
 import { Test } from "./test";
 
 export type Courses = {
-  id: string,
+  id?: string,
   title: string,
-  urlPicture: string,
+  urlPicture?: string,
   url: string,
-  code?: string,
+  courseCode?: string,
+  content?: Content[],
 };
 
 export type EnrolledCourse = {
@@ -21,13 +23,7 @@ export type EnrolledCourse = {
 }
 
 export type CourseData = {
-  courses: {
-    id: string,
-    title: string,
-    url: string,
-    urlPicture: string,
-    content: Courses[],
-  },
+  courses: Courses,
   students: {
     id: string,
     username: string,
