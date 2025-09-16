@@ -3,13 +3,7 @@ import { Button } from "@heroui/react";
 import { Courses } from "@/types/couses";
 
 type VideoCardProps = {
-    course: {
-        id: string;
-        title: string;
-        url: string;
-        urlPicture: string;
-        content?: Courses[];
-    };
+    course: Courses;
     currentStep: number;
     stepLength: number;
     handlePreviousStep: () => void;

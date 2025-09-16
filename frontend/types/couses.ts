@@ -8,6 +8,7 @@ export type Courses = {
   url: string,
   courseCode?: string,
   content?: Content[],
+  totalStudent?: number,
 };
 
 export type EnrolledCourse = {

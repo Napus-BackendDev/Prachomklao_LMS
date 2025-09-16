@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { Button, Card, CardBody, CardFooter, CardHeader, Image, Link } from "@heroui/react";
 import CourseCard from "@/components/ui/courseCard";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useCourses from "@/hooks/useCourses";
 import useEnroll from "@/hooks/useEnroll";
 import { Courses } from "@/types/couses";
@@ -40,23 +40,17 @@ const features = [
   },
 ];
 
-// Mock up
-const feedbacks = [
-  {
-    name: "กฤตเมธ วงศ์สุวรรณ",
-    subname: "การแพทย์และการพยาบาล",
-    description: `เรียนการแพทย์และการพยาบาลที่นี่ ไม่ได้แค่ความรู้ แต่ได้ประสบการณ์จริงด้วย ✨ ครบทั้งทฤษฎี-ปฏิบัติ สอนเข้าใจง่าย ผู้สอนมืออาชีพ ❤️ #การแพทย์ #พยาบาล #เรียนออนไลน์ `,
-  },
-  {
-    name: "พิชญ์สินี แสงสุริยา",
-    subname: "หลักวิทยาศาสตร์สุขภาพสำหรับแพทย์และพยาบาล",
-    description: `หลักวิทยาศาสตร์สุขภาพสำหรับแพทย์และพยาบาล 🔬 ปูพื้นฐานแน่น ครบทั้งทฤษฎีและปฏิบัติ้ได้จริง 🩺 #แพทย์ #พยาบาล #วิทยาศาสตร์สุขภาพ`,
-  },
-  {
-    name: "ธนกฤต อนันต์พงศ์",
-    subname: "พื้นฐานวิชาชีพแพทย์และพยาบาล",
-    description: `เรียนพื้นฐานวิชาชีพแพทย์และพยาบาล 📚 ได้ทั้งความรู้ ทักษะ และมุมมองวิชาชีพ เตรียมพร้อมสู่การเป็นบุคลากรสุขภาพที่มีคุณภาพ 🩺 #พยาบาล #แพทย์ #เรียนออนไลน์`,
-  },
+const organizers = [
+  "/organizer/organizer1.png",
+  "/organizer/organizer2.png",
+  "/organizer/organizer3.png",
+  "/organizer/organizer4.png",
+  "/organizer/organizer5.png",
+  "/organizer/organizer6.png",
+  "/organizer/organizer7.png",
+  "/organizer/organizer8.png",
+  "/organizer/organizer9.png",
+  "/organizer/organizer10.png",
 ];
 
 export default function Home() {
@@ -64,6 +58,7 @@ export default function Home() {
   const { enrolled, loading: enrolledLoading } = useEnroll();
 
   const [displayCourse, setDisplayCourse] = useState(0);
+  const [organizer, setOrganizers] = useState(0);
   const displayAmount = 3;
   const isLoading = coursesLoading || enrolledLoading;
 
@@ -74,37 +69,47 @@ export default function Home() {
     if (displayCourse < courses?.length - 3) setDisplayCourse(displayCourse + 1);
   };
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setOrganizers((prev) => (prev + 1) % (organizers.length - 2));
+    }, 2000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <>
       {/* INTRODUCTION */}
       <section
         id="introduction"
-        className="py-8 bg-[#EBEFFF] w-screen"
+        className="py-8 bg-gradient-to-t from-[#FFFFFF] to-[#FFEFBE] w-screen"
       >
         <div className="max-w-screen-2xl mx-auto flex sm:flex-row flex-col-reverse items-center justify-between gap-4 px-4">
           <div className="py-2 space-y-3">
-            <h1 className="text-5xl font-extrabold text-default-900">
-              {siteConfig.name}
-            </h1>
+            <p className="text-5xl font-extrabold text-default-900">
+              ยินดีต้อนรับสู่แหล่งเรียนรู้
+              <span className="text-[#168AFF]">
+                วิทยาลัยพยาบาลพระจอมเกล้าจังหวัดเพชรบุรี
+              </span>
+            </p>
             <p className="mt-2 text-2xl text-default-600">
-              {siteConfig.description}
+              ก้าวเข้าสู่โลกแห่งความรู้ด้านการพยาบาลเด็กและวัยรุ่น ที่ผสานเทคโนโลยีการเรียนการสอนสมัยใหม่เข้ากับประสบการณ์จริงเพื่อเตรียมความพร้อมในการฝึกปฎิบัติ
             </p>
             <Link href="/courses">
               <Button
-                className="py-8 text-2xl font-medium"
-                color="primary"
+                className="py-6 text-2xl text-white font-medium bg-gradient-to-r from-[#168AFF] to-[#359AFF] hover:scale-105"
                 variant="shadow"
                 size="lg"
+                radius="lg"
+                endContent={<ChevronRight />}
               >
-                เริ่มหลักสูตรออนไลน์
+                เริ่มเรียน
               </Button>
             </Link>
           </div>
           <Image
-            src="/homepage.png"
+            src="/welcome.png"
             alt="Hero Image"
             radius="sm"
-            width={480}
             height={320}
           />
         </div>
@@ -117,22 +122,22 @@ export default function Home() {
       >
         <h1 className="sm:text-4xl font-semibold inline-flex flex-nowrap items-baseline gap-2 mb-2">
           <span>วิทยาลัยพยาบาลพระจอมเกล้า จังหวัดเพชรบุรี</span>
-          <span className="text-[#4E71FF]">เปิดแหล่งเรียนรู้</span>
+          <span className="text-[#0C85FF]">เปิดแหล่งเรียนรู้</span>
         </h1>
         <p className="sm:text-2xl text-lg text-default-600">
           เพื่อพัฒนาความรู้และทักษะด้านการพยาบาลอย่างรอบด้าน ให้ผู้เรียนได้ฝึกปฏิบัติจริงและเตรียมพร้อมสู่การเป็นพยาบาลมืออาชีพ
         </p>
-        <div id="features" className="flex justify-center py-6 gap-24">
+        <div id="features" className="flex justify-center py-8 gap-24">
           {features.map((item) => (
             <div
-              className="flex flex-col items-center justify-center pt-4"
+              className="flex flex-col items-center text-center space-y-4"
               key={item.topic}
             >
-              <item.icon className="w-28 h-28 text-primary mb-2" />
-              <h2 className="text-2xl font-semibold">{item.topic}</h2>
-              <p className="text-xl text-default-700 whitespace-normal">
-                {item.detail}
-              </p>
+              <div className="w-20 h-20 rounded-full bg-gradient-to-r from-[#FFCF41] to-[#FFDC72] flex items-center justify-center shadow-floating">
+                <item.icon className="w-10 h-10 text-white" />
+              </div>
+              <h2 className="text-2xl font-bold text-[#0C85FF]">{item.topic}</h2>
+              <p className="text-lg text-default-800">{item.detail}</p>
             </div>
           ))}
         </div>
@@ -192,10 +197,10 @@ export default function Home() {
       {/* COURSES */}
       <section
         id="courses"
-        className="flex flex-col items-center justify-center py-12 space-y-12 bg-[#EBEFFF]"
+        className="flex flex-col items-center justify-center py-12 space-y-6 bg-gradient-to-b from-[#FFFFFF] to-[#F0F8FF]"
       >
-        <h1 className="text-4xl font-semibold">หลักสูตรของเรา</h1>
-        <div className="flex items-center">
+        <p className="text-4xl font-semibold">หลักสูตรของเรา</p>
+        <div className="flex items-center gap-4">
           {courses?.length > displayAmount && (
             <Button
               isIconOnly
@@ -203,6 +208,7 @@ export default function Home() {
               variant="flat"
               onPress={handlePrev}
               disabled={displayCourse === 0}
+              className={`${displayCourse === 0 ? null : "hover:scale-105"}`}
             >
               <ChevronLeft />
             </Button>
@@ -215,18 +221,19 @@ export default function Home() {
               {courses?.map((course: Courses) => (
                 <div
                   key={course.id}
-                  className={`shrink-0 flex-grow basis-1/${displayAmount} px-4`}
+                  className={`h-full shrink-0 basis-1/${displayAmount} p-4`}
                 >
                   <CourseCard
                     title={course.title}
-                    id={course.id}
-                    picture={course.urlPicture}
+                    id={course.id ?? ""}
+                    picture={course.urlPicture ?? ""}
+                    courseCode={course.courseCode ?? ""}
+                    totalStudent={course.totalStudent ?? 0}
                   />
                 </div>
               ))}
             </div>
           </div>
-
           {courses.length > displayAmount && (
             <Button
               isIconOnly
@@ -234,6 +241,7 @@ export default function Home() {
               variant="flat"
               onPress={handleNext}
               disabled={displayCourse === (courses.length - displayAmount)}
+              className={`${displayCourse === (courses.length - displayAmount) ? null : "hover:scale-105"}`}
             >
               <ChevronRight />
             </Button>
@@ -243,39 +251,36 @@ export default function Home() {
         <Link
           color="foreground"
           href="/courses"
-          className="flex items-center gap-2 cursor-pointer hover:text-primary transition-colors group"
+          className="flex items-center gap-2 cursor-pointer hover:text-primary transition-colors text-default-700 group transition duration-200 hover:scale-105"
         >
           <p className="text-2xl font-semibold">หลักสูตรทั้งหมด</p>
           <ChevronRight />
         </Link>
       </section>
 
-      {/* FEEDBACK */}
+      {/* Organizer */}
       <section
-        id="Feedback"
-        className="flex flex-col items-center justify-center max-w-screen-xl mx-auto py-12 gap-12"
+        id="organizer"
+        className="flex flex-col items-center justify-center py-12 space-y-6 bg-gradient-to-b from-[#F0F8FF] to-[#EEF7FF]"
       >
-        <div className="flex flex-col items-center gap-6">
-          <h1 className="text-4xl font-semibold">รวมความประทับใจ</h1>
-          <div className="flex sm:flex-row flex-col items-stretch justify-center gap-6">
-            {feedbacks.map((feedback) => (
-              <Card className="gap-2 w-full" key={feedback.name}>
-                <CardHeader>
-                  <Quote color="gray" />
-                </CardHeader>
-                <CardBody>
-                  <p className="text-xl">{feedback.description}</p>
-                </CardBody>
-                <CardFooter>
-                  <div>
-                    <p className="text-2xl font-semibold text-primary">{feedback.name}</p>
-                    <p className="text-xl text-gray-700">{feedback.subname}</p>
-                  </div>
-                </CardFooter>
-              </Card>
+        <p className="text-4xl font-semibold">ผู้จัดทำ</p>
+          <div
+            className="flex justify-between transition-transform duration-1000"
+            style={{
+              transform: `translateX(-${organizer * 33}%)`,
+            }}
+          >
+            {[...organizers].map((src, i) => (
+              <div key={i} className="shrink-0 basis-1/3">
+                <Image
+                  alt={`organizer-${i}`}
+                  src={src}
+                  radius="sm"
+                  height={360}
+                />
+              </div>
             ))}
           </div>
-        </div>
       </section>
     </>
   );

@@ -32,10 +32,10 @@ export default function EnrollCoursePage() {
     const steps = [
         { id: 1, title: "PRE-TEST" },
         { id: 2, title: course?.courses.title ?? "MAIN" },
-        ...(course?.courses.content.map((_, index) => ({
+        ...(course?.courses.content?.map((_, index) => ({
             id: (index + 1) + 2, title: `LESSON ${index + 1}`
         })) ?? []),
-        { id: (course?.courses.content.length ?? 0) + 3, title: "POST-TEST" },
+        { id: (course?.courses.content?.length ?? 0) + 3, title: "POST-TEST" },
     ];
     const progressValue = ((currentStep - 1) / (steps.length - 1)) * 100;
 
@@ -117,7 +117,7 @@ export default function EnrollCoursePage() {
             }
 
             {/* Lessons */}
-            {(course && currentStep > 2 && currentStep < (course?.courses.content.length ?? 0) + 3 && course.courses.content[currentStep - 3])
+            {(course && currentStep > 2 && currentStep < (course?.courses.content?.length ?? 0) + 3 && course.courses.content?.[currentStep - 3])
                 && (
                     <VideoCard
                         course={course.courses.content[currentStep - 3]}

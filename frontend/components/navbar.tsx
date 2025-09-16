@@ -51,16 +51,19 @@ export default function Navbar() {
   }
 
   const handleOpenLogin = () => {
+    handleClear();
     setIsSignupOpen(false);
     setIsLoginOpen(true);
   }
 
   const handleOpenSignup = () => {
+    handleClear();
     setIsLoginOpen(false);
     setIsSignupOpen(true);
   }
 
   const handleOpenReset = () => {
+    handleClear();
     setIsLoginOpen(false);
     setIsResetOpen(true);
   }
@@ -125,10 +128,7 @@ export default function Navbar() {
         </NavbarBrand>
         <ul className="hidden lg:flex gap-4 justify-start ml-4">
           {siteConfig.navItems
-            .filter((item) => {
-              if (item.label === "Dashboard") return user?.role === "Admin";
-              return true;
-            })
+            .filter((item) => user?.role === "Admin" ? item : item.label !== "Admin")
             .map((item) => (
               <NavbarItem key={item.href}>
                 <Link
@@ -183,7 +183,7 @@ export default function Navbar() {
         >
           <NavbarItem className="hidden lg:flex">
             <Button
-              className="text-sm font-medium px-6"
+              className="text-sm font-medium px-6 hover:scale-105 transition duration-300"
               variant="flat"
               color="primary"
               onPress={() => setIsLoginOpen(true)}
@@ -193,7 +193,7 @@ export default function Navbar() {
           </NavbarItem>
           <NavbarItem className="hidden md:flex">
             <Button
-              className="text-sm font-medium px-6"
+              className="text-sm font-medium px-6 hover:scale-105 transition duration-300"
               color="primary"
               variant="shadow"
               onPress={() => setIsSignupOpen(true)}
@@ -210,7 +210,7 @@ export default function Navbar() {
     <HeroUINavbar
       maxWidth="2xl"
       position="static"
-      className={`${fontSans.className} py-2 shadow-2xs border-t-4 border-t-[#0930CF]`}
+      className={`${fontSans.className} py-4 shadow-2xs`}
     >
       {/* Navigate */}
       {navigateContent}
