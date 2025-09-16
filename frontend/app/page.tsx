@@ -157,7 +157,7 @@ export default function Home() {
                       key={course.id}
                       id={course.id}
                       title={course.title}
-                      picture={course.urlPicture}
+                      picture={course.urlPicture ?? ""}
                       enrolledAt={course.enrolledAt}
                     />
                     {/* Progress Bar */}
@@ -219,8 +219,8 @@ export default function Home() {
                 >
                   <CourseCard
                     title={course.title}
-                    id={course.id}
-                    picture={course.urlPicture}
+                    id={course.id ?? ""} 
+                    picture={course.urlPicture ?? ""}
                   />
                 </div>
               ))}

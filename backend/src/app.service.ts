@@ -23,6 +23,7 @@ export class AppService {
       ...createUserDto,
       password,
       role: Role.STUDENT,
+      createdAt: new Date().toISOString(),
     } as UserData;
     await this.usersCollection.add(userData);
     return { message: 'Register complete' };

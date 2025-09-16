@@ -142,8 +142,7 @@ export default function CourseAdminPage() {
   };
 
   return (
-    <div className="flex flex-1 text-lg">
-      <Sidebar />
+    <>
       <div className="flex-1 p-6 text-lg">
         <Card className="flex p-3 text-lg">
           <CardHeader className="text-4xl font-bold">
@@ -221,6 +220,6 @@ export default function CourseAdminPage() {
         onClose={() => setIsConfirmModalOpen(false)}
         onDelete={handleDelete}
       />
-    </div>
+    </>
   );
 }

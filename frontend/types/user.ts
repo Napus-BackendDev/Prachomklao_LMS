@@ -3,6 +3,7 @@ export type User = {
     username?: string,
     email: string,
     role: 'Student' | 'Admin',
+    createdAt?: string,
 }
 
 export type Profile = {
@@ -10,7 +11,8 @@ export type Profile = {
     username: string,
     email: string,
     role: 'Student' | 'Admin',
-    courses: {
+    createdAt?: string,
+    courses?: {
         id: string,
         title: string,
         enrollment: string,

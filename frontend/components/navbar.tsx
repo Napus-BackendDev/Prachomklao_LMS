@@ -1,15 +1,12 @@
-"use client"
+"use client";
 
 import {
   Button,
   Image,
   Navbar as HeroUINavbar,
   NavbarContent,
-  NavbarMenu,
-  NavbarMenuToggle,
   NavbarBrand,
   NavbarItem,
-  NavbarMenuItem,
   Link,
   Dropdown,
   DropdownTrigger,
@@ -20,20 +17,14 @@ import { siteConfig } from "@/config/site";
 import { fontSans } from "@/config/fonts";
 import { usePathname, useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
-import { LogOut } from "lucide-react";
+import { LogOut, LayoutDashboard, BookCopy } from "lucide-react";
 import useAuth from "@/hooks/useAuth";
 import LogInModal from "./ui/loginModal";
 import SignUpModal from "./ui/signupModal";
 import ResetPassword from "./ui/resetPasswordModal";
 
 export default function Navbar() {
-  const {
-    user,
-    setUser,
-    login, signup,
-    logout,
-    resetPassword
-  } = useAuth();
+  const { user, setUser, login, signup, logout, resetPassword } = useAuth();
   const pathName = usePathname();
   const router = useRouter();
 
@@ -48,22 +39,22 @@ export default function Navbar() {
     setUsername("");
     setEmail("");
     setPassword("");
-  }
+  };
 
   const handleOpenLogin = () => {
     setIsSignupOpen(false);
     setIsLoginOpen(true);
-  }
+  };
 
   const handleOpenSignup = () => {
     setIsLoginOpen(false);
     setIsSignupOpen(true);
-  }
+  };
 
   const handleOpenReset = () => {
     setIsLoginOpen(false);
     setIsResetOpen(true);
-  }
+  };
 
   const handleLogin = async () => {
     if (!email || !password) return console.error("กรอกอีเมล/รหัสผ่านก่อน");
@@ -73,7 +64,8 @@ export default function Navbar() {
   };
 
   const handleSignup = async () => {
-    if (!username || !email || !password) return console.error("กรอกข้อมูลให้ครบ");
+    if (!username || !email || !password)
+      return console.error("กรอกข้อมูลให้ครบ");
 
     const res = await signup(username, email, password);
     if (res) window.location.reload();
@@ -86,8 +78,8 @@ export default function Navbar() {
       setIsLoginOpen(true);
       handleClear();
       router.push("/");
-    };
-  }
+    }
+  };
 
   const handleResetPassword = async (email: string, newPassword: string) => {
     if (!email || !newPassword) return;
@@ -97,8 +89,8 @@ export default function Navbar() {
       setIsResetOpen(false);
       setIsLoginOpen(true);
       handleClear();
-    };
-  }
+    }
+  };
 
   const navigateContent = useMemo(() => {
     return (
@@ -141,70 +133,119 @@ export default function Navbar() {
             ))}
         </ul>
       </NavbarContent>
-    )
+    );
   }, [user, setIsLoginOpen, setIsSignupOpen, handleLogout]);
 
   const profileContent = useMemo(() => {
     if (user) {
-      return (
-        <NavbarContent
-          className="hidden sm:flex basis-1/5 sm:basis-full"
-          justify="end"
-        >
-          <NavbarItem>
-            <Dropdown>
-              <DropdownTrigger>
-                <div className="flex flex-col group py-2 rounded-lg cursor-pointer">
-                  <p className="text-lg font-semibold text-default-800">
-                    {user.username}
-                  </p>
-                  <p className="text-md text-default-400">{user.role}</p>
-                </div>
-              </DropdownTrigger>
-              <DropdownMenu aria-label="Static Actions">
-                <DropdownItem
-                  key="logout"
-                  startContent={<LogOut size={18} />}
-                  onPress={handleLogout}
-                  classNames={{ title: "text-xl font-bold" }}
-                >
-                  Log out
-                </DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
-          </NavbarItem>
-        </NavbarContent>
-      );
-    } else {
-      return (
-        <NavbarContent
-          className="hidden sm:flex basis-1/5 sm:basis-full"
-          justify="end"
-        >
-          <NavbarItem className="hidden lg:flex">
-            <Button
-              className="text-sm font-medium px-6"
-              variant="flat"
-              color="primary"
-              onPress={() => setIsLoginOpen(true)}
-            >
-              Log In
-            </Button>
-          </NavbarItem>
-          <NavbarItem className="hidden md:flex">
-            <Button
-              className="text-sm font-medium px-6"
-              color="primary"
-              variant="shadow"
-              onPress={() => setIsSignupOpen(true)}
-            >
-              Sign Up
-            </Button>
-          </NavbarItem>
-        </NavbarContent>
-      );
+      if (user.role === "Admin") {
+        // Admin: โชว์ Dashboard กับ Logout
+        return (
+          <NavbarContent
+            className="hidden sm:flex basis-1/5 sm:basis-full"
+            justify="end"
+          >
+            <NavbarItem>
+              <Dropdown>
+                <DropdownTrigger>
+                  <div className="flex flex-col group py-2 rounded-lg cursor-pointer">
+                    <p className="text-lg font-semibold text-default-800">
+                      {user.username}
+                    </p>
+                    <p className="text-md text-default-400">{user.role}</p>
+                  </div>
+                </DropdownTrigger>
+                <DropdownMenu aria-label="Static Actions">
+                  <DropdownItem
+                    key="Dashboard"
+                    startContent={<LayoutDashboard size={18} />}
+                    onPress={() => router.push("/admin")}
+                    classNames={{ title: "text-xl font-bold" }}
+                  >
+                    Dashboard
+                  </DropdownItem>
+                  <DropdownItem
+                    key="logout"
+                    startContent={<LogOut size={18} />}
+                    onPress={handleLogout}
+                    classNames={{ title: "text-xl font-bold" }}
+                  >
+                    Log out
+                  </DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+            </NavbarItem>
+          </NavbarContent>
+        );
+      } else if (user.role === "Student") {
+        return (
+          <NavbarContent
+            className="hidden sm:flex basis-1/5 sm:basis-full"
+            justify="end"
+          >
+            <NavbarItem>
+              <Dropdown>
+                <DropdownTrigger>
+                  <div className="flex flex-col group py-2 rounded-lg cursor-pointer">
+                    <p className="text-lg font-semibold text-default-800">
+                      {user.username}
+                    </p>
+                    <p className="text-md text-default-400">{user.role}</p>
+                  </div>
+                </DropdownTrigger>
+                <DropdownMenu aria-label="Static Actions">
+                  <DropdownItem
+                    key="profile"
+                    startContent={<BookCopy  size={18} />}
+                    onPress={() => router.push("/profile")}
+                    classNames={{ title: "text-xl font-bold" }}
+                  >
+                    Profile
+                  </DropdownItem>
+                  <DropdownItem
+                    key="logout"
+                    startContent={<LogOut size={18} />}
+                    onPress={handleLogout}
+                    classNames={{ title: "text-xl font-bold" }}
+                  >
+                    Log out
+                  </DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+            </NavbarItem>
+          </NavbarContent>
+        );
+      }
     }
-  }, [user, setIsLoginOpen, setIsSignupOpen, handleLogout]);
+    // ยังไม่ login
+    return (
+      <NavbarContent
+        className="hidden sm:flex basis-1/5 sm:basis-full"
+        justify="end"
+      >
+        <NavbarItem className="hidden lg:flex">
+          <Button
+            className="text-sm font-medium px-6"
+            variant="flat"
+            color="primary"
+            onPress={() => setIsLoginOpen(true)}
+          >
+            Log In
+          </Button>
+        </NavbarItem>
+        <NavbarItem className="hidden md:flex">
+          <Button
+            className="text-sm font-medium px-6"
+            color="primary"
+            variant="shadow"
+            onPress={() => setIsSignupOpen(true)}
+          >
+            Sign Up
+          </Button>
+        </NavbarItem>
+      </NavbarContent>
+    );
+  }, [user, setIsLoginOpen, setIsSignupOpen, handleLogout, router]);
 
   return (
     <HeroUINavbar
@@ -220,7 +261,10 @@ export default function Navbar() {
 
       <LogInModal
         isOpen={isLoginOpen}
-        onClose={() => { setIsLoginOpen(false); handleClear(); }}
+        onClose={() => {
+          setIsLoginOpen(false);
+          handleClear();
+        }}
         email={email}
         setEmail={setEmail}
         password={password}
@@ -232,7 +276,10 @@ export default function Navbar() {
 
       <SignUpModal
         isOpen={isSignupOpen}
-        onClose={() => { setIsSignupOpen(false); handleClear(); }}
+        onClose={() => {
+          setIsSignupOpen(false);
+          handleClear();
+        }}
         username={username}
         setUsername={setUsername}
         email={email}
@@ -245,7 +292,11 @@ export default function Navbar() {
 
       <ResetPassword
         isOpen={isResetOpen}
-        onClose={() => { setIsResetOpen(false); setIsLoginOpen(true); handleClear(); }}
+        onClose={() => {
+          setIsResetOpen(false);
+          setIsLoginOpen(true);
+          handleClear();
+        }}
         email={email}
         setEmail={setEmail}
         newPassword={password}
@@ -254,4 +305,4 @@ export default function Navbar() {
       />
     </HeroUINavbar>
   );
-};
+}

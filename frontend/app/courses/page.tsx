@@ -50,8 +50,8 @@ export default function CoursesPage() {
             <CourseCard
               key={course.id}
               title={course.title}
-              id={course.id}
-              picture={course.urlPicture}
+              id={course.id ?? ""}
+              picture={course.urlPicture ?? ""}
             />
           ))}
         </div>

@@ -20,11 +20,16 @@ import { User } from 'src/common/interface/user-interface';
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('admin')
 export class AdminController {
-  constructor(private readonly AdminService: UserService) { }
+  constructor(private readonly AdminService: UserService) {}
 
   @Get()
   findAll() {
     return this.AdminService.findAll();
+  }
+
+  @Get('weekly-users')
+  async getWeeklyNewUsers() {
+    return await this.AdminService.getWeeklyNewUsers();
   }
 
   @Get(':id')
@@ -52,7 +57,7 @@ export class AdminController {
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('student')
 export class StudentsController {
-  constructor(private readonly userService: UserService) { }
+  constructor(private readonly userService: UserService) {}
 
   @Patch()
   update(@Request() req: User, @Body() updateStudentDto: UpdateUserDto) {

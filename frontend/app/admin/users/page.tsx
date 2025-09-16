@@ -67,8 +67,7 @@ export default function UserAdminPage() {
     }, []);
 
     return (
-        <div className="flex">
-            <Sidebar />
+        <>
             <div className="flex-1 p-6 text-lg">
                 <Card className="flex p-3">
                     <CardHeader className="text-4xl font-bold">
@@ -122,6 +121,6 @@ export default function UserAdminPage() {
                     </CardBody>
                 </Card>
             </div>
-        </div>
+        </>
     )
 }

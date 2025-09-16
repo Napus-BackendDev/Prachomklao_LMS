@@ -11,10 +11,6 @@ export const siteConfig = {
     {
       label: "Courses",
       href: "/courses",
-    },
-    {
-      label: "Admin",
-      href: "/admin",
     }
   ],
   links: {

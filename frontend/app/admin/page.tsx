@@ -1,306 +1,306 @@
 "use client";
 
-import { Sidebar } from "@/components/sidebar";
+import useCourses from "@/hooks/useCourses";
+import useUser from "@/hooks/useUser";
+import { useWeeklyUserBarChart } from "@/hooks/useUser";
 import {
   Card,
   CardBody,
   CardHeader,
-  getKeyValue,
-  Pagination,
   Table,
-  TableBody,
-  TableCell,
-  TableColumn,
   TableHeader,
+  TableColumn,
+  TableBody,
   TableRow,
+  TableCell,
+  getKeyValue,
+  Spinner,
+  Pagination,
 } from "@heroui/react";
-import {
-  BookMarked,
-  UsersRound,
-  MessageSquareWarning,
-  Bug,
-} from "lucide-react";
+import { Users, BookOpen, ChartColumn, ChartPie } from "lucide-react";
 import { useMemo, useState } from "react";
+import { Bar, Pie } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+} from "chart.js";
+import { useAsyncList } from "@react-stately/data";
+import { formatDate } from "@/public/util/fromatData";
 
-const rows = [
-  {
-    key: "1",
-    name: "Tony Reichert",
-    role: "CEO",
-    status: "Active",
-  },
-  {
-    key: "2",
-    name: "Zoey Lang",
-    role: "Technical Lead",
-    status: "Paused",
-  },
-  {
-    key: "3",
-    name: "Jane Fisher",
-    role: "Senior Developer",
-    status: "Active",
-  },
-  {
-    key: "4",
-    name: "William Howard",
-    role: "Community Manager",
-    status: "Vacation",
-  },
-  {
-    key: "5",
-    name: "William Howard",
-    role: "Community Manager",
-    status: "Vacation",
-  },
-];
+// Register Chart.js components
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement
+);
 
-const columns = [
-  {
-    key: "name",
-    label: "NAME",
+const weeklyUserOptions = {
+  responsive: true,
+  plugins: {
+    legend: { display: false },
+    title: { display: false },
   },
-  {
-    key: "role",
-    label: "ROLE",
+  scales: {
+    y: {
+      beginAtZero: true,
+      ticks: { stepSize: 15 },
+      grid: { color: "#e5e7eb" },
+    },
+    x: {
+      grid: { display: false },
+    },
   },
-  {
-    key: "status",
-    label: "STATUS",
+};
+
+const coursePieData = {
+  labels: ["Mathematics", "Science", "Literature", "Arts"],
+  datasets: [
+    {
+      data: [35, 28, 22, 15],
+      backgroundColor: [
+        "rgba(59, 130, 246, 0.7)", // ฟ้า
+        "rgba(253, 224, 71, 0.7)", // เหลือง
+        "rgba(147, 197, 253, 0.7)", // ฟ้าอ่อน
+        "rgba(253, 224, 171, 0.7)", // เหลืองอ่อน
+      ],
+      borderWidth: 0,
+    },
+  ],
+};
+
+const coursePieOptions = {
+  plugins: {
+    legend: { display: false },
+    tooltip: { enabled: true },
   },
-];
+  cutout: "0%",
+  responsive: true,
+  maintainAspectRatio: false,
+};
 
 export default function DashboardPage() {
+  const { users } = useUser();
+  const { courses } = useCourses();
+  const { chartData, loading } = useWeeklyUserBarChart();
+  const [isLoading, setIsLoading] = useState(false);
+
+  let list = useAsyncList({
+    async load({ signal }) {
+      let res = await fetch(`${process.env.API_URL}/admin`, {
+        method: "GET",
+        credentials: "include",
+        signal,
+      });
+      let json = await res.json();
+      setIsLoading(false);
+      console.log(json.value);
+      return {
+        items: json,
+      };
+    },
+
+    async sort({ items, sortDescriptor }) {
+      return {
+        items: items.sort((a, b) => {
+          const aObj = a as Record<string, string>;
+          const bObj = b as Record<string, string>;
+          let first = aObj[sortDescriptor.column];
+          let second = bObj[sortDescriptor.column];
+          let cmp =
+            (parseInt(first) || first) < (parseInt(second) || second) ? -1 : 1;
+
+          if (sortDescriptor.direction === "descending") {
+            cmp *= -1;
+          }
+
+          return cmp;
+        }),
+      };
+    },
+  });
+
   const [page, setPage] = useState(1);
   const rowsPerPage = 3;
   const pages = useMemo(() => {
-    return Math.ceil(rows.length / rowsPerPage);
-  }, [rows, rowsPerPage]);
+    return Math.ceil(list.items.length / rowsPerPage);
+  }, [list.items, rowsPerPage]);
 
   const items = useMemo(() => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
 
-    return rows.slice(start, end);
-  }, [page, rows]);
+    return list.items.slice(start, end);
+  }, [page, list]);
 
   return (
-    <div className="min-h-screen bg-[#f3f5ff] flex flex-col">
-      <div className="flex flex-1 ">
-        <Sidebar />
-
-        {/* Main Content */}
-        <main className="flex-1 p-8">
-          {/* Top Stats */}
-          <div className="grid grid-cols-4 gap-6 mb-6">
-            <Card className="flex flex-row border border-gray-200 p-4 items-center justify-between gap-4">
-              <div className="flex gap-3 ">
-                <div
-                  className="bg-[#130FD9] w-0.5 max-h-14 items-center justify-center rounded-3xl"
-                />
-                <div>
-                  <h1 className="text-xl text-gray-500">Total Users</h1>
-                  <span className="text-xl font-bold">130</span>
-                </div>
-              </div>
-              <div className="p-2 bg-[#130FD9]/10 rounded-lg">
-                <UsersRound className="h-8 w-8 text-[#130FD9]" />
-              </div>
-            </Card>
-            <Card className="flex flex-row border border-gray-200 p-4 items-center justify-between gap-4">
-              <div className="flex gap-3 ">
-                <div
-                  className="bg-[#0FD942] w-0.5 max-h-14 items-center justify-center rounded-3xl"
-                />
-                <div>
-                  <h1 className="text-xl text-gray-500">Total Courses</h1>
-                  <span className="text-xl font-bold">5</span>
-                </div>
-              </div>
-              <div className="p-2 bg-[#0FD942]/10 rounded-lg">
-                <BookMarked className="h-8 w-8 text-[#0FD942]" />
-              </div>
-            </Card>
-            <Card className="flex flex-row border border-gray-200 p-4 items-center justify-between gap-4">
-              <div className="flex gap-3 ">
-                <div
-                  className="bg-[#130FD9] w-0.5 max-h-14 items-center justify-center rounded-3xl"
-                />
-                <div>
-                  <h1 className="text-xl text-gray-500">Total Feedback</h1>
-                  <span className="text-xl font-bold">5</span>
-                </div>
-              </div>
-              <div className="p-2 bg-[#130FD9]/10 rounded-lg">
-                <MessageSquareWarning className="h-8 w-8 text-[#130FD9]" />
-              </div>
-            </Card>
-            <Card className="flex flex-row border border-gray-200 p-4 items-center justify-between gap-4">
-              <div className="flex gap-3 ">
-                <div
-                  className="bg-[#F62A2A] w-0.5 max-h-14 items-center justify-center rounded-3xl"
-                />
-                <div>
-                  <h1 className="text-xl text-gray-500">Total Report</h1>
-                  <span className="text-xl font-bold">5</span>
-                </div>
-              </div>
-              <div className="p-2 bg-[#F62A2A]/10 rounded-lg">
-                <Bug className="h-8 w-8 text-[#F62A2A]" />
-              </div>
-            </Card>
-          </div>
-
-          {/* Middle Section */}
-          <div className="grid grid-cols-2 gap-6 mb-6">
-            <div className="bg-white rounded-xl shadow p-6">
-              <div className="font-semibold text-gray-600 mb-2">
-                Feedback Statistics
-              </div>
-              {/* Replace with your chart */}
-              <div className="flex justify-center items-center h-40">
-                <span className="text-gray-400">[Feedback Chart]</span>
-              </div>
-              <div className="flex justify-center gap-4 mt-4 text-xs">
-                <span className="flex items-center gap-1">
-                  <span className="w-3 h-3 bg-green-400 rounded-full"></span>
-                  พึงพอใจที่สุด
-                </span>
-                <span className="flex items-center gap-1">
-                  <span className="w-3 h-3 bg-yellow-300 rounded-full"></span>
-                  พอใจ
-                </span>
-                <span className="flex items-center gap-1">
-                  <span className="w-3 h-3 bg-orange-300 rounded-full"></span>
-                  ปานกลาง
-                </span>
-                <span className="flex items-center gap-1">
-                  <span className="w-3 h-3 bg-red-400 rounded-full"></span>
-                  ไม่พอใจ
-                </span>
-                <span className="flex items-center gap-1">
-                  <span className="w-3 h-3 bg-red-700 rounded-full"></span>
-                  ไม่พอใจอย่างยิ่ง
-                </span>
-              </div>
+    <>
+      <div
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full justify-between gap-8 px-8 py-6"
+        id="stats"
+      >
+        <Card className="w-full">
+          <CardBody className="flex flex-col justify-center gap-2">
+            <div className="flex justify-between">
+              <h3 className="font-bold">Total Users</h3>
+              <Users className="w-6 h-6 text-blue-600" />
             </div>
-            <div className="bg-white rounded-xl shadow p-6">
-              <div className="font-semibold text-gray-600 mb-2">
-                Course Overview
-              </div>
-              {/* Replace with your chart */}
-              <div className="flex justify-center items-center h-40">
-                <span className="text-gray-400">[Bar Chart]</span>
-              </div>
-              <div className="flex justify-end mt-2">
-                <div className="flex gap-2">
-                  <button className="px-2 py-1 rounded bg-blue-100 text-blue-600">
-                    1
-                  </button>
-                  <button className="px-2 py-1 rounded text-gray-400">2</button>
-                  <button className="px-2 py-1 rounded text-gray-400">3</button>
-                </div>
-              </div>
+            <p className="text-gray-600">{users.length}</p>
+          </CardBody>
+        </Card>
+        <Card className="w-full">
+          <CardBody className="flex flex-col justify-center gap-2">
+            <div className="flex justify-between">
+              <h3 className="font-bold">Total Courses</h3>
+              <BookOpen className="w-6 h-6 text-blue-600" />
             </div>
-          </div>
-
-          {/* Bottom Section */}
-          <div className="grid grid-cols-2 gap-6">
-            <Card className="py-2 px-6">
-              <CardHeader className="flex justify-between items-center">
-                <span className="font-semibold text-gray-600">
-                  Reports Statistics
-                </span>
-                <a href="#" className="text-blue-500 text-xs">
-                  View more
-                </a>
-              </CardHeader>
-              <CardBody>
-                <Table
-                  aria-label="Example table with dynamic content"
-                  bottomContent={
-                    pages > 0 ? (
-                      <div className="flex w-full justify-center">
-                        <Pagination
-                          isCompact
-                          showControls
-                          showShadow
-                          color="primary"
-                          page={page}
-                          total={pages}
-                          onChange={(page) => setPage(page)}
-                        />
-                      </div>
-                    ) : null
-                  }
-                  layout="fixed"
-                >
-                  <TableHeader columns={columns}>
-                    {(column) => (
-                      <TableColumn key={column.key}>{column.label}</TableColumn>
-                    )}
-                  </TableHeader>
-                  <TableBody items={items}>
-                    {(item) => (
-                      <TableRow key={item.key}>
-                        {(columnKey) => (
-                          <TableCell>{getKeyValue(item, columnKey)}</TableCell>
-                        )}
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
-              </CardBody>
-            </Card>
-            <Card className="py-2 px-6">
-              <CardHeader className="flex justify-between items-center">
-                <span className="font-semibold text-gray-600">
-                  Latest Users
-                </span>
-                <a href="#" className="text-blue-500 text-xs">
-                  View more
-                </a>
-              </CardHeader>
-              <CardBody>
-                <Table
-                  aria-label="Example table with dynamic content"
-                  bottomContent={
-                    pages > 0 ? (
-                      <div className="flex w-full justify-center">
-                        <Pagination
-                          isCompact
-                          showControls
-                          showShadow
-                          color="primary"
-                          page={page}
-                          total={pages}
-                          onChange={(page) => setPage(page)}
-                        />
-                      </div>
-                    ) : null
-                  }
-                  layout="fixed"
-                >
-                  <TableHeader columns={columns}>
-                    {(column) => (
-                      <TableColumn key={column.key}>{column.label}</TableColumn>
-                    )}
-                  </TableHeader>
-                  <TableBody items={items}>
-                    {(item) => (
-                      <TableRow key={item.key}>
-                        {(columnKey) => (
-                          <TableCell>{getKeyValue(item, columnKey)}</TableCell>
-                        )}
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
-              </CardBody>
-            </Card>
-          </div>
-        </main>
+            <p className="text-gray-600">{courses.length}</p>
+          </CardBody>
+        </Card>
+        <Card className="w-full">
+          <CardBody className="flex flex-col justify-center gap-2">
+            <div className="flex justify-between">
+              <h3 className="font-bold">Active Users Today</h3>
+              <BookOpen className="w-6 h-6 text-blue-600" />
+            </div>
+            <p className="text-gray-600">{users.length}</p>
+          </CardBody>
+        </Card>
       </div>
-    </div>
+      <div className="grid grid-cols-2 gap-8 px-8 pb-6" id="table">
+        <Card className="w-full">
+          <CardHeader className="flex flex-col items-start">
+            <div className="flex gap-2 ">
+              <ChartColumn className="w-6 h-6 text-blue-600 " />
+              <h3 className="font-bold">Weekly New Users</h3>
+            </div>
+            <p className="text-gray-600">New user registrations this week</p>
+          </CardHeader>
+          <CardBody className="w-full ">
+            <Bar data={chartData} options={weeklyUserOptions} />
+          </CardBody>
+        </Card>
+        <Card className="w-full">
+          <CardHeader className="flex flex-col items-start">
+            <div className="flex gap-2 ">
+              <ChartPie className="w-6 h-6 text-blue-600 " />
+              <h3 className="font-bold">Course Registrations</h3>
+            </div>
+            <p className="text-gray-600">Registrations by course category</p>
+          </CardHeader>
+          <CardBody className="flex flex-col items-center gap-8">
+            <div className="w-1/2 min-w-[180px] h-56">
+              <Pie data={coursePieData} options={coursePieOptions} />
+            </div>
+            <div className="flex w-full flex-col gap-3">
+              {coursePieData.labels.map((label, idx) => (
+                <div key={label} className="flex items-center gap-2">
+                  <span
+                    className="inline-block w-3 h-3 rounded-full"
+                    style={{
+                      background: coursePieData.datasets[0].backgroundColor[
+                        idx
+                      ] as string,
+                    }}
+                  />
+                  <span className="text-gray-700">{label}</span>
+                  <span className="ml-auto text-gray-400 font-semibold">
+                    {coursePieData.datasets[0].data[idx]}%
+                  </span>
+                </div>
+              ))}
+            </div>
+          </CardBody>
+        </Card>
+      </div>
+      <Card className="mx-8">
+        <CardHeader className="flex flex-col items-start">
+          <h1 className="text-2xl font-bold ">Recent Users</h1>
+          <p>Latest user activities and system updates</p>
+        </CardHeader>
+        <CardBody>
+          <Table
+            aria-label="Example table with client side sorting"
+            bottomContent={
+              <div className="flex w-full justify-center text-lg">
+                <Pagination
+                  isCompact
+                  showControls
+                  color="primary"
+                  page={page}
+                  total={pages}
+                  onChange={(page) => setPage(page)}
+                />
+              </div>
+            }
+            bottomContentPlacement="outside"
+            sortDescriptor={
+              list.sortDescriptor ?? {
+                column: "username",
+                direction: "ascending",
+              }
+            }
+            onSortChange={list.sort}
+          >
+            <TableHeader>
+              <TableColumn key="username" allowsSorting>
+                Username
+              </TableColumn>
+              <TableColumn key="email" allowsSorting>
+                Email
+              </TableColumn>
+              <TableColumn key="role" allowsSorting>
+                Role
+              </TableColumn>
+              <TableColumn key="createdAt" allowsSorting>
+                DateAcc
+              </TableColumn>
+            </TableHeader>
+            <TableBody
+              isLoading={isLoading}
+              items={items
+                .filter(
+                  (item) =>
+                    typeof item === "object" &&
+                    item !== null &&
+                    (item as { role?: string }).role !== "Admin"
+                )
+                .map((item) =>
+                  typeof item === "object" && item !== null
+                    ? {
+                        ...item,
+                        createdAt: formatDate((item as any).createdAt),
+                      }
+                    : item
+                )}
+              loadingContent={<Spinner label="Loading..." />}
+            >
+              {(item) => {
+                const typedItem = item as {
+                  username: string;
+                  [key: string]: any;
+                };
+                return (
+                  <TableRow key={typedItem.username}>
+                    {(columnKey) => (
+                      <TableCell>{getKeyValue(typedItem, columnKey)}</TableCell>
+                    )}
+                  </TableRow>
+                );
+              }}
+            </TableBody>
+          </Table>
+        </CardBody>
+      </Card>
+    </>
   );
 }

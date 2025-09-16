@@ -32,10 +32,10 @@ export default function EnrollCoursePage() {
     const steps = [
         { id: 1, title: "PRE-TEST" },
         { id: 2, title: course?.courses.title ?? "MAIN" },
-        ...(course?.courses.content.map((_, index) => ({
+        ...(course?.courses.content?.map((_, index) => ({
             id: (index + 1) + 2, title: `LESSON ${index + 1}`
         })) ?? []),
-        { id: (course?.courses.content.length ?? 0) + 3, title: "POST-TEST" },
+        { id: (course?.courses.content?.length ?? 0) + 3, title: "POST-TEST" },
     ];
     const progressValue = ((currentStep - 1) / (steps.length - 1)) * 100;
 
@@ -104,10 +104,14 @@ export default function EnrollCoursePage() {
             }
 
             {/* Main */}
-            {(course && currentStep === 2)
+            {(course && currentStep === 2 && course.courses.id)
                 && (
                     <VideoCard
-                        course={course.courses}
+                        course={{
+                            ...course.courses,
+                            id: course.courses.id as string,
+                            urlPicture: course.courses.urlPicture ?? ""
+                        }}
                         currentStep={currentStep}
                         stepLength={steps.length}
                         handlePreviousStep={() => setCurrentStep(prev => prev - 1)}
@@ -117,10 +121,15 @@ export default function EnrollCoursePage() {
             }
 
             {/* Lessons */}
-            {(course && currentStep > 2 && currentStep < (course?.courses.content.length ?? 0) + 3 && course.courses.content[currentStep - 3])
+            {(course && currentStep > 2 && currentStep < (course?.courses.content?.length ?? 0) + 3 && course?.courses.content?.[currentStep - 3])
                 && (
                     <VideoCard
-                        course={course.courses.content[currentStep - 3]}
+                        course={{
+                            id: course.courses.content[currentStep - 3]?.id ?? "",
+                            title: course.courses.content[currentStep - 3]?.title ?? "",
+                            url: course.courses.content[currentStep - 3]?.url ?? "",
+                            urlPicture: course.courses.content[currentStep - 3]?.urlPicture ?? ""
+                        }}
                         currentStep={currentStep}
                         stepLength={steps.length}
                         handlePreviousStep={() => setCurrentStep(prev => prev - 1)}

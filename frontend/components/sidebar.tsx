@@ -13,7 +13,7 @@ export const Sidebar = () => {
   const path = pathName.split("/").pop();
 
   return (
-    <aside className="flex flex-col gap-1 w-56 h-screen bg-[#e3e7fa] p-2 max-h-full border-r border-default-300">
+    <aside className="flex flex-col gap-1 w-56 min-h-screen bg-[#e3e7fa] p-2 border-r border-default-300">
         <Button
           variant="light"
           radius="sm"

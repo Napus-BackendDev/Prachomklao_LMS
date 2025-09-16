@@ -6,6 +6,7 @@ export interface UserData {
   username: string;
   password: string;
   role: string;
+  createdAt: string;
 }
 
 export interface UserDataWithCourses {

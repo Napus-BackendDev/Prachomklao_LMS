@@ -1,8 +1,8 @@
-import { User } from "@/types/user";
+import { Profile } from "@/types/user";
 import { useEffect, useState } from "react";
 
 export default function useAuth() {
-    const [user, setUser] = useState<User | null>(null);
+    const [user, setUser] = useState<Profile | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
 

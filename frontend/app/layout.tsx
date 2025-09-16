@@ -3,10 +3,11 @@ import { Metadata, Viewport } from "next";
 import clsx from "clsx";
 
 import { siteConfig } from "@/config/site";
-import { fontSans, fontThai } from "@/config/fonts";
+import { fontThai } from "@/config/fonts";
 import Footer from "@/components/footer";
+import ConditionalNavbar from "@/components/conditinalNavbar";
 import Navbar from "@/components/navbar";
- 
+
 export const metadata: Metadata = {
   title: {
     default: siteConfig.name,
@@ -37,13 +38,11 @@ export default function RootLayout({
       </head>
       <body
         className={clsx(
-          "flex flex-col min-h-screen text-foreground bg-background font-sans antialiased overflow-x-hidden"
+          "flex flex-col min-h-screen text-foreground bg-[#F5FAFF] font-sans antialiased overflow-x-hidden"
         )}
       >
         <Navbar />
-        <div className="flex-grow">
-          {children}
-        </div>
+        <div className="flex-grow">{children}</div>
         <Footer />
       </body>
     </html>
