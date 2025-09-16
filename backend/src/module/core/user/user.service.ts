@@ -68,9 +68,11 @@ export class UserService {
       username: userData.username,
       email: userData.email,
       role: userData.role,
+      createdAt: userData.createdAt,
       courses: enrollments.map((enrollment) => ({
         id: enrollment.id,
         title: enrollment.title,
+        picture: enrollment.urlPicture,
         enrollment: formatDate((enrollment.enrolledAt as Timestamp).toDate()),
         status: enrollment.status,
       })),

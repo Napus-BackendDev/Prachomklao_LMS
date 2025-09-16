@@ -62,22 +62,6 @@ const weeklyUserOptions = {
   },
 };
 
-const coursePieData = {
-  labels: ["Mathematics", "Science", "Literature", "Arts"],
-  datasets: [
-    {
-      data: [35, 28, 22, 15],
-      backgroundColor: [
-        "rgba(59, 130, 246, 0.7)", // ฟ้า
-        "rgba(253, 224, 71, 0.7)", // เหลือง
-        "rgba(147, 197, 253, 0.7)", // ฟ้าอ่อน
-        "rgba(253, 224, 171, 0.7)", // เหลืองอ่อน
-      ],
-      borderWidth: 0,
-    },
-  ],
-};
-
 const coursePieOptions = {
   plugins: {
     legend: { display: false },
@@ -93,6 +77,41 @@ export default function DashboardPage() {
   const { courses } = useCourses();
   const { chartData, loading } = useWeeklyUserBarChart();
   const [isLoading, setIsLoading] = useState(false);
+
+  // Pie Chart: สร้างข้อมูลจาก courses API
+  const coursePieData = useMemo(() => {
+    // รวม studentTotal ตาม category
+    const categoryMap: Record<string, number> = {};
+    courses.forEach((course) => {
+      const category = course.title || "Other";
+      categoryMap[category] = (categoryMap[category] || 0) + (course.totalStudent || 0);
+    });
+
+    const labels = Object.keys(categoryMap);
+    const data = labels.map((label) => categoryMap[label]);
+
+    // สีสำหรับแต่ละ category (เพิ่มหรือลดได้)
+    const colors = [
+      "rgba(59, 130, 246, 0.7)",
+      "rgba(253, 224, 71, 0.7)",
+      "rgba(147, 197, 253, 0.7)",
+      "rgba(253, 224, 171, 0.7)",
+      "rgba(34,197,94,0.7)",
+      "rgba(244,63,94,0.7)",
+      "rgba(168,85,247,0.7)",
+    ];
+
+    return {
+      labels,
+      datasets: [
+        {
+          data,
+          backgroundColor: labels.map((_, idx) => colors[idx % colors.length]),
+          borderWidth: 0,
+        },
+      ],
+    };
+  }, [courses]);
 
   let list = useAsyncList({
     async load({ signal }) {
@@ -201,7 +220,7 @@ export default function DashboardPage() {
             <div className="w-1/2 min-w-[180px] h-56">
               <Pie data={coursePieData} options={coursePieOptions} />
             </div>
-            <div className="flex w-full flex-col gap-3">
+            <div className="grid w-full grid-cols-2 gap-3">
               {coursePieData.labels.map((label, idx) => (
                 <div key={label} className="flex items-center gap-2">
                   <span
@@ -214,7 +233,7 @@ export default function DashboardPage() {
                   />
                   <span className="text-gray-700">{label}</span>
                   <span className="ml-auto text-gray-400 font-semibold">
-                    {coursePieData.datasets[0].data[idx]}%
+                    {coursePieData.datasets[0].data[idx]}
                   </span>
                 </div>
               ))}

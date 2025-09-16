@@ -14,6 +14,7 @@ export interface UserDataWithCourses {
   email: string;
   username: string;
   role: string;
+  createdAt: string;
   courses: Courses[];
 }
 

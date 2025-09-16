@@ -150,7 +150,7 @@ export default function Navbar() {
                 <DropdownTrigger>
                   <div className="flex flex-col group py-2 rounded-lg cursor-pointer">
                     <p className="text-lg font-semibold text-default-800">
-                      {user.username}
+                      ผู้ดูแลระบบ
                     </p>
                     <p className="text-md text-default-400">{user.role}</p>
                   </div>

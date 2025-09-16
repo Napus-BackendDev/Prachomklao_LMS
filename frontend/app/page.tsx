@@ -81,17 +81,17 @@ export default function Home() {
       {/* INTRODUCTION */}
       <section
         id="introduction"
-        className="py-8 bg-gradient-to-t from-[#FFFFFF] to-[#FFEFBE] w-screen"
+        className="py-8 w-screen bg-gradient-to-r from-[#CFE6F7] via-[#F6F8E7] to-[#FFEFBE]"
       >
-        <div className="max-w-screen-2xl mx-auto flex sm:flex-row flex-col-reverse items-center justify-between gap-4 px-4">
+        <div className="max-w-screen-xl mx-auto flex sm:flex-row flex-col-reverse items-center justify-between gap-4 px-4">
           <div className="py-2 space-y-3">
             <p className="text-5xl font-extrabold text-default-900">
-              ยินดีต้อนรับสู่แหล่งเรียนรู้
+              ยินดีต้อนรับสู่แหล่งเรียนรู้ <br/>
               <span className="text-[#168AFF]">
                 วิทยาลัยพยาบาลพระจอมเกล้าจังหวัดเพชรบุรี
               </span>
             </p>
-            <p className="mt-2 text-2xl text-default-600">
+            <p className="mt-2 text-2xl text-default-600 max-w-xl">
               ก้าวเข้าสู่โลกแห่งความรู้ด้านการพยาบาลเด็กและวัยรุ่น ที่ผสานเทคโนโลยีการเรียนการสอนสมัยใหม่เข้ากับประสบการณ์จริงเพื่อเตรียมความพร้อมในการฝึกปฎิบัติ
             </p>
             <Link href="/courses">
@@ -109,16 +109,17 @@ export default function Home() {
           <Image
             src="/welcome.png"
             alt="Hero Image"
-            radius="sm"
+            radius="lg"
+            className="shadow-md border-2 border-blue-50 hover:scale-105 transition-transform"
             height={320}
-          />
+          /> 
         </div>
       </section>
 
       {/* ABOUT */}
       <section
         id="About"
-        className="flex flex-col items-center justify-center py-12 px-4"
+        className="flex flex-col items-center justify-center py-12 px-4 bg-gradient-to-t from-[#FFFFFF] to-[#F0F8FF]"
       >
         <h1 className="sm:text-4xl font-semibold inline-flex flex-nowrap items-baseline gap-2 mb-2">
           <span>วิทยาลัยพยาบาลพระจอมเกล้า จังหวัดเพชรบุรี</span>
@@ -142,57 +143,6 @@ export default function Home() {
           ))}
         </div>
       </section>
-
-      {/* KEEP LEARNING */}
-      {enrolled.length > 0 && (
-        <section
-          id="keep-learning"
-          className="flex flex-col justify-center max-w-screen-lg mx-auto space-y-12 py-12"
-        >
-          <p className="text-5xl font-semibold text-center">เรียนรู้ต่อ</p>
-          <div className="flex flex-col items-center gap-16 w-full mx-auto">
-            <div className="flex gap-8">
-              {/* Course Card */}
-              {enrolled
-                .filter((course) => course?.status === "In progress")
-                .slice(0, 2)
-                .map((course) => (
-                  <div key={course.id}>
-                    <CourseCard
-                      key={course.id}
-                      id={course.id}
-                      title={course.title}
-                      picture={course.urlPicture ?? ""}
-                      enrolledAt={course.enrolledAt}
-                    />
-                    {/* Progress Bar */}
-                    <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
-                      <div
-                        className="bg-primary h-4 rounded-full transition-all duration-300"
-                        style={{
-                          width: `${((course.progress?.current ?? 0) / (course.progress?.total ?? 1)) * 100}%`,
-                        }}
-                      />
-                    </div>
-                    <p className="text-md text-default-500 font-medium mt-1">
-                      {course.progress?.current ?? 0} / {course.progress?.total ?? 0} บท
-                    </p>
-                  </div>
-                )
-                )}
-            </div>
-            {/* All Enroll Button */}
-            <Link
-              color="foreground"
-              href="/"
-              className="flex items-center gap-2 cursor-pointer hover:text-primary transition-colors group"
-            >
-              <p className="text-2xl font-semibold">หลักสูตรที่สมัครเรียนแล้ว</p>
-              <ChevronRight />
-            </Link>
-          </div>
-        </section>
-      )}
 
       {/* COURSES */}
       <section

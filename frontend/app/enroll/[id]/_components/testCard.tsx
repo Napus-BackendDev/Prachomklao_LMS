@@ -38,7 +38,7 @@ export default function TestCard({ title, tests, onSubmit }: TestCardProps) {
 
   return (
     <div
-      className="max-w-screen-lg mx-auto bg-default-100 p-16 rounded-sm"
+      className="max-w-screen-lg mx-auto bg-blue-100  p-16 rounded-2xl shadow-lg"
     >
       <div className="max-w-screen-sm mx-auto">
         {/* Title */}

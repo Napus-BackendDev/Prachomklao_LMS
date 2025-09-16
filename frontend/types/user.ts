@@ -15,6 +15,7 @@ export type Profile = {
     courses?: {
         id: string,
         title: string,
+        picture?: string,
         enrollment: string,
         status: 'In progress' | 'Completed',
     }[]
