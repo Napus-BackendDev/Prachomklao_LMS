@@ -122,7 +122,6 @@ export default function DashboardPage() {
       });
       let json = await res.json();
       setIsLoading(false);
-      console.log(json.value);
       return {
         items: json,
       };

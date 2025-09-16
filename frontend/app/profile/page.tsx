@@ -10,8 +10,6 @@ import { formatDate } from "@/public/util/fromatData";
 export default function ProfilePage() {
   const { user } = useAuth();
   const { enrolled, loading: enrolledLoading } = useEnroll();
-  console.log("User Data:", user);
-  console.log("Enrolled Courses:", enrolled);
 
   const courses = user?.courses ?? [];
   const displayAmount = 3; // จำนวนคอร์สที่แสดงพร้อมกัน
