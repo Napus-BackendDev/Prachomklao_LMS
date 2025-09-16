@@ -18,7 +18,7 @@ const contacts = [
 
 export default function Footer() {
   return (
-    <footer className="w-full py-8 border-b-4 border-[#0930CF] shadow-[0_-4px_12px_-2px_rgba(0,0,0,0.1)]">
+    <footer className="w-full py-8 border-t border-default-200">
       <div className="max-w-screen-2xl grid grid-cols-3 mx-auto">
         {/* ABOUT */}
         <section
@@ -68,7 +68,7 @@ export default function Footer() {
                     variant="flat"
                     radius="full"
                     color="primary"
-                    className="rounded-full p-4 w-12 h-12"
+                    className="rounded-full p-4 w-12 h-12 hover:scale-105"
                   >
                     <contact.icon />
                   </Button>

@@ -54,52 +54,44 @@ export default function CoursePage() {
   }
 
   const handleOpenLogin = () => {
+    handleClear();
     setIsSignupOpen(false);
     setIsLoginOpen(true);
   }
 
   const handleOpenSignup = () => {
+    handleClear();
     setIsLoginOpen(false);
     setIsSignupOpen(true);
   }
 
   const handleOpenReset = () => {
+    handleClear();
     setIsLoginOpen(false);
     setIsResetOpen(true);
   }
 
   const handleLogin = async () => {
     if (!email || !password) return console.error("กรอกอีเมล/รหัสผ่านก่อน");
-
     const res = await login(email, password);
-    if (res) {
-      setIsLoginOpen(false);
-      handleClear();
-    };
+    if (res) window.location.reload();
   };
 
   const handleSignup = async () => {
     if (!username || !email || !password) return console.error("กรอกข้อมูลให้ครบ");
-
-    await signup(username, email, password);
+    const res = await signup(username, email, password);
+    if (res) window.location.reload();
   };
 
   const handleResetPassword = async (email: string, newPassword: string) => {
     if (!email || !newPassword) return;
-
     const res = await resetPassword(email, newPassword);
-    if (res) {
-      setIsResetOpen(false);
-      setIsLoginOpen(true);
-      handleClear();
-    };
+    if (res) window.location.reload();
   }
 
   const handleEnroll = async () => {
     if (!user) return setIsLoginOpen(true);
-
     if (!courseId) return;
-
     if (!enrolled) {
       const res = await createEnroll(courseId);
       if (res) router.push(`/enroll/${courseId}`);

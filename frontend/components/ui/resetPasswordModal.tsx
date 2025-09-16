@@ -8,6 +8,7 @@ import {
   ModalFooter,
   Input,
   Button,
+  Form,
 } from "@heroui/react";
 
 type ResetPasswordProps = {
@@ -30,46 +31,55 @@ export default function ResetPassword({
   handleResetPassword,
 }: ResetPasswordProps) {
   return (
-    <Modal isOpen={isOpen} onOpenChange={onClose} backdrop="blur" placement="center" size="md">
+    <Modal
+      isOpen={isOpen}
+      onOpenChange={onClose}
+      backdrop="blur"
+      placement="center"
+      size="md"
+    >
       <ModalContent>
-        {() => (
-          <>
-            <ModalHeader className="text-2xl font-bold">
-              รีเซ็ตรหัสผ่าน
-            </ModalHeader>
-            <ModalBody className="flex flex-col gap-4">
-              {/* Email Input */}
-              <Input
-                type="email"
-                placeholder="กรอกอีเมล"
-                value={email}
-                onValueChange={setEmail}
-                classNames={{
-                  input: "text-lg",
-                }}
-              />
+        <Form onSubmit={() => handleResetPassword(email, newPassword)}>
+          <ModalHeader className="text-2xl font-bold">
+            รีเซ็ตรหัสผ่าน
+          </ModalHeader>
+          <ModalBody className="flex flex-col gap-4 w-full">
+            {/* Email Input */}
+            <Input
+              isRequired
+              type="email"
+              placeholder="กรอกอีเมล"
+              value={email}
+              onValueChange={setEmail}
+              classNames={{
+                input: "text-lg",
+              }}
+            />
 
-              {/* Password Input */}
-              <Input
-                type="text"
-                placeholder="กรอกรหัสผ่านใหม่"
-                value={newPassword}
-                onValueChange={setNewPassword}
-                classNames={{
-                  input: "text-lg",
-                }}
-              />
-            </ModalBody>
-            <ModalFooter>
-              <Button
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg py-3 text-lg"
-                onPress={() => handleResetPassword(email, newPassword)}
-              >
-                ยืนยันการรีเซ็ต
-              </Button>
-            </ModalFooter>
-          </>
-        )}
+            {/* Password Input */}
+            <Input
+              isRequired
+              type="text"
+              placeholder="กรอกรหัสผ่านใหม่"
+              value={newPassword}
+              onValueChange={setNewPassword}
+              classNames={{
+                input: "text-lg",
+              }}
+            />
+          </ModalBody>
+          <ModalFooter className="w-full">
+            <Button variant="light" onPress={onClose}>
+              ยกเลิก
+            </Button>
+            <Button
+              type="submit"
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg py-3 text-lg"
+            >
+              ยืนยันการรีเซ็ต
+            </Button>
+          </ModalFooter>
+        </Form>
       </ModalContent>
     </Modal>
   );

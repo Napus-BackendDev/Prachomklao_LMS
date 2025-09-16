@@ -121,7 +121,7 @@ export default function EnrollCoursePage() {
             }
 
             {/* Lessons */}
-            {(course && currentStep > 2 && currentStep < (course?.courses.content?.length ?? 0) + 3 && course?.courses.content?.[currentStep - 3])
+            {(course && currentStep > 2 && currentStep < (course?.courses.content?.length ?? 0) + 3 && course.courses.content?.[currentStep - 3])
                 && (
                     <VideoCard
                         course={{
