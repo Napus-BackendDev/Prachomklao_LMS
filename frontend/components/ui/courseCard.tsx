@@ -19,14 +19,13 @@ export default function CourseCard({ title, id, picture, enrolledAt, courseCode,
     <Link
       key={title}
       href={`/courses/${id}`}
-      className="flex flex-col gap-2 mx-auto h-full rounded-md group hover:scale-105 transition duration-300"
+      className="flex flex-col gap-2 mx-auto rounded-md group hover:scale-105 transition duration-300"
     >
       <Image
         alt={title}
         src={picture}
         radius="sm"
-        height={360}
-        className="object-cover group-hover:brightness-60 transition duration-300"
+        className="group-hover:brightness-60 transition duration-300"
       />
       {enrolledAt ? (
         <div className="flex gap-1">

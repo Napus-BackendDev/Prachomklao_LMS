@@ -10,6 +10,7 @@ export type Result = {
     answer: string,
     correctAnswer: string,
     options: string[],
+    explanation?: string,
 }
 
 export type AnswerResult = {

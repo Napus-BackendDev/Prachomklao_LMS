@@ -77,15 +77,15 @@ export default function useAuth() {
                 },
                 body: JSON.stringify({
                     username,
+                    password,
                     email,
-                    password
                 }),
             })
             const data = await res.json();
 
             if (!res.ok) throw new Error(data.message || "Signup failed");
 
-            await login(email, password);
+            // await login(email, password);
             return data;
         } catch (err) {
             setError(

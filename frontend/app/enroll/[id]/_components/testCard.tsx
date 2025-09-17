@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, cn, Divider, Radio, RadioGroup } from "@heroui/react"; // ตัวอย่าง HeroUI ใช้ Chakra-like components
+import { Button, cn, Divider, Radio, RadioGroup } from "@heroui/react";
 import { Test } from "@/types/test";
 
 interface TestCardProps {
@@ -9,10 +9,10 @@ interface TestCardProps {
 }
 
 export default function TestCard({ title, tests, onSubmit }: TestCardProps) {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [questionIndex, setQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<{ question: string; answer: string }[]>([]);
 
-  const currentQuestion = tests[currentIndex];
+  const currentQuestion = tests[questionIndex];
 
   const handleAnswer = (question: string, value: string) => {
     setAnswers((prev) => {
@@ -29,16 +29,17 @@ export default function TestCard({ title, tests, onSubmit }: TestCardProps) {
   };
 
   const handleNext = () => {
-    if (currentIndex < tests.length - 1) setCurrentIndex(currentIndex + 1);
+    if (questionIndex < tests.length - 1) setQuestionIndex(questionIndex + 1);
   };
 
   const handlePrevious = () => {
-    if (currentIndex > 0) setCurrentIndex(currentIndex - 1);
+    if (questionIndex > 0) setQuestionIndex(questionIndex - 1);
   };
+
 
   return (
     <div
-      className="max-w-screen-lg mx-auto bg-blue-100  p-16 rounded-2xl shadow-lg"
+      className="max-w-screen-lg mx-auto bg-[#E9EFF8] p-16 rounded-2xl shadow-lg"
     >
       <div className="max-w-screen-sm mx-auto">
         {/* Title */}
@@ -47,7 +48,7 @@ export default function TestCard({ title, tests, onSubmit }: TestCardProps) {
         {/* Questions */}
         <div className="flex flex-col justify-center">
           <p className="text-xl font-semibold text-default-500">
-            คำถามที่ {currentIndex + 1}
+            คำถามที่ {questionIndex + 1}
           </p>
           <p className="text-xl font-semibold">
             {currentQuestion?.question}
@@ -56,7 +57,7 @@ export default function TestCard({ title, tests, onSubmit }: TestCardProps) {
           <RadioGroup
             key={currentQuestion?.question}
             className="flex justify-center items-center"
-            value={answers[currentIndex]?.answer}
+            value={answers.find(a => a.question === currentQuestion.question)?.answer ?? ""}
             onValueChange={(value) => handleAnswer(currentQuestion.question, value)}
           >
             <div className="grid grid-cols-2 gap-8">
@@ -68,7 +69,7 @@ export default function TestCard({ title, tests, onSubmit }: TestCardProps) {
                     base: cn(
                       "bg-white hover:bg-white/50 items-center",
                       "min-w-xs cursor-pointer rounded-lg gap-4 p-4 border-2 border-transparent",
-                      "data-[selected=true]:border-primary",
+                      "hover:border-primary/60 data-[selected=true]:border-primary",
                     ),
                   }}
                 >
@@ -83,17 +84,21 @@ export default function TestCard({ title, tests, onSubmit }: TestCardProps) {
         <div className="flex justify-center gap-4 mx-auto mt-6">
           <Button
             radius="sm"
-            className="hover:bg-primary hover:text-white"
+            variant="ghost"
+            color="primary"
+            className="border-0 bg-primary/10"
             onPress={handlePrevious}
-            isDisabled={currentIndex === 0}
+            isDisabled={questionIndex === 0}
           >
             ข้อก่อนหน้า
           </Button>
 
-          {currentIndex === tests.length - 1 ? (
+          {questionIndex === tests.length - 1 ? (
             <Button
               radius="sm"
-              className="hover:bg-primary hover:text-white"
+              variant="ghost"
+              color="primary"
+              className="border-0 bg-primary/10"
               onPress={() => onSubmit(answers)}
               isDisabled={answers.length !== tests.length}
             >
@@ -102,7 +107,9 @@ export default function TestCard({ title, tests, onSubmit }: TestCardProps) {
           ) : (
             <Button
               radius="sm"
-              className="hover:bg-primary hover:text-white"
+              variant="ghost"
+              color="primary"
+              className="border-0 bg-primary/10"
               onPress={handleNext}
             >
               ข้อต่อไป

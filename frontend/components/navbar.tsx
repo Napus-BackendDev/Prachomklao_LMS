@@ -16,7 +16,7 @@ import {
 import { siteConfig } from "@/config/site";
 import { fontSans } from "@/config/fonts";
 import { usePathname, useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { FormEvent, useMemo, useState } from "react";
 import { LogOut, LayoutDashboard, BookCopy } from "lucide-react";
 import useAuth from "@/hooks/useAuth";
 import LogInModal from "./ui/loginModal";
@@ -60,16 +60,12 @@ export default function Navbar() {
   };
 
   const handleLogin = async () => {
-    if (!email || !password) return console.error("กรอกอีเมล/รหัสผ่านก่อน");
-
     const res = await login(email, password);
-    if (res) window.location.reload();
+    return res;
   };
 
-  const handleSignup = async () => {
-    if (!username || !email || !password)
-      return console.error("กรอกข้อมูลให้ครบ");
-
+  const handleSignup = async (e: FormEvent) => {
+    e.preventDefault();
     const res = await signup(username, email, password);
     if (res) window.location.reload();
   };
@@ -84,10 +80,9 @@ export default function Navbar() {
     }
   };
 
-  const handleResetPassword = async (email: string, newPassword: string) => {
-    if (!email || !newPassword) return;
-
-    const res = await resetPassword(email, newPassword);
+  const handleResetPassword = async (e: FormEvent) => {
+    e.preventDefault();
+    const res = await resetPassword(email, password);
     if (res) {
       setIsResetOpen(false);
       setIsLoginOpen(true);
@@ -286,8 +281,8 @@ export default function Navbar() {
         setEmail={setEmail}
         password={password}
         setPassword={setPassword}
-        handleSignup={handleSignup}
-        handleOpenLogin={handleOpenLogin}
+        onSignup={handleSignup}
+        onOpenLogin={handleOpenLogin}
       />
 
       <ResetPassword
@@ -301,7 +296,7 @@ export default function Navbar() {
         setEmail={setEmail}
         newPassword={password}
         setNewPassword={setPassword}
-        handleResetPassword={handleResetPassword}
+        onResetPassword={handleResetPassword}
       />
     </HeroUINavbar>
   );

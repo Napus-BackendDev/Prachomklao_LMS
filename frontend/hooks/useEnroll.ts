@@ -91,7 +91,7 @@ export default function useEnroll() {
         setLoading(true);
         setError(null);
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/student/courses/enroll/progress/${courseId}`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/student/courses/enroll/${courseId}`, {
                 method: "PATCH",
                 credentials: "include",
             });

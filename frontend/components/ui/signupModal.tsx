@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import {
     Button,
     Input,
@@ -21,8 +21,8 @@ type SignUpModalProps = {
     setEmail: (value: string) => void;
     password: string;
     setPassword: (value: string) => void;
-    handleSignup: () => void;
-    handleOpenLogin: () => void;
+    onSignup: (e: FormEvent) => void;
+    onOpenLogin: () => void;
 };
 
 export default function SignUpModal({
@@ -34,8 +34,8 @@ export default function SignUpModal({
     setEmail,
     password,
     setPassword,
-    handleSignup,
-    handleOpenLogin,
+    onSignup,
+    onOpenLogin,
 }: SignUpModalProps) {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     const toggleVisibility = () => setIsPasswordVisible(!isPasswordVisible);
@@ -49,7 +49,7 @@ export default function SignUpModal({
             size="md"
         >
             <ModalContent>
-                <Form onSubmit={handleSignup}>
+                <Form onSubmit={onSignup}>
                     <ModalHeader className="text-2xl font-bold">
                         สมัครใช้งาน
                     </ModalHeader>
@@ -102,7 +102,7 @@ export default function SignUpModal({
                         </Button>
                         <div className="flex justify-center gap-2 w-full text-lg">
                             <p>มีบัญชีอยู่แล้วหรือไม่?</p>
-                            <p className="text-primary font-medium cursor-pointer" onClick={handleOpenLogin}>
+                            <p className="text-primary font-medium cursor-pointer" onClick={onOpenLogin}>
                                 เข้าสู่ระบบ
                             </p>
                         </div>

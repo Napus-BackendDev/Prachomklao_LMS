@@ -3,4 +3,5 @@ export type Test = {
     question: string,
     options: string[],
     correctAnswer: string,
+    explanation?: string,
 }

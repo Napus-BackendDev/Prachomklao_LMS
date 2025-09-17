@@ -40,7 +40,7 @@ export default function ProgressBar({ currentStep, progressValue, steps }: Progr
                                     {step.id}
                                 </div>
                                 {/* Title */}
-                                <span className={`text-xl font-bold whitespace-nowrap ${isActive ? "text-primary" : ""}`}>
+                                <span className={`w-50 text-center text-xl font-bold truncate ${isActive ? "text-primary" : ""}`}>
                                     {step.title}
                                 </span>
                             </div>

@@ -12,7 +12,7 @@ export default function ProfilePage() {
   const { enrolled, loading: enrolledLoading } = useEnroll();
 
   const courses = user?.courses ?? [];
-  const displayAmount = 3; // จำนวนคอร์สที่แสดงพร้อมกัน
+  const displayAmount = 3;
   const [displayCourse, setDisplayCourse] = useState(0);
 
   const handlePrev = () => {
@@ -28,8 +28,8 @@ export default function ProfilePage() {
   const userDate = formatDate(user?.createdAt ?? "");
 
   return (
-    <div className="flex flex-col justify-center items-center px-4 sm:px-20 py-10 gap-8">
-      <h1 className="text-4xl font-bold text-primary mb-2">Profile Page</h1>
+    <div className="flex flex-col justify-center items-center max-w-screen-2xl mx-auto px-4 sm:px-20 py-10 gap-8">
+      <h1 className="text-4xl font-bold text-primary mb-2">โปรไฟล์</h1>
       {/* Profile Card */}
       <div className="flex gap-6 border border-blue-100 bg-white/80 p-8 rounded-2xl shadow-lg w-full max-w-3xl items-center">
         <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-blue-200 to-yellow-100 flex items-center justify-center mb-2">
@@ -78,15 +78,12 @@ export default function ProfilePage() {
       </div>
 
       {/* Enrolled Courses Section */}
-      <h2 className="text-3xl font-bold text-primary mt-8">
-        Your Enrolled Courses
-      </h2>
       <section
         id="courses"
-        className="flex flex-col items-center justify-center py-8 space-y-6 w-full bg-gradient-to-b from-[#FFFFFF] to-[#F0F8FF] rounded-2xl shadow-inner"
+        className="flex flex-col items-center justify-center py-8 space-y-6 w-full"
       >
-        <p className="text-2xl font-semibold mb-2 text-gray-700">
-          หลักสูตรของเรา
+        <p className="text-4xl font-semibold mb-2 text-gray-700">
+          เรียนต่อ
         </p>
         <div className="flex items-center gap-4 w-full justify-center">
           {courses.length > 0 && (

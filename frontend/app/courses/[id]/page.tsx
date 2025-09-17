@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import {
   Button,
   Card,
@@ -45,7 +45,7 @@ export default function CoursePage() {
     { title: "แบบทดสอบก่อนเรียน", count: course?.pretest_totle ?? 0 },
     { title: "บทเรียน", count: (course?.courses.content?.length ?? 0) + 1 },
     { title: "แบบทดสอบหลังเรียน", count: course?.posttest_totle ?? 0 },
-  ];
+  ].filter(item => item.count > 0);
 
   const handleClear = () => {
     setUsername("");
@@ -72,21 +72,24 @@ export default function CoursePage() {
   }
 
   const handleLogin = async () => {
-    if (!email || !password) return console.error("กรอกอีเมล/รหัสผ่านก่อน");
     const res = await login(email, password);
-    if (res) window.location.reload();
+    return res;
   };
 
-  const handleSignup = async () => {
-    if (!username || !email || !password) return console.error("กรอกข้อมูลให้ครบ");
+  const handleSignup = async (e: FormEvent) => {
+    e.preventDefault();
     const res = await signup(username, email, password);
     if (res) window.location.reload();
   };
 
-  const handleResetPassword = async (email: string, newPassword: string) => {
-    if (!email || !newPassword) return;
-    const res = await resetPassword(email, newPassword);
-    if (res) window.location.reload();
+  const handleResetPassword = async (e: FormEvent) => {
+    e.preventDefault();
+    const res = await resetPassword(email, password);
+    if (res) {
+      setIsResetOpen(false);
+      setIsLoginOpen(true);
+      handleClear();
+    }
   }
 
   const handleEnroll = async () => {
@@ -176,14 +179,11 @@ export default function CoursePage() {
             variant="shadow"
             radius="sm"
             className="text-xl font-semibold"
-            isDisabled={isLoading || (enrolled && enrolled.status === "Completed")}
             onPress={handleEnroll}
           >
-            {(enrolled && enrolled.status === "Completed")
-              ? "เสร็จสิ้นคอร์ส"
-              : enrolled
-                ? "เรียนต่อ"
-                : "สมัครคอร์ส"
+            {enrolled
+              ? "เรียนต่อ"
+              : "สมัครคอร์ส"
             }
           </Button>
         </Card>
@@ -210,8 +210,8 @@ export default function CoursePage() {
         setEmail={setEmail}
         password={password}
         setPassword={setPassword}
-        handleSignup={handleSignup}
-        handleOpenLogin={handleOpenLogin}
+        onSignup={handleSignup}
+        onOpenLogin={handleOpenLogin}
       />
 
       <ResetPassword
@@ -221,7 +221,7 @@ export default function CoursePage() {
         setEmail={setEmail}
         newPassword={password}
         setNewPassword={setPassword}
-        handleResetPassword={handleResetPassword}
+        onResetPassword={handleResetPassword}
       />
     </div>
   );

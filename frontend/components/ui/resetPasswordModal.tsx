@@ -10,6 +10,7 @@ import {
   Button,
   Form,
 } from "@heroui/react";
+import { FormEvent } from "react";
 
 type ResetPasswordProps = {
   isOpen: boolean;
@@ -18,7 +19,7 @@ type ResetPasswordProps = {
   setEmail: (value: string) => void;
   newPassword: string;
   setNewPassword: (value: string) => void;
-  handleResetPassword: (email: string, newPassword: string) => void;
+  onResetPassword: (e: FormEvent) => void;
 };
 
 export default function ResetPassword({
@@ -28,7 +29,7 @@ export default function ResetPassword({
   setEmail,
   newPassword,
   setNewPassword,
-  handleResetPassword,
+  onResetPassword,
 }: ResetPasswordProps) {
   return (
     <Modal
@@ -39,7 +40,7 @@ export default function ResetPassword({
       size="md"
     >
       <ModalContent>
-        <Form onSubmit={() => handleResetPassword(email, newPassword)}>
+        <Form onSubmit={onResetPassword}>
           <ModalHeader className="text-2xl font-bold">
             รีเซ็ตรหัสผ่าน
           </ModalHeader>

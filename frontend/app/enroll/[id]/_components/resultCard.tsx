@@ -1,5 +1,5 @@
 import { Result } from "@/types/grade";
-import { Button, Card, cn, Divider, Radio, RadioGroup, ScrollShadow } from "@heroui/react";
+import { Button, Card, cn, Divider, ScrollShadow } from "@heroui/react";
 
 type ResultCardProps = {
     results: Result[];
@@ -7,6 +7,7 @@ type ResultCardProps = {
 }
 
 export default function ResultCard({ results, handleNextStep }: ResultCardProps) {
+    console.log(results)
     return (
         <Card className="max-w-screen-md h-full mx-auto p-6 space-y-6">
             <h2 className="text-2xl font-bold text-center">ผลการทำแบบทดสอบ</h2>
@@ -26,8 +27,9 @@ export default function ResultCard({ results, handleNextStep }: ResultCardProps)
                                     classNames={{
                                         base: cn(
                                             "bg-default-100 min-w-xs rounded-lg gap-4 p-4 border-2 border-transparent",
-                                            result.correctAnswer === option ? "bg-success/90" : null,
-                                            result.answer === option && result.answer !== result.correctAnswer ? "bg-danger/90" : null,
+                                            result.correctAnswer === option
+                                                ? (result.correctAnswer === result.answer ? "bg-success/90" : "bg-danger/90")
+                                                : ""
                                         ),
                                     }}
                                 >
@@ -35,18 +37,26 @@ export default function ResultCard({ results, handleNextStep }: ResultCardProps)
                                 </Card>
                             ))}
                         </div>
+                        <div className="flex gap-1 text-xl font-semibold">
+                            <p className="text-primary ">ข้อที่ถูกต้อง :</p>
+                            <p>{result.correctAnswer}</p>
+                        </div>
+                        {result.explanation && (
+                            <p className="text-warning">{result.correctAnswer}</p>
+                        )}
                         <Divider className="rounded-full h-0.5 mx-auto my-8" />
                     </div>
                 ))}
             </ScrollShadow>
 
             <Button
-                onPress={handleNextStep}
-                color="primary"
+                radius="sm"
                 variant="ghost"
-                className="w-20 mx-auto"
+                color="primary"
+                className="w-20 mx-auto border-0 bg-primary/10"
+                onPress={handleNextStep}
             >
-                Next
+                ต่อไป
             </Button>
         </Card>
     )

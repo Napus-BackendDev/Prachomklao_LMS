@@ -13,6 +13,7 @@ import ResultCard from "./_components/resultCard";
 import VideoCard from "./_components/videoCard";
 import EnrollCourseSkeleton from "./_components/enrollCourseSkeleton";
 import useEnroll from "@/hooks/useEnroll";
+import TestCardSkeleton from "./_components/testCardSkeleton";
 
 export default function EnrollCoursePage() {
     const { fetchCourseById, loading: coursesLoading } = useCourses();
@@ -24,19 +25,39 @@ export default function EnrollCoursePage() {
     const courseId = pathName.split("/").pop()
 
     const [course, setCourse] = useState<CourseData>();
-    const [currentStep, setCurrentStep] = useState(1);
+    const [currentStep, setCurrentStep] = useState(7);
     const [pretestResult, setPretestResult] = useState<Result[] | null>(null);
     const [posttestResult, setPosttestResult] = useState<Result[] | null>(null);
     const isLoading = coursesLoading || pretestLoading || posttestLoading || enrolledLoading;
 
-    const steps = [
-        { id: 1, title: "PRE-TEST" },
-        { id: 2, title: course?.courses.title ?? "MAIN" },
-        ...(course?.courses.content?.map((_, index) => ({
-            id: (index + 1) + 2, title: `LESSON ${index + 1}`
-        })) ?? []),
-        { id: (course?.courses.content?.length ?? 0) + 3, title: "POST-TEST" },
-    ];
+    const steps: { id: number; title: string; uid: string; }[] = [];
+    if (course?.pretest_totle) {
+        steps.push({
+            id: steps.length + 1,
+            title: "Pre-Test",
+            uid: "pretest"
+        })
+    };
+    steps.push({
+        id: steps.length + 1,
+        title: course?.courses?.title ?? "Lesson 1",
+        uid: "Lesson 1"
+    })
+    course?.courses?.content?.map((lesson, index) => {
+        steps.push({
+            id: steps.length + 1,
+            title: lesson.title ?? `Lesson ${index + 2}`,
+            uid: `Lesson ${index + 2}`
+        })
+    })
+    if (course?.posttest_totle) {
+        steps.push({
+            id: steps.length + 1,
+            title: "Post-Test",
+            uid: "posttest"
+        });
+    }
+
     const progressValue = ((currentStep - 1) / (steps.length - 1)) * 100;
 
     useEffect(() => {
@@ -46,8 +67,8 @@ export default function EnrollCoursePage() {
             const course = await fetchCourseById(courseId);
             setCourse(course);
 
-            const enrolled = await fetchEnrolledById(courseId);
-            setCurrentStep(enrolled.progress.current + 1);
+            // const enrolled = await fetchEnrolledById(courseId);
+            // setCurrentStep(enrolled.progress.current);
         };
 
         fetchData();
@@ -72,10 +93,10 @@ export default function EnrollCoursePage() {
         setCurrentStep(prev => prev + 1);
     }
 
-    if (isLoading) return <EnrollCourseSkeleton />
+    if (isLoading) return (currentStep !== 1) && (currentStep !== steps.length) ? <EnrollCourseSkeleton /> : <TestCardSkeleton />
 
     return (
-        <div className="max-w-screen-2xl mx-auto py-8 space-y-20">
+        <div className="max-w-screen-2xl mx-auto py-8 space-y-30">
             {/* Progress Bar */}
             <ProgressBar
                 currentStep={currentStep}
@@ -84,23 +105,25 @@ export default function EnrollCoursePage() {
             />
 
             {/* Pre-Test */}
-            {currentStep === 1 && pretestResult
-                ? (
-                    // Pre-test Result
-                    <ResultCard
-                        results={pretestResult}
-                        handleNextStep={handleNext}
-                    />
-                ) : (
-                    // Pre-test Test
-                    (currentStep === 1 && course?.pretest) && (
-                        <TestCard
-                            title="แบบทดสอบก่อนเรียน"
-                            tests={course?.pretest}
-                            onSubmit={(answers: { question: string; answer: string }[]) => handleSubmit(answers)}
+            {steps[currentStep - 1]?.uid === "pretest"
+                ? pretestResult
+                    ? (
+                        // Pre-test Result
+                        <ResultCard
+                            results={pretestResult}
+                            handleNextStep={handleNext}
                         />
+                    ) : (
+                        // Pre-test Test
+                        (currentStep === 1 && course?.pretest) && (
+                            <TestCard
+                                title="แบบทดสอบก่อนเรียน"
+                                tests={course?.pretest}
+                                onSubmit={(answers: { question: string; answer: string }[]) => handleSubmit(answers)}
+                            />
+                        )
                     )
-                )
+                : null
             }
 
             {/* Main */}
@@ -139,27 +162,29 @@ export default function EnrollCoursePage() {
             }
 
             {/* Post-test */}
-            {currentStep === steps.length && posttestResult
-                ? (
-                    // Post-test Result
-                    <ResultCard
-                        results={posttestResult}
-                        handleNextStep={() => {
-                            currentStep === steps.length
-                                ? router.replace('/')
-                                : setCurrentStep(prev => prev + 1)
-                        }}
-                    />
-                ) : (
-                    // Post-test Test
-                    (currentStep === steps.length && course?.posttest) && (
-                        <TestCard
-                            title="แบบทดสอบหลังเรียน"
-                            tests={course?.posttest}
-                            onSubmit={(answers: { question: string; answer: string }[]) => handleSubmit(answers)}
+            {steps[currentStep - 1]?.uid === "posttest"
+                ? posttestResult
+                    ? (
+                        // Post-test Result
+                        <ResultCard
+                            results={posttestResult}
+                            handleNextStep={() => {
+                                currentStep === steps.length
+                                    ? router.replace('/')
+                                    : setCurrentStep(prev => prev + 1)
+                            }}
                         />
+                    ) : (
+                        // Post-test Test
+                        (currentStep === steps.length && course?.posttest) && (
+                            <TestCard
+                                title="แบบทดสอบหลังเรียน"
+                                tests={course?.posttest}
+                                onSubmit={(answers: { question: string; answer: string }[]) => handleSubmit(answers)}
+                            />
+                        )
                     )
-                )
+                : null
             }
         </div>
     )

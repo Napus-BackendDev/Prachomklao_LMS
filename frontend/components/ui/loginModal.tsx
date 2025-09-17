@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import {
   Button,
   Input,
@@ -9,8 +9,9 @@ import {
   ModalBody,
   ModalFooter,
   Form,
+  Card,
 } from "@heroui/react";
-import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { CircleAlert, EyeIcon, EyeOffIcon } from "lucide-react";
 
 type LogInModalProps = {
   isOpen: boolean;
@@ -19,7 +20,7 @@ type LogInModalProps = {
   setEmail: (value: string) => void;
   password: string;
   setPassword: (value: string) => void;
-  onLogin: () => void;
+  onLogin: () => Promise<string>;
   onOpenSignup: () => void;
   onOpenReset: () => void;
 };
@@ -35,12 +36,19 @@ export default function LogInModal({
   onOpenSignup,
   onOpenReset,
 }: LogInModalProps) {
+  const [isError, setIsError] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const toggleVisibility = () => setIsPasswordVisible(!isPasswordVisible);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    onLogin();
+    setIsError(false);
+    const res = await onLogin();
+    if (res) {
+      window.location.reload();
+    } else {
+      setIsError(true);
+    }
   };
 
   return (
@@ -55,8 +63,14 @@ export default function LogInModal({
         <Form onSubmit={handleSubmit}>
           <ModalHeader className="text-2xl font-bold">เข้าสู่ระบบ</ModalHeader>
           <ModalBody className="flex flex-col gap-4 w-full">
+            {isError ? (
+              <p className="flex items-center gap-2 text-danger font-medium text-center">
+                <CircleAlert size={16} />
+                อีเมลหรือรหัสผ่านไม่ถูกต้อง
+              </p>
+            ) : null}
             <Input
-              isRequired 
+              isRequired
               type="email"
               placeholder="กรอกอีเมล"
               value={email}

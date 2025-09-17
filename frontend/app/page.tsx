@@ -1,20 +1,16 @@
 "use client";
 
-import { siteConfig } from "@/config/site";
 import {
   Clock4,
   Smile,
   Smartphone,
   GraduationCap,
-  ChevronLeft,
   ChevronRight,
-  Quote,
 } from "lucide-react";
-import { Button, Card, CardBody, CardFooter, CardHeader, Image, Link } from "@heroui/react";
+import { Button, Image, Link, Skeleton } from "@heroui/react";
 import CourseCard from "@/components/ui/courseCard";
 import { useEffect, useState } from "react";
 import useCourses from "@/hooks/useCourses";
-import useEnroll from "@/hooks/useEnroll";
 import { Courses } from "@/types/couses";
 
 const features = [
@@ -54,20 +50,9 @@ const organizers = [
 ];
 
 export default function Home() {
-  const { courses, loading: coursesLoading } = useCourses();
-  const { enrolled, loading: enrolledLoading } = useEnroll();
+  const { courses, loading } = useCourses();
 
-  const [displayCourse, setDisplayCourse] = useState(0);
   const [organizer, setOrganizers] = useState(0);
-  const displayAmount = 3;
-  const isLoading = coursesLoading || enrolledLoading;
-
-  const handlePrev = () => {
-    if (displayCourse > 0) setDisplayCourse(displayCourse - 1);
-  };
-  const handleNext = () => {
-    if (displayCourse < courses?.length - 3) setDisplayCourse(displayCourse + 1);
-  };
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -86,7 +71,7 @@ export default function Home() {
         <div className="max-w-screen-xl mx-auto flex sm:flex-row flex-col-reverse items-center justify-between gap-4 px-4">
           <div className="py-2 space-y-3">
             <p className="text-5xl font-extrabold text-default-900">
-              ยินดีต้อนรับสู่แหล่งเรียนรู้ <br/>
+              ยินดีต้อนรับสู่แหล่งเรียนรู้ <br />
               <span className="text-[#168AFF]">
                 วิทยาลัยพยาบาลพระจอมเกล้าจังหวัดเพชรบุรี
               </span>
@@ -110,9 +95,9 @@ export default function Home() {
             src="/welcome.png"
             alt="Hero Image"
             radius="lg"
-            className="shadow-md border-2 border-blue-50 hover:scale-105 transition-transform"
+            className="shadow-md border-2 border-blue-50 hover:scale-101 transition-transform"
             height={320}
-          /> 
+          />
         </div>
       </section>
 
@@ -150,21 +135,27 @@ export default function Home() {
         className="flex flex-col items-center justify-center py-12 space-y-6 bg-gradient-to-b from-[#FFFFFF] to-[#F0F8FF]"
       >
         <p className="text-4xl font-semibold">หลักสูตรของเรา</p>
-        <div className="flex items-center gap-4">
-          {courses?.slice(0, 2).map((course: Courses) => (
-            <div
-              key={course.id}
-              className="w-full h-64 shrink-0 basis-1/2 p-4"
-            >
-              <CourseCard
-                title={course.title}
-                id={course.id ?? ""}
-                picture={course.urlPicture ?? ""}
-                courseCode={course.courseCode ?? ""}
-                totalStudent={course.totalStudent ?? 0}
-              />
-            </div>
-          ))}
+        <div className="flex items-start gap-4">
+          {loading ? (
+            Array.from({ length: 3 }).map((_, i) => (
+              <Skeleton key={i} className="w-100 h-100 rounded-lg mb-2" />
+            ))
+          ) : (
+            courses?.slice(0, 3).map((course: Courses) => (
+              <div
+                key={course.id}
+                className={`flex shrink-0 basis-1/${courses.length % 3} p-4`}
+              >
+                <CourseCard
+                  title={course.title}
+                  id={course.id ?? ""}
+                  picture={course.urlPicture ?? ""}
+                  courseCode={course.courseCode ?? ""}
+                  totalStudent={course.totalStudent ?? 0}
+                />
+              </div>
+            ))
+          )}
         </div>
         {/* All Courses Button */}
         <Link
@@ -177,29 +168,29 @@ export default function Home() {
         </Link>
       </section>
 
-      {/* Organizer */}
+      {/* ORGANIZER */}
       <section
         id="organizer"
         className="flex flex-col items-center justify-center py-12 space-y-6 bg-gradient-to-b from-[#F0F8FF] to-[#EEF7FF]"
       >
         <p className="text-4xl font-semibold">ผู้จัดทำ</p>
-          <div
-            className="flex justify-between transition-transform duration-1000"
-            style={{
-              transform: `translateX(-${organizer * 33}%)`,
-            }}
-          >
-            {[...organizers].map((src, i) => (
-              <div key={i} className="shrink-0 basis-1/3">
-                <Image
-                  alt={`organizer-${i}`}
-                  src={src}
-                  radius="sm"
-                  height={360}
-                />
-              </div>
-            ))}
-          </div>
+        <div
+          className="flex justify-between transition-transform duration-1000"
+          style={{
+            transform: `translateX(-${organizer * 33}%)`,
+          }}
+        >
+          {[...organizers].map((src, i) => (
+            <div key={i} className="shrink-0 basis-1/3">
+              <Image
+                alt={`organizer-${i}`}
+                src={src}
+                radius="sm"
+                height={360}
+              />
+            </div>
+          ))}
+        </div>
       </section>
     </>
   );
