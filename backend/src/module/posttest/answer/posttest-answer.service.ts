@@ -46,6 +46,7 @@ export class PosttestAnswerService {
         question: posttestData.question,
         options: posttestData.options,
         correctAnswer: posttestData.correctAnswer,
+        explanation: posttestData.explanation,
       };
     });
 
@@ -66,6 +67,7 @@ export class PosttestAnswerService {
         options: posttest.options,
         answer: answer?.answer ?? null,
         correctAnswer: posttest.correctAnswer,
+        explanation: posttest.explanation,
       } as PosttestAnswer;
     });
 

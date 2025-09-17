@@ -3,6 +3,7 @@ export interface PosttestQuestion {
   question: string;
   options: string[];
   correctAnswer: string;
+  explanation: string;
 }
 
 export interface PosttestAnswer {
@@ -11,6 +12,7 @@ export interface PosttestAnswer {
   options: string[];
   answer?: string;
   correctAnswer: string;
+  explanation: string;
 }
 
 export interface PosttestScore {
