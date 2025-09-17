@@ -7,4 +7,6 @@ export class CreatePosttestQuestionDto {
   options: string[];
   @IsString()
   correctAnswer: string;
+  @IsString()
+  explanation : string;
 }
