@@ -83,7 +83,7 @@ export default function DashboardPage() {
     // รวม studentTotal ตาม category
     const categoryMap: Record<string, number> = {};
     courses.forEach((course) => {
-      const category = course.title || "Other";
+      const category = course.courseCode || "Other";
       categoryMap[category] = (categoryMap[category] || 0) + (course.totalStudent || 0);
     });
 

@@ -150,12 +150,9 @@ export default function Home() {
         className="flex flex-col items-center justify-center py-12 space-y-6 bg-gradient-to-b from-[#FFFFFF] to-[#F0F8FF]"
       >
         <p className="text-4xl font-semibold">หลักสูตรของเรา</p>
-        <div className="flex items-center gap-4">
+        <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-8 px-4 max-w-6xl">
           {courses?.slice(0, 2).map((course: Courses) => (
-            <div
-              key={course.id}
-              className="h-full shrink-0 basis-1/2 p-4"
-            >
+            <div key={course.id} className="w-full">
               <CourseCard
                 title={course.title}
                 id={course.id ?? ""}
