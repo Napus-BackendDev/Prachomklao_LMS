@@ -1,5 +1,5 @@
 export type Test = {
-    id: string,
+    id?: string,
     question: string,
     options: string[],
     correctAnswer: string,

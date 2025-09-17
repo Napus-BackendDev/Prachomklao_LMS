@@ -17,7 +17,7 @@ import { siteConfig } from "@/config/site";
 import { fontSans } from "@/config/fonts";
 import { usePathname, useRouter } from "next/navigation";
 import { FormEvent, useMemo, useState } from "react";
-import { LogOut, LayoutDashboard, BookCopy } from "lucide-react";
+import { LogOut, LayoutDashboard, BookCopy, Home, BookMarked } from "lucide-react";
 import useAuth from "@/hooks/useAuth";
 import LogInModal from "./ui/loginModal";
 import SignUpModal from "./ui/signupModal";
@@ -92,167 +92,203 @@ export default function Navbar() {
 
   const navigateContent = useMemo(() => {
     return (
-      <NavbarContent
-        className="basis-1/5 sm:basis-full space-x-4"
-        justify="start"
-      >
-        <NavbarBrand className={`${fontSans.className} gap-3 max-w-fit`}>
-          <Link className="flex justify-start items-center gap-4" href="/">
-            <Image
-              alt="Prachomklao College of Nursing Logo"
-              src="/logo.png"
-              height={60}
-            />
-            <div>
-              <p className="text-xl font-semibold text-default-800">
-                Prachomklao
-              </p>
-              <p className="text-md text-default-400 font-medium">
-                College of Nursing
-              </p>
-            </div>
-          </Link>
-        </NavbarBrand>
-        <ul className="hidden lg:flex gap-4 justify-start ml-4">
-          {siteConfig.navItems
-            .filter((item) => user?.role === "Admin" ? item : item.label !== "Admin")
-            .map((item) => (
-              <NavbarItem key={item.href}>
-                <Link
-                  className={`text-lg font-medium ${pathName === item.href ? "text-primary" : "text-default-800"} hover:text-primary hover:underline underline-offset-4 px-2`}
-                  href={item.href}
-                >
-                  {item.label}
-                </Link>
-              </NavbarItem>
-            ))}
-        </ul>
-      </NavbarContent>
+      <div className="hidden md:flex text-center gap-4">
+        {siteConfig.navItems
+          .filter((item) => user?.role === "Admin" ? item : item.label !== "Admin")
+          .map((item) => (
+            <NavbarItem key={item.href}>
+              <Link
+                className={`text-lg font-medium ${pathName === item.href ? "text-primary" : "text-default-800"} hover:text-primary hover:underline underline-offset-4 px-2`}
+                href={item.href}
+              >
+                {item.label}
+              </Link>
+            </NavbarItem>
+          ))}
+      </div>
     );
   }, [user, setIsLoginOpen, setIsSignupOpen, handleLogout]);
 
   const profileContent = useMemo(() => {
     if (user) {
       if (user.role === "Admin") {
-        // Admin: โชว์ Dashboard กับ Logout
+        // Admin Role
         return (
-          <NavbarContent
-            className="hidden sm:flex basis-1/5 sm:basis-full"
-            justify="end"
-          >
-            <NavbarItem>
-              <Dropdown>
-                <DropdownTrigger>
-                  <div className="flex flex-col group py-2 rounded-lg cursor-pointer">
-                    <p className="text-lg font-semibold text-default-800">
-                      ผู้ดูแลระบบ
-                    </p>
-                    <p className="text-md text-default-400">{user.role}</p>
-                  </div>
-                </DropdownTrigger>
-                <DropdownMenu aria-label="Static Actions">
-                  <DropdownItem
-                    key="Dashboard"
-                    startContent={<LayoutDashboard size={18} />}
-                    onPress={() => router.push("/admin")}
-                    classNames={{ title: "text-xl font-bold" }}
-                  >
-                    Dashboard
-                  </DropdownItem>
-                  <DropdownItem
-                    key="logout"
-                    startContent={<LogOut size={18} />}
-                    onPress={handleLogout}
-                    classNames={{ title: "text-xl font-bold" }}
-                  >
-                    Log out
-                  </DropdownItem>
-                </DropdownMenu>
-              </Dropdown>
-            </NavbarItem>
+          <NavbarContent>
+            <div className="flex w-full justify-end">
+              <NavbarItem>
+                <Dropdown>
+                  <DropdownTrigger>
+                    <div className="flex flex-col group py-2 rounded-lg cursor-pointer">
+                      <p className="text-lg font-semibold text-default-800">
+                        ผู้ดูแลระบบ
+                      </p>
+                      <p className="text-md text-default-400">{user.role}</p>
+                    </div>
+                  </DropdownTrigger>
+                  <DropdownMenu aria-label="Static Actions">
+                    <DropdownItem
+                      key="Home"
+                      startContent={<Home size={18} />}
+                      onPress={() => router.push("/")}
+                      className="md:hidden"
+                      classNames={{ title: "text-xl font-bold" }}
+                    >
+                      หน้าแรก
+                    </DropdownItem>
+                    <DropdownItem
+                      key="Courses"
+                      startContent={<BookMarked size={18} />}
+                      onPress={() => router.push("/courses")}
+                      className="md:hidden"
+                      classNames={{ title: "text-xl font-bold" }}
+                    >
+                      หลักสูตร
+                    </DropdownItem>
+                    <DropdownItem
+                      key="Dashboard"
+                      startContent={<LayoutDashboard size={18} />}
+                      onPress={() => router.push("/admin")}
+                      classNames={{ title: "text-xl font-bold" }}
+                    >
+                      แดชบอร์ด
+                    </DropdownItem>
+                    <DropdownItem
+                      key="logout"
+                      startContent={<LogOut size={18} />}
+                      onPress={handleLogout}
+                      classNames={{ title: "text-xl font-bold" }}
+                    >
+                      ออกระบบ
+                    </DropdownItem>
+                  </DropdownMenu>
+                </Dropdown>
+              </NavbarItem>
+            </div>
           </NavbarContent>
         );
       } else if (user.role === "Student") {
+        // User Role
         return (
-          <NavbarContent
-            className="hidden sm:flex basis-1/5 sm:basis-full"
-            justify="end"
-          >
-            <NavbarItem>
-              <Dropdown>
-                <DropdownTrigger>
-                  <div className="flex flex-col group py-2 rounded-lg cursor-pointer">
-                    <p className="text-lg font-semibold text-default-800">
-                      {user.username}
-                    </p>
-                    <p className="text-md text-default-400">{user.role}</p>
-                  </div>
-                </DropdownTrigger>
-                <DropdownMenu aria-label="Static Actions">
-                  <DropdownItem
-                    key="profile"
-                    startContent={<BookCopy  size={18} />}
-                    onPress={() => router.push("/profile")}
-                    classNames={{ title: "text-xl font-bold" }}
-                  >
-                    Profile
-                  </DropdownItem>
-                  <DropdownItem
-                    key="logout"
-                    startContent={<LogOut size={18} />}
-                    onPress={handleLogout}
-                    classNames={{ title: "text-xl font-bold" }}
-                  >
-                    Log out
-                  </DropdownItem>
-                </DropdownMenu>
-              </Dropdown>
-            </NavbarItem>
+          <NavbarContent>
+            <div className="flex w-full justify-end">
+              <NavbarItem>
+                <Dropdown>
+                  <DropdownTrigger>
+                    <div className="flex flex-col group py-2 rounded-lg cursor-pointer">
+                      <p className="text-lg font-semibold text-default-800">
+                        {user.username}
+                      </p>
+                      <p className="text-md text-default-400">{user.role}</p>
+                    </div>
+                  </DropdownTrigger>
+                  <DropdownMenu aria-label="Static Actions">
+                    <DropdownItem
+                      key="Home"
+                      startContent={<Home size={18} />}
+                      onPress={() => router.push("/")}
+                      className="md:hidden"
+                      classNames={{ title: "text-xl font-bold" }}
+                    >
+                      หน้าแรก
+                    </DropdownItem>
+                    <DropdownItem
+                      key="Courses"
+                      startContent={<BookMarked size={18} />}
+                      onPress={() => router.push("/courses")}
+                      className="md:hidden"
+                      classNames={{ title: "text-xl font-bold" }}
+                    >
+                      หลักสูตร
+                    </DropdownItem>
+                    <DropdownItem
+                      key="profile"
+                      startContent={<BookCopy size={18} />}
+                      onPress={() => router.push("/profile")}
+                      classNames={{ title: "text-xl font-bold" }}
+                    >
+                      โปรไฟล์
+                    </DropdownItem>
+                    <DropdownItem
+                      key="logout"
+                      startContent={<LogOut size={18} />}
+                      onPress={handleLogout}
+                      classNames={{ title: "text-xl font-bold" }}
+                    >
+                      ออกระบบ
+                    </DropdownItem>
+                  </DropdownMenu>
+                </Dropdown>
+              </NavbarItem>
+            </div>
           </NavbarContent>
         );
       }
     }
     // ยังไม่ login
     return (
-      <NavbarContent
-        className="hidden sm:flex basis-1/5 sm:basis-full"
-        justify="end"
-      >
-        <NavbarItem className="hidden lg:flex">
-          <Button
-            className="text-sm font-medium px-6"
-            variant="flat"
-            color="primary"
-            onPress={() => setIsLoginOpen(true)}
-          >
-            Log In
-          </Button>
-        </NavbarItem>
-        <NavbarItem className="hidden md:flex">
-          <Button
-            className="text-sm font-medium px-6"
-            color="primary"
-            variant="shadow"
-            onPress={() => setIsSignupOpen(true)}
-          >
-            Sign Up
-          </Button>
-        </NavbarItem>
+      <NavbarContent>
+        <div className="flex w-full justify-end gap-2">
+          <NavbarItem>
+            <Button
+              className="text-sm font-medium px-6"
+              variant="flat"
+              color="primary"
+              onPress={() => setIsLoginOpen(true)}
+            >
+              เข้าสู่ระบบ
+            </Button>
+          </NavbarItem>
+          <NavbarItem className="hidden md:flex">
+            <Button
+              className="text-sm font-medium px-6"
+              color="primary"
+              variant="shadow"
+              onPress={() => setIsSignupOpen(true)}
+            >
+              ลงทะเบียน
+            </Button>
+          </NavbarItem>
+        </div>
       </NavbarContent>
     );
   }, [user, setIsLoginOpen, setIsSignupOpen, handleLogout, router]);
 
   return (
     <HeroUINavbar
+      shouldHideOnScroll
+      height="30"
       maxWidth="2xl"
-      position="static"
-      className={`${fontSans.className} py-4 shadow-2xs`}
+      className={`${fontSans.className} py-4 h-auto`}
     >
-      {/* Navigate */}
-      {navigateContent}
+      <div className="flex items-center justify-between w-full lg:max-w-screen-md xl:max-w-screen-2xl mx-auto">
+        {/* Logo */}
+        <NavbarContent>
+          <NavbarBrand className={`${fontSans.className}`}>
+            <Link className="flex justify-start items-center gap-4" href="/">
+              <Image
+                alt="Prachomklao College of Nursing Logo"
+                src="/logo.png"
+                className="h-full h-12 object-cover"
+              />
+              <div>
+                <p className="text-md text-default-400 font-medium">
+                  วิทยาลัยพยาบาล
+                </p>
+                <p className="text-xl font-semibold text-default-800">
+                  พระจอมเกล้า
+                </p>
+              </div>
+            </Link>
+          </NavbarBrand>
+        </NavbarContent>
 
-      {/* Profile */}
-      {profileContent}
+        {/* Navigate */}
+        {navigateContent}
+
+        {/* Profile */}
+        {profileContent}
+      </div>
 
       <LogInModal
         isOpen={isLoginOpen}

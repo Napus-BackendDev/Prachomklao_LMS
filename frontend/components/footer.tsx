@@ -18,16 +18,15 @@ const contacts = [
 
 export default function Footer() {
   return (
-    <footer className="w-full py-8 border-t border-default-200">
-      <div className="max-w-screen-2xl grid grid-cols-3 mx-auto">
+    <footer className="w-full py-8 border-t border-default-200 bg-white">
+      <div className="lg:max-w-screen-md xl:max-w-screen-2xl grid lg:grid-cols-3 gap-8 mx-auto">
         {/* ABOUT */}
         <section
           id="about"
           className="flex flex-col items-center"
         >
-          <div>
-            <p className="font-black text-3xl text-gray-600 mb-4">About</p>
-            <p className="font-medium text-2xl">Prachomklao College of Nursing</p>
+          <div className="text-center lg:text-start">
+            <p className="font-black text-3xl text-gray-600 mb-4">เกี่ยวกับเรา</p>
             <div className="text-2xl">
               <p>" วิทยาลัยพยาบาลพระจอมเกล้าจังหวัดเพชรบุรี "</p>
               <p>งามสง่า มีคุณค่า อ่อนโยนและเข้มแข็ง</p>
@@ -42,10 +41,10 @@ export default function Footer() {
           id="links"
           className="flex flex-col items-center"
         >
-          <div className="flex flex-col">
-            <p className="font-black text-3xl text-gray-600 mb-4">Quick Links</p>
-            <Link href="/" className="text-2xl text-black hover:text-primary">Home</Link>
-            <Link href="/courses" className="text-2xl text-black hover:text-primary">Courses</Link>
+          <div className="flex flex-col items-center">
+            <p className="font-black text-3xl text-gray-600 mb-4">ทางลัด</p>
+            <Link href="/" className="text-2xl text-black hover:text-primary">หน้าแรก</Link>
+            <Link href="/courses" className="text-2xl text-black hover:text-primary">หลักสูตร</Link>
           </div>
         </section>
 
@@ -55,7 +54,7 @@ export default function Footer() {
           className="flex flex-col items-center"
         >
           <div>
-            <p className="font-black text-3xl text-gray-600 mb-4">Contact Us</p>
+            <p className="font-black text-3xl text-gray-600 mb-4">ติดต่อเรา</p>
             <div className="flex gap-2">
               {contacts.map((contact) => (
                 <Link

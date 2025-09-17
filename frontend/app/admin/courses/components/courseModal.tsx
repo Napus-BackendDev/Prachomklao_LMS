@@ -12,16 +12,18 @@ import {
   Divider,
   Form,
 } from "@heroui/react";
-import { Trash } from "lucide-react";
 import { Content, MainContent } from "@/types/content";
 import { CourseData, Courses } from "@/types/couses";
+import CourseAccordion from "./courseAccordion";
+import { Test } from "@/types/test";
+import TestAccordion from "./testAccordion";
 
 type CourseModalProps = {
   isOpen: boolean;
   onClose: () => void;
   onAdd: (course: (MainContent | Content)[]) => void;
   course?: CourseData | null;
-  onEdit?: (course: Courses) => void;
+  onEdit?: (course: Courses, pretest: Test[], posttest: { question: "", options: [], correctAnswer: "", explanation: "" }[]) => void;
 };
 
 export default function CourseModal({ isOpen, onClose, onAdd, course, onEdit }: CourseModalProps) {
@@ -29,6 +31,8 @@ export default function CourseModal({ isOpen, onClose, onAdd, course, onEdit }: 
   const [url, setUrl] = useState("");
   const [code, setCode] = useState("");
   const [content, setContent] = useState<Content[]>([{ title: "", url: "" }]);
+  const [pretest, setPretest] = useState<Test[]>([{ question: "", options: [], correctAnswer: "" }]);
+  const [posttest, setPosttest] = useState<Test[]>([{ question: "", options: [], correctAnswer: "", explanation: "" }]);
 
   useEffect(() => {
     if (course) {
@@ -36,6 +40,8 @@ export default function CourseModal({ isOpen, onClose, onAdd, course, onEdit }: 
       setUrl(course.courses.url);
       setCode(course.courses.courseCode ?? "");
       setContent(course.courses.content ?? [{ title: "", url: "" }]);
+      setPretest(course.pretest ?? [{ question: "", options: [], correctAnswer: "" }]);
+      setPosttest(course.posttest ?? [{ question: "", options: [], correctAnswer: "", explanation: "" }]);
     }
   }, [course]);
 
@@ -45,6 +51,8 @@ export default function CourseModal({ isOpen, onClose, onAdd, course, onEdit }: 
       setUrl("");
       setCode("");
       setContent([{ title: "", url: "" }]);
+      setPretest([{ question: "", options: [], correctAnswer: "" }]);
+      setPosttest([{ question: "", options: [], correctAnswer: "", explanation: "" }]);
     }
   }, [isOpen]);
 
@@ -73,7 +81,7 @@ export default function CourseModal({ isOpen, onClose, onAdd, course, onEdit }: 
         courseCode: code,
         content: [...content],
       };
-      onEdit(editCourse);
+      onEdit(editCourse, pretest, posttest as { question: "", options: [], correctAnswer: "", explanation: "" }[]);
     } else {
       // Add
       const data = [
@@ -104,64 +112,50 @@ export default function CourseModal({ isOpen, onClose, onAdd, course, onEdit }: 
       <ModalContent>
         <Form onSubmit={handleSubmit}>
           <ModalHeader className="text-xl font-bold">
-            {course ? "แก้ไขคอร์ส" : "เพิ่มคอร์สใหม่"}
+            {course ? "แก้ไขหลักสูตร" : "เพิ่มหลักสูตรใหม่"}
           </ModalHeader>
           <Divider />
-          <ModalBody className="flex flex-col gap-4 w-full">
+          <ModalBody className="flex flex-col gap-4 w-full max-h-[70vh]">
             <Input
               label="Title"
               value={title}
               onValueChange={setTitle}
-              placeholder="ชื่อคอร์ส"
+              placeholder="ชื่อหลักสูตร"
               isRequired={true}
             />
             <Input
               label="URL"
               value={url}
               onValueChange={setUrl}
-              placeholder="ลิงก์คอร์ส"
+              placeholder="ลิงก์หลักสูตร"
               isRequired={true}
             />
             <Input
               label="Code"
               value={code}
               onValueChange={setCode}
-              placeholder="รหัสคอร์ส"
+              placeholder="รหัสหลักสูตร"
             />
-            <div className="space-y-4">
-              <p className="font-medium">Content</p>
-              {content.map((item, index) => (
-                <div key={index} className="flex gap-2 items-center">
-                  <Input
-                    label="Content Title"
-                    value={item.title}
-                    onValueChange={(val) => handleContentChange(index, "title", val)}
-                    placeholder="ชื่อบทเรียน"
-                    className="flex-1"
-                  />
-                  <Input
-                    label="Content URL"
-                    value={item.url}
-                    onValueChange={(val) => handleContentChange(index, "url", val)}
-                    placeholder="ลิงก์บทเรียน"
-                    className="flex-1"
-                  />
-                  {content.length > 1 && (
-                    <Button
-                      isIconOnly
-                      color="danger"
-                      variant="light"
-                      onPress={() => handleRemoveContent(index)}
-                    >
-                      <Trash size="20" />
-                    </Button>
-                  )}
-                </div>
-              ))}
-              <Button color="primary" variant="flat" onPress={handleAddContent}>
-                + เพิ่ม Content
-              </Button>
-            </div>
+
+            {/* Course Accordion */}
+            <CourseAccordion
+              content={content}
+              onAddContent={handleAddContent}
+              onRemoveContent={handleRemoveContent}
+              onContentChange={handleContentChange}
+            />
+
+            {/* Course Accordion */}
+            {!!course && onEdit ?
+              (
+                < TestAccordion
+                  pretest={pretest}
+                  setPretest={setPretest}
+                  posttest={posttest}
+                  setPosttest={setPosttest}
+                />
+              ) : <p className="text-lg text-center text-primary">Pre-test และ Post-test สามารถเพิ่มได้จากหน้าแก้ไข</p>
+            }
           </ModalBody>
           <Divider />
           <ModalFooter className="w-full">

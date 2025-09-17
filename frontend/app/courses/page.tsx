@@ -28,11 +28,11 @@ export default function CoursesPage() {
   const endCourse = startCourse + coursesPerPage;
 
   return (
-    <div className="flex flex-col max-w-screen-2xl mx-auto py-4">
+    <div className="flex flex-col min-h-screen max-w-xs md:max-w-screen-sm lg:max-w-screen-md xl:max-w-screen-2xl mx-auto py-4">
       <div className="flex w-full gap-10 mb-4">
         <Input
           isClearable
-          placeholder="Search Courses"
+          placeholder="ค้นหาหลักสูตร"
           startContent={<Search className="text-default-400 pointer-events-none" size={20} />}
           value={search}
           onValueChange={(value) => { setSearch(value); setPage(1); }}
@@ -43,9 +43,9 @@ export default function CoursesPage() {
         />
       </div>
       <div>
-        <p className="text-xl">ผลลัพธ์จำนวน {filteredCourses.length} วิชา</p>
+        <p className="text-xl">ผลลัพธ์จำนวน {filteredCourses.length} หลักสูตร</p>
         <Divider className="my-2" />
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 py-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 py-4">
           {filteredCourses.slice(startCourse, endCourse).map((course: Courses) => (
             <CourseCard
               title={course.title}
@@ -57,15 +57,17 @@ export default function CoursesPage() {
           ))}
         </div>
       </div>
-      <Pagination
-        isCompact
-        showControls
-        page={page}
-        total={totalPage}
-        onChange={setPage}
-        size="lg"
-        className="flex items-center justify-center w-full my-2 cursor-pointer"
-      />
+      <div className="mt-auto">
+        <Pagination
+          isCompact
+          showControls
+          page={page}
+          total={totalPage}
+          onChange={setPage}
+          size="lg"
+          className="flex items-center justify-center w-full my-2 cursor-pointer"
+        />
+      </div>
     </div>
   );
 }

@@ -53,14 +53,14 @@ export default function TestCard({ title, tests, onSubmit }: TestCardProps) {
           <p className="text-xl font-semibold">
             {currentQuestion?.question}
           </p>
-          <Divider className="rounded-full h-0.5 w-md mx-auto my-8" />
+          <Divider className="rounded-full h-0.5 mx-auto my-8" />
           <RadioGroup
             key={currentQuestion?.question}
             className="flex justify-center items-center"
             value={answers.find(a => a.question === currentQuestion.question)?.answer ?? ""}
             onValueChange={(value) => handleAnswer(currentQuestion.question, value)}
           >
-            <div className="grid grid-cols-2 gap-8">
+            <div className="grid md:grid-cols-2 gap-8">
               {currentQuestion?.options.map((option) => (
                 <Radio
                   key={option}
@@ -68,7 +68,7 @@ export default function TestCard({ title, tests, onSubmit }: TestCardProps) {
                   classNames={{
                     base: cn(
                       "bg-white hover:bg-white/50 items-center",
-                      "min-w-xs cursor-pointer rounded-lg gap-4 p-4 border-2 border-transparent",
+                      "min-w-3xs lg:min-w-xs cursor-pointer rounded-lg gap-4 p-4 border-2 border-transparent",
                       "hover:border-primary/60 data-[selected=true]:border-primary",
                     ),
                   }}

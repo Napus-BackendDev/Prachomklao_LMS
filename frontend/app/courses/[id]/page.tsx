@@ -118,7 +118,7 @@ export default function CoursePage() {
   }, [courseId]);
 
   return (
-    <div className="flex max-w-screen-2xl gap-8 mx-auto py-8">
+    <div className="xl:flex min-h-screen max-w-xs md:max-w-screen-sm lg:max-w-screen-md xl:max-w-screen-2xl gap-8 space-y-4 mx-auto py-8">
       {/* Left Content */}
       <div className="flex-grow">
         {isLoading ? (
@@ -128,19 +128,19 @@ export default function CoursePage() {
             removeWrapper
             alt="course"
             src={course?.courses.urlPicture}
-            className="w-full h-full aspect-video object-cover rounded-lg"
+            className="w-full object-cover rounded-lg"
           />
         )}
       </div>
 
       {/* Right Content */}
-      <div className="flex-shrink flex flex-col gap-4 w-1/3">
+      <div className="flex-shrink flex flex-col gap-4 xl:w-1/3">
         <Card className="flex flex-col px-6 py-4 gap-4 h-fit">
           {/* Test Details */}
           <div className="flex flex-col justify-between space-y-4">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2 text-primary font-semibold text-lg">
-                <Target /> รายละเอียดแบบทดสอบในคอร์สนี้
+                <Target /> รายละเอียดแบบทดสอบในหลักสูตรนี้
               </div>
             </div>
             {contentList.map((item, idx) => (
@@ -160,7 +160,7 @@ export default function CoursePage() {
           {/* Enrolled Users */}
           <div className="flex items-center justify-between text-lg">
             <div className="flex items-center gap-2 text-primary font-semibold">
-              <Users /> จำนวนคนที่สมัครคอร์สนี้ไปแล้ว
+              <Users /> จำนวนคนที่สมัครหลักสูตรนี้ไปแล้ว
             </div>
             <p className="text-blue-600 font-semibold text-xl">
               จำนวน {Object.keys(course?.students ?? {}).length} คน
@@ -183,7 +183,7 @@ export default function CoursePage() {
           >
             {enrolled
               ? "เรียนต่อ"
-              : "สมัครคอร์ส"
+              : "สมัครหลักสูตร"
             }
           </Button>
         </Card>

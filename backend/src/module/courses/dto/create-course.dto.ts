@@ -1,7 +1,6 @@
 import { IsOptional, isString, IsString } from 'class-validator';
 
 export class CreateCourseDto {
-
   @IsString()
   title: string;
 

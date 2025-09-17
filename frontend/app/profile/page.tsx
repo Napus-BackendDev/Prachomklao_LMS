@@ -28,124 +28,123 @@ export default function ProfilePage() {
   const userDate = formatDate(user?.createdAt ?? "");
 
   return (
-    <div className="flex flex-col justify-center items-center max-w-screen-2xl mx-auto px-4 sm:px-20 py-10 gap-8">
-      <h1 className="text-4xl font-bold text-primary mb-2">โปรไฟล์</h1>
-      {/* Profile Card */}
-      <div className="flex gap-6 border border-blue-100 bg-white/80 p-8 rounded-2xl shadow-lg w-full max-w-3xl items-center">
-        <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-blue-200 to-yellow-100 flex items-center justify-center mb-2">
-          <span className="text-4xl font-bold text-blue-500">
-            {user?.username?.[0]?.toUpperCase() ?? "U"}
-          </span>
+    <div className="flex flex-col justify-center items-center min-h-screen max-w-screen-2xl mx-auto px-4 sm:px-10 py-10 gap-8">
+  <h1 className="text-4xl sm:text-5xl font-bold text-primary mb-2 text-center">โปรไฟล์</h1>
+
+  {/* Profile Card */}
+  <div className="flex flex-col sm:flex-row gap-6 border border-blue-100 bg-white/80 p-6 sm:p-8 rounded-2xl shadow-lg w-full max-w-3xl items-center">
+    <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-gradient-to-tr from-blue-200 to-yellow-100 flex items-center justify-center mb-2 sm:mb-0">
+      <span className="text-3xl sm:text-4xl font-bold text-blue-500">
+        {user?.username?.[0]?.toUpperCase() ?? "U"}
+      </span>
+    </div>
+    <div className="flex flex-col flex-1 text-center sm:text-left">
+      <p className="text-xl sm:text-2xl font-semibold text-gray-800">{user?.username}</p>
+      <p className="text-sm sm:text-md text-gray-500">{user?.email}</p>
+      <div className="flex flex-col sm:flex-row gap-2 sm:gap-6 mt-2 justify-center sm:justify-start text-gray-600 text-sm sm:text-md">
+        <div className="flex items-center gap-2">
+          <Calendar className="w-5 h-5 text-blue-400" />
+          <span className="font-medium">Joined:</span>
+          <span>{userDate}</span>
         </div>
-        <div className="flex flex-col">
-          <p className="text-2xl font-semibold text-gray-800">
-            {user?.username}
-          </p>
-          <p className="text-md text-gray-500">{user?.email}</p>
-          <div className="flex gap-6 mt-2">
-            <div className="flex items-center gap-2 text-gray-600">
-              <Calendar className="w-5 h-5 text-blue-400" />
-              <span className="font-medium">Joined:</span>
-              <span>{userDate}</span>
-            </div>
-            <div className="flex items-center gap-2 text-gray-600">
-              <Calendar className="w-5 h-5 text-yellow-400" />
-              <span className="font-medium">Courses:</span>
-              <span>{courses.length}</span>
-            </div>
-          </div>
+        <div className="flex items-center gap-2">
+          <Calendar className="w-5 h-5 text-yellow-400" />
+          <span className="font-medium">Courses:</span>
+          <span>{courses.length}</span>
         </div>
-        <div className="ml-auto grid grid-cols-1 sm:grid-cols-2 gap-5">
-          <div className="flex flex-col items-center p-4 rounded-xl bg-gradient-to-tr from-blue-100 to-blue-50 shadow text-blue-700 min-w-[110px]">
-            <span className="text-3xl font-bold">
-              {
-                enrolled.filter((course) => course.status === "Completed")
-                  .length
-              }
-            </span>
-            <span className="mt-1 text-base font-semibold">Completed</span>
-          </div>
-          <div className="flex flex-col items-center p-4 rounded-xl bg-gradient-to-tr from-yellow-100 to-yellow-50 shadow text-yellow-700 min-w-[110px]">
-            <span className="text-3xl font-bold">
-              {
-                enrolled.filter((course) => course.status === "In progress")
-                  .length
-              }
-            </span>
-            <span className="mt-1 text-base font-semibold">In Progress</span>
-          </div>
+      </div>
+    </div>
+
+    <div className="flex flex-row sm:flex-col gap-3 mt-4 sm:mt-0">
+      <div className="flex flex-col items-center p-3 sm:p-4 rounded-xl bg-gradient-to-tr from-blue-100 to-blue-50 shadow text-blue-700 min-w-[90px] sm:min-w-[110px]">
+        <span className="text-2xl sm:text-3xl font-bold">
+          {enrolled.filter((c) => c.status === "Completed").length}
+        </span>
+        <span className="mt-1 text-sm sm:text-base font-semibold">Completed</span>
+      </div>
+      <div className="flex flex-col items-center p-3 sm:p-4 rounded-xl bg-gradient-to-tr from-yellow-100 to-yellow-50 shadow text-yellow-700 min-w-[90px] sm:min-w-[110px]">
+        <span className="text-2xl sm:text-3xl font-bold">
+          {enrolled.filter((c) => c.status === "In progress").length}
+        </span>
+        <span className="mt-1 text-sm sm:text-base font-semibold">In Progress</span>
+      </div>
+    </div>
+  </div>
+
+  {/* Enrolled Courses Section */}
+  <section
+    id="courses"
+    className="flex flex-col items-center justify-center py-6 space-y-6 w-full"
+  >
+    <p className="text-3xl sm:text-4xl font-semibold mb-2 text-gray-700 text-center">
+      เรียนต่อ
+    </p>
+
+    <div className="flex items-center gap-2 sm:gap-4 w-full justify-center">
+      {courses.length > 0 && (
+        <Button
+          isIconOnly
+          color={displayCourse === 0 ? "default" : "primary"}
+          variant="flat"
+          onPress={handlePrev}
+          disabled={displayCourse === 0}
+          className={displayCourse === 0 ? "" : "hover:scale-105"}
+        >
+          <ChevronLeft />
+        </Button>
+      )}
+
+      <div className="overflow-hidden w-full">
+        <div
+          className="flex transition-transform duration-500"
+          style={{
+            transform: `translateX(-${displayCourse * (100 / displayAmount)}%)`,
+          }}
+        >
+          {enrolled.map((course) => (
+            <div
+              key={course.id}
+              className="shrink-0 w-[80%] sm:w-[33.3333%] p-2 sm:p-4"
+            >
+              <CourseCard
+                title={course.title}
+                id={course.id ?? ""}
+                picture={course.urlPicture ?? ""}
+              />
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* Enrolled Courses Section */}
-      <section
-        id="courses"
-        className="flex flex-col items-center justify-center py-8 space-y-6 w-full"
-      >
-        <p className="text-4xl font-semibold mb-2 text-gray-700">
-          เรียนต่อ
-        </p>
-        <div className="flex items-center gap-4 w-full justify-center">
-          {courses.length > 0 && (
-            <Button
-              isIconOnly
-              color={displayCourse === 0 ? "default" : "primary"}
-              variant="flat"
-              onPress={handlePrev}
-              disabled={displayCourse === 0}
-              className={displayCourse === 0 ? "" : "hover:scale-105"}
-            >
-              <ChevronLeft />
-            </Button>
-          )}
-          <div className="w-full overflow-hidden">
-            <div
-              className="flex transition-transform duration-500"
-              style={{
-                transform: `translateX(-${displayCourse * (100 / displayAmount)}%)`,
-              }}
-            >
-              {enrolled.map((course) => (
-                <div
-                  key={course.id}
-                  className={`h-full shrink-0 basis-1/${displayAmount} p-4`}
-                >
-                  <CourseCard
-                    title={course.title}
-                    id={course.id ?? ""}
-                    picture={course.urlPicture ?? ""}
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-          {courses.length > displayAmount && (
-            <Button
-              isIconOnly
-              color={
-                displayCourse === courses.length - displayAmount
-                  ? "default"
-                  : "primary"
-              }
-              variant="flat"
-              onPress={handleNext}
-              disabled={displayCourse === courses.length - displayAmount}
-              className={
-                displayCourse === courses.length - displayAmount
-                  ? ""
-                  : "hover:scale-105"
-              }
-            >
-              <ChevronRight />
-            </Button>
-          )}
-        </div>
-        {courses.length === 0 && (
-          <div className="text-gray-400 text-lg mt-8">
-            You have not enrolled in any courses yet.
-          </div>
-        )}
-      </section>
+      {courses.length > displayAmount && (
+        <Button
+          isIconOnly
+          color={
+            displayCourse === courses.length - displayAmount
+              ? "default"
+              : "primary"
+          }
+          variant="flat"
+          onPress={handleNext}
+          disabled={displayCourse === courses.length - displayAmount}
+          className={
+            displayCourse === courses.length - displayAmount
+              ? ""
+              : "hover:scale-105"
+          }
+        >
+          <ChevronRight />
+        </Button>
+      )}
     </div>
+
+    {courses.length === 0 && (
+      <div className="text-gray-400 text-lg mt-8 text-center">
+        You have not enrolled in any courses yet.
+      </div>
+    )}
+  </section>
+</div>
+
   );
 }

@@ -7,7 +7,6 @@ type ResultCardProps = {
 }
 
 export default function ResultCard({ results, handleNextStep }: ResultCardProps) {
-    console.log(results)
     return (
         <Card className="max-w-screen-md h-full mx-auto p-6 space-y-6">
             <h2 className="text-2xl font-bold text-center">ผลการทำแบบทดสอบ</h2>
@@ -20,13 +19,13 @@ export default function ResultCard({ results, handleNextStep }: ResultCardProps)
                         <p className="text-xl font-semibold">
                             {result.question}
                         </p>
-                        <div className="grid grid-cols-2 gap-8 my-4">
+                        <div className="grid md:grid-cols-2 gap-4 my-4">
                             {result.options.map((option) => (
                                 <Card
                                     key={option}
                                     classNames={{
                                         base: cn(
-                                            "bg-default-100 min-w-xs rounded-lg gap-4 p-4 border-2 border-transparent",
+                                            "bg-default-100  rounded-lg gap-4 p-4 border-2 border-transparent",
                                             result.correctAnswer === option
                                                 ? (result.correctAnswer === result.answer ? "bg-success/90" : "bg-danger/90")
                                                 : ""
@@ -37,12 +36,12 @@ export default function ResultCard({ results, handleNextStep }: ResultCardProps)
                                 </Card>
                             ))}
                         </div>
-                        <div className="flex gap-1 text-xl font-semibold">
-                            <p className="text-primary ">ข้อที่ถูกต้อง :</p>
+                        <div className="flex gap-2 text-xl font-semibold">
+                            <p className="text-primary whitespace-nowrap">ข้อที่ถูกต้อง :</p>
                             <p>{result.correctAnswer}</p>
                         </div>
                         {result.explanation && (
-                            <p className="text-warning">{result.correctAnswer}</p>
+                            <p className="text-lg text-warning">{result.explanation}</p>
                         )}
                         <Divider className="rounded-full h-0.5 mx-auto my-8" />
                     </div>

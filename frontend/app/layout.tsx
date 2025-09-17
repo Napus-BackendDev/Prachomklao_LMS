@@ -38,7 +38,7 @@ export default function RootLayout({
       </head>
       <body
         className={clsx(
-          "flex flex-col min-h-screen text-foreground bg-[#F5FAFF] font-sans antialiased overflow-x-hidden"
+          "flex flex-col text-foreground bg-[#F5FAFF] font-sans antialiased overflow-x-hidden"
         )}
       >
         <Navbar />

@@ -83,7 +83,7 @@ export default function DashboardPage() {
     // รวม studentTotal ตาม category
     const categoryMap: Record<string, number> = {};
     courses.forEach((course) => {
-      const category = course.courseCode || "Other";
+      const category = course.title || "Other";
       categoryMap[category] = (categoryMap[category] || 0) + (course.totalStudent || 0);
     });
 
@@ -166,6 +166,7 @@ export default function DashboardPage() {
         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full justify-between gap-8 px-8 py-6"
         id="stats"
       >
+        {/* Total Users Card */}
         <Card className="w-full">
           <CardBody className="flex flex-col justify-center gap-2">
             <div className="flex justify-between">
@@ -175,6 +176,8 @@ export default function DashboardPage() {
             <p className="text-gray-600">{users.length}</p>
           </CardBody>
         </Card>
+
+        {/* Total Courses Card */}
         <Card className="w-full">
           <CardBody className="flex flex-col justify-center gap-2">
             <div className="flex justify-between">
@@ -184,6 +187,8 @@ export default function DashboardPage() {
             <p className="text-gray-600">{courses.length}</p>
           </CardBody>
         </Card>
+
+        {/* Active Users Card */}
         <Card className="w-full">
           <CardBody className="flex flex-col justify-center gap-2">
             <div className="flex justify-between">
@@ -194,7 +199,10 @@ export default function DashboardPage() {
           </CardBody>
         </Card>
       </div>
+
+      {/* Graph */}
       <div className="grid grid-cols-2 gap-8 px-8 pb-6" id="table">
+        {/* Weekly New Users Graph */}
         <Card className="w-full">
           <CardHeader className="flex flex-col items-start">
             <div className="flex gap-2 ">
@@ -207,6 +215,8 @@ export default function DashboardPage() {
             <Bar data={chartData} options={weeklyUserOptions} />
           </CardBody>
         </Card>
+
+        {/* Course Registration Graph */}
         <Card className="w-full">
           <CardHeader className="flex flex-col items-start">
             <div className="flex gap-2 ">
@@ -231,7 +241,7 @@ export default function DashboardPage() {
                     }}
                   />
                   <span className="text-gray-700">{label}</span>
-                  <span className="ml-auto text-gray-400 font-semibold">
+                  <span className="text-gray-400 font-semibold">
                     {coursePieData.datasets[0].data[idx]}
                   </span>
                 </div>
@@ -240,6 +250,8 @@ export default function DashboardPage() {
           </CardBody>
         </Card>
       </div>
+
+      {/* Users Table */}
       <Card className="mx-8">
         <CardHeader className="flex flex-col items-start">
           <h1 className="text-2xl font-bold ">Recent Users</h1>
@@ -295,9 +307,9 @@ export default function DashboardPage() {
                 .map((item) =>
                   typeof item === "object" && item !== null
                     ? {
-                        ...item,
-                        createdAt: formatDate((item as any).createdAt),
-                      }
+                      ...item,
+                      createdAt: formatDate((item as any).createdAt),
+                    }
                     : item
                 )}
               loadingContent={<Spinner label="Loading..." />}

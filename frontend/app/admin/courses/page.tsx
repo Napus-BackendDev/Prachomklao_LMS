@@ -26,6 +26,9 @@ import { CourseData, Courses } from "@/types/couses";
 import ConfirmModal from "./components/confirmModal";
 import CourseModal from "./components/courseModal";
 import { Content, MainContent } from "@/types/content";
+import usePretest from "@/hooks/usePretest";
+import usePosttest from "@/hooks/usePosttest";
+import { Test } from "@/types/test";
 
 const columns = [
   { label: "Picture", uid: "urlPicture" },
@@ -43,6 +46,8 @@ export default function CourseAdminPage() {
     updateCourse,
     deleteCourse
   } = useCourses();
+  const { updatePretestQuestion } = usePretest();
+  const { updatePosttestQuestion } = usePosttest();
   const [isCourseModalOpen, setIsCourseModalOpen] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [course, setCourse] = useState<CourseData | null>(null);
@@ -73,7 +78,6 @@ export default function CourseAdminPage() {
   const pages = Math.ceil((search ? searchedCourses.length : courses.length) / rowsPerPage);
 
   const renderCell = useCallback((course: Courses, columnKey: string) => {
-    const cellValue = course[columnKey as keyof Courses];
     switch (columnKey) {
       case "urlPicture":
         return (
@@ -129,9 +133,13 @@ export default function CourseAdminPage() {
     window.location.reload();
   };
 
-  const handleEdit = async (course: Courses) => {
+  const handleEdit = async (course: Courses, pretest: Test[], posttest: { id?: string, question: string, options: string[], correctAnswer: string, explanation: string }[]) => {
     if (!courseId) return;
     await updateCourse(courseId, course);
+    const updatePretest = pretest.filter(test => test.id).map(test => updatePretestQuestion(courseId, test.id!, pretest));
+    await Promise.all(updatePretest);
+    const updatePosttest = posttest.filter(test => test.id).map(test => updatePosttestQuestion(courseId, test.id!, posttest));
+    await Promise.all(updatePosttest);
     window.location.reload();
   };
 
@@ -163,7 +171,10 @@ export default function CourseAdminPage() {
                 color="primary"
                 endContent={<Plus size="20" />}
                 className="text-lg"
-                onPress={() => setIsCourseModalOpen(true)}
+                onPress={() => {
+                  setIsCourseModalOpen(true);
+                  setCourse(null);
+                }}
               >
                 Add course
               </Button>

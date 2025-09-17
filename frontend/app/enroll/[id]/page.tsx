@@ -25,7 +25,7 @@ export default function EnrollCoursePage() {
     const courseId = pathName.split("/").pop()
 
     const [course, setCourse] = useState<CourseData>();
-    const [currentStep, setCurrentStep] = useState(7);
+    const [currentStep, setCurrentStep] = useState(1);
     const [pretestResult, setPretestResult] = useState<Result[] | null>(null);
     const [posttestResult, setPosttestResult] = useState<Result[] | null>(null);
     const isLoading = coursesLoading || pretestLoading || posttestLoading || enrolledLoading;
@@ -67,8 +67,8 @@ export default function EnrollCoursePage() {
             const course = await fetchCourseById(courseId);
             setCourse(course);
 
-            // const enrolled = await fetchEnrolledById(courseId);
-            // setCurrentStep(enrolled.progress.current);
+            const enrolled = await fetchEnrolledById(courseId);
+            setCurrentStep(enrolled.progress.current);
         };
 
         fetchData();
@@ -96,7 +96,7 @@ export default function EnrollCoursePage() {
     if (isLoading) return (currentStep !== 1) && (currentStep !== steps.length) ? <EnrollCourseSkeleton /> : <TestCardSkeleton />
 
     return (
-        <div className="max-w-screen-2xl mx-auto py-8 space-y-30">
+        <div className="min-h-screen max-w-xs md:max-w-screen-sm lg:max-w-screen-md xl:max-w-screen-2xl mx-auto py-8 space-y-30">
             {/* Progress Bar */}
             <ProgressBar
                 currentStep={currentStep}

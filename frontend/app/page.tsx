@@ -7,11 +7,10 @@ import {
   GraduationCap,
   ChevronRight,
 } from "lucide-react";
-import { Button, Image, Link, Skeleton } from "@heroui/react";
+import { Button, cn, Image, Link, Skeleton } from "@heroui/react";
 import CourseCard from "@/components/ui/courseCard";
 import { useEffect, useState } from "react";
 import useCourses from "@/hooks/useCourses";
-import { Courses } from "@/types/couses";
 
 const features = [
   {
@@ -51,7 +50,6 @@ const organizers = [
 
 export default function Home() {
   const { courses, loading } = useCourses();
-
   const [organizer, setOrganizers] = useState(0);
 
   useEffect(() => {
@@ -66,9 +64,9 @@ export default function Home() {
       {/* INTRODUCTION */}
       <section
         id="introduction"
-        className="py-8 w-screen bg-gradient-to-r from-[#CFE6F7] via-[#F6F8E7] to-[#FFEFBE]"
+        className="py-8 bg-gradient-to-r from-[#CFE6F7] via-[#F6F8E7] to-[#FFEFBE]"
       >
-        <div className="max-w-screen-xl mx-auto flex sm:flex-row flex-col-reverse items-center justify-between gap-4 px-4">
+        <div className="max-w-xs lg:max-w-screen-md xl:max-w-screen-2xl mx-auto flex lg:flex-row flex-col-reverse items-center justify-between gap-4 px-4">
           <div className="py-2 space-y-3">
             <p className="text-5xl font-extrabold text-default-900">
               ยินดีต้อนรับสู่แหล่งเรียนรู้ <br />
@@ -95,8 +93,7 @@ export default function Home() {
             src="/welcome.png"
             alt="Hero Image"
             radius="lg"
-            className="shadow-md border-2 border-blue-50 hover:scale-101 transition-transform"
-            height={320}
+            className="max-w-xs md:max-w-xl shadow-md border-2 border-blue-50 hover:scale-101 transition-transform"
           />
         </div>
       </section>
@@ -104,28 +101,30 @@ export default function Home() {
       {/* ABOUT */}
       <section
         id="About"
-        className="flex flex-col items-center justify-center py-12 px-4 bg-gradient-to-t from-[#FFFFFF] to-[#F0F8FF]"
+        className="flex flex-col items-center justify-center py-12 bg-gradient-to-t from-[#FFFFFF] to-[#F0F8FF]"
       >
-        <h1 className="sm:text-4xl font-semibold inline-flex flex-nowrap items-baseline gap-2 mb-2">
-          <span>วิทยาลัยพยาบาลพระจอมเกล้า จังหวัดเพชรบุรี</span>
-          <span className="text-[#0C85FF]">เปิดแหล่งเรียนรู้</span>
-        </h1>
-        <p className="sm:text-2xl text-lg text-default-600">
-          เพื่อพัฒนาความรู้และทักษะด้านการพยาบาลอย่างรอบด้าน ให้ผู้เรียนได้ฝึกปฏิบัติจริงและเตรียมพร้อมสู่การเป็นพยาบาลมืออาชีพ
-        </p>
-        <div id="features" className="flex justify-center py-8 gap-24">
-          {features.map((item) => (
-            <div
-              className="flex flex-col items-center text-center space-y-4"
-              key={item.topic}
-            >
-              <div className="w-20 h-20 rounded-full bg-gradient-to-r from-[#FFCF41] to-[#FFDC72] flex items-center justify-center shadow-floating">
-                <item.icon className="w-10 h-10 text-white" />
+        <div className="max-w-xs md:max-w-screen-sm lg:max-w-screen-xl text-center mx-auto">
+          <p className="text-2xl md:text-4xl font-semibold md:inline-flex flex-nowrap items-baseline gap-2 mb-2">
+            <span>วิทยาลัยพยาบาลพระจอมเกล้า จังหวัดเพชรบุรี</span>
+            <span className="text-[#0C85FF]">เปิดแหล่งเรียนรู้</span>
+          </p>
+          <p className="sm:text-2xl text-lg text-default-600">
+            เพื่อพัฒนาความรู้และทักษะด้านการพยาบาลอย่างรอบด้าน ให้ผู้เรียนได้ฝึกปฏิบัติจริงและเตรียมพร้อมสู่การเป็นพยาบาลมืออาชีพ
+          </p>
+          <div id="features" className="grid grid-cols-2 lg:grid-cols-4 py-8 gap-24">
+            {features.map((item) => (
+              <div
+                className="flex flex-col items-center text-center space-y-4"
+                key={item.topic}
+              >
+                <div className="w-20 h-20 rounded-full bg-gradient-to-r from-[#FFCF41] to-[#FFDC72] flex items-center justify-center shadow-floating">
+                  <item.icon className="w-10 h-10 text-white" />
+                </div>
+                <p className="text-2xl font-bold text-[#0C85FF]">{item.topic}</p>
+                <p className="text-lg text-default-800">{item.detail}</p>
               </div>
-              <h2 className="text-2xl font-bold text-[#0C85FF]">{item.topic}</h2>
-              <p className="text-lg text-default-800">{item.detail}</p>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
 
@@ -135,26 +134,62 @@ export default function Home() {
         className="flex flex-col items-center justify-center py-12 space-y-6 bg-gradient-to-b from-[#FFFFFF] to-[#F0F8FF]"
       >
         <p className="text-4xl font-semibold">หลักสูตรของเรา</p>
-        <div className="flex items-start gap-4">
+        <div
+          className={cn(
+            "flex items-start gap-4",
+            courses?.length === 1
+              ? "max-w-screen-sm"
+              : courses?.length === 2
+                ? "max-w-screen-lg"
+                : "max-w-screen-2xl"
+          )}
+        >
           {loading ? (
             Array.from({ length: 3 }).map((_, i) => (
               <Skeleton key={i} className="w-100 h-100 rounded-lg mb-2" />
             ))
           ) : (
-            courses?.slice(0, 3).map((course: Courses) => (
-              <div
-                key={course.id}
-                className={`flex shrink-0 basis-1/${courses.length % 3} p-4`}
-              >
-                <CourseCard
-                  title={course.title}
-                  id={course.id ?? ""}
-                  picture={course.urlPicture ?? ""}
-                  courseCode={course.courseCode ?? ""}
-                  totalStudent={course.totalStudent ?? 0}
-                />
+            <>
+              {/* Large Screen Up */}
+              <div className="hidden lg:flex">
+                {courses?.slice(0, 3).map((course) => (
+                  <div
+                    key={course.id}
+                    className={cn(
+                      "flex shrink-0 p-4",
+                      courses.length === 1
+                        ? "basis-1/1"
+                        : courses.length === 2
+                          ? "basis-1/2"
+                          : "basis-1/3"
+                    )}
+                  >
+                    <CourseCard
+                      title={course.title}
+                      id={course.id ?? ""}
+                      picture={course.urlPicture ?? ""}
+                      courseCode={course.courseCode ?? ""}
+                      totalStudent={course.totalStudent ?? 0}
+                    />
+                  </div>
+                ))}
               </div>
-            ))
+
+              {/* Small - Medium Screen */}
+              <div className="flex lg:hidden">
+                {courses?.slice(0, 1).map((course) => (
+                  <div key={course.id} className="w-full flex shrink-0 p-4">
+                    <CourseCard
+                      title={course.title}
+                      id={course.id ?? ""}
+                      picture={course.urlPicture ?? ""}
+                      courseCode={course.courseCode ?? ""}
+                      totalStudent={course.totalStudent ?? 0}
+                    />
+                  </div>
+                ))}
+              </div>
+            </>
           )}
         </div>
         {/* All Courses Button */}
@@ -171,22 +206,22 @@ export default function Home() {
       {/* ORGANIZER */}
       <section
         id="organizer"
-        className="flex flex-col items-center justify-center py-12 space-y-6 bg-gradient-to-b from-[#F0F8FF] to-[#EEF7FF]"
+        className="flex flex-col items-center justify-center py-12 space-y-6 bg-gradient-to-b from-[#F0F8FF] to-[#EEF7FF] overflow-hidden"
       >
         <p className="text-4xl font-semibold">ผู้จัดทำ</p>
         <div
           className="flex justify-between transition-transform duration-1000"
           style={{
-            transform: `translateX(-${organizer * 33}%)`,
+            transform: `translateX(-${organizer * (100 / 3)}%)`,
           }}
         >
           {[...organizers].map((src, i) => (
-            <div key={i} className="shrink-0 basis-1/3">
+            <div key={i} className="shrink-0 w-full lg:basis-1/3 px-2">
               <Image
                 alt={`organizer-${i}`}
                 src={src}
                 radius="sm"
-                height={360}
+                className="w-full object-cover"
               />
             </div>
           ))}

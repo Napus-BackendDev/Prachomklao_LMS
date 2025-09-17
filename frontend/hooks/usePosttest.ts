@@ -34,6 +34,36 @@ export default function usePosttest() {
         }
     };
 
+    const createPosttestQuestion = async (courseId: string, answers: { question: string; options: string[]; correctAnswer: string; explanation: string }[]) => {
+        setLoading(true);
+        setError(null);
+        try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/courses/posttest/${courseId}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(answers),
+                credentials: "include",
+            });
+            const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(data.message || "Failed to create post-test question");
+            }
+
+            return data;
+        } catch (err) {
+            setError(
+                err && typeof err === "object" && "message" in err
+                    ? (err as { message?: string }).message || "Failed to create post-test question"
+                    : "Failed to create post-test question"
+            );
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const createPosttestAnswer = async (answers: { question: string; answer: string }[], courseId: string) => {
         setLoading(true);
         setError(null);
@@ -64,11 +94,43 @@ export default function usePosttest() {
         }
     };
 
+    const updatePosttestQuestion = async (courseId: string, pretestId: string, answers: { question: string; options: string[]; correctAnswer: string; explanation: string }[]) => {
+        setLoading(true);
+        setError(null);
+        try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/courses/posttest/${courseId}/${pretestId}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(answers),
+                credentials: "include",
+            });
+            const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(data.message || "Failed to update post-test question");
+            }
+
+            return data;
+        } catch (err) {
+            setError(
+                err && typeof err === "object" && "message" in err
+                    ? (err as { message?: string }).message || "Failed to update post-test question"
+                    : "Failed to update post-test question"
+            );
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return {
         grade,
         error,
         loading,
         fetchPosttestGrade,
+        createPosttestQuestion,
         createPosttestAnswer,
+        updatePosttestQuestion,
     }
 }
