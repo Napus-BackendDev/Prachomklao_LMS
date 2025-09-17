@@ -10,7 +10,7 @@ export default function useUser() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`${process.env.API_URL}/admin`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin`, {
         method: "GET",
         credentials: "include",
       });
@@ -53,7 +53,7 @@ export function useWeeklyUserBarChart() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`${process.env.API_URL}/admin/weekly-users`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/weekly-users`, {
         credentials: "include",
       });
       const json = await res.json();

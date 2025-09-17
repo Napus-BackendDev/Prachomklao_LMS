@@ -10,7 +10,7 @@ export default function useAuth() {
         setError(null);
         setLoading(true);
         try {
-            const res = await fetch(`${process.env.API_URL}/auth/profile`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/profile`, {
                 method: "GET",
                 credentials: "include"
             });
@@ -37,7 +37,7 @@ export default function useAuth() {
         setError(null);
         setLoading(true);
         try {
-            const res = await fetch(`${process.env.API_URL}/auth/login`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -71,7 +71,7 @@ export default function useAuth() {
         setError(null);
         setLoading(true);
         try {
-            const res = await fetch(`${process.env.API_URL}/register`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/register`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -103,7 +103,7 @@ export default function useAuth() {
         setError(null);
         setLoading(true);
         try {
-            const res = await fetch(`${process.env.API_URL}/auth/logout`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`, {
                 method: "POST",
                 credentials: "include"
             })
@@ -127,7 +127,7 @@ export default function useAuth() {
         setError(null);
         setLoading(true);
         try {
-            const res = await fetch(`${process.env.API_URL}/resetpassword`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resetpassword`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

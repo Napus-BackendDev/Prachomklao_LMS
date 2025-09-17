@@ -10,7 +10,7 @@ export default function usePosttest() {
         setLoading(true);
         setError(null);
         try {
-            const res = await fetch(`${process.env.API_URL}/student/courses/${coursesId}/answer/posttest`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/student/courses/${coursesId}/answer/posttest`, {
                 method: "GET",
                 credentials: "include",
             });
@@ -38,7 +38,7 @@ export default function usePosttest() {
         setLoading(true);
         setError(null);
         try {
-            const res = await fetch(`${process.env.API_URL}/student/courses/${courseId}/answer/posttest`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/student/courses/${courseId}/answer/posttest`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
