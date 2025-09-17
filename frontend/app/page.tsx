@@ -151,51 +151,20 @@ export default function Home() {
       >
         <p className="text-4xl font-semibold">หลักสูตรของเรา</p>
         <div className="flex items-center gap-4">
-          {courses?.length > displayAmount && (
-            <Button
-              isIconOnly
-              color={displayCourse === 0 ? "default" : "primary"}
-              variant="flat"
-              onPress={handlePrev}
-              disabled={displayCourse === 0}
-              className={`${displayCourse === 0 ? null : "hover:scale-105"}`}
-            >
-              <ChevronLeft />
-            </Button>
-          )}
-          <div className="max-w-screen-2xl overflow-hidden">
+          {courses?.slice(0, 2).map((course: Courses) => (
             <div
-              className="flex transition-transform duration-500"
-              style={{ transform: `translateX(-${displayCourse * (100 / displayAmount)}%)` }}
+              key={course.id}
+              className="h-full shrink-0 basis-1/2 p-4"
             >
-              {courses?.map((course: Courses) => (
-                <div
-                  key={course.id}
-                  className={`h-full shrink-0 basis-1/${displayAmount} p-4`}
-                >
-                  <CourseCard
-                    title={course.title}
-                    id={course.id ?? ""}
-                    picture={course.urlPicture ?? ""}
-                    courseCode={course.courseCode ?? ""}
-                    totalStudent={course.totalStudent ?? 0}
-                  />
-                </div>
-              ))}
+              <CourseCard
+                title={course.title}
+                id={course.id ?? ""}
+                picture={course.urlPicture ?? ""}
+                courseCode={course.courseCode ?? ""}
+                totalStudent={course.totalStudent ?? 0}
+              />
             </div>
-          </div>
-          {courses.length > displayAmount && (
-            <Button
-              isIconOnly
-              color={displayCourse === courses.length - displayAmount ? "default" : "primary"}
-              variant="flat"
-              onPress={handleNext}
-              disabled={displayCourse === (courses.length - displayAmount)}
-              className={`${displayCourse === (courses.length - displayAmount) ? null : "hover:scale-105"}`}
-            >
-              <ChevronRight />
-            </Button>
-          )}
+          ))}
         </div>
         {/* All Courses Button */}
         <Link

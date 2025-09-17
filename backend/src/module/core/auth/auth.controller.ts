@@ -18,6 +18,7 @@ export class AuthController {
     const { access_Token } = await this.authService.login(req.user);
     res.cookie('access_Token', access_Token, {
       httpOnly: true,
+      sameSite: 'none',
       secure: true
     });
     return { message: 'Successfully Logging in' };
