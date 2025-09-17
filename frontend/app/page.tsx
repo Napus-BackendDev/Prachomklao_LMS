@@ -66,7 +66,7 @@ export default function Home() {
         id="introduction"
         className="py-8 bg-gradient-to-r from-[#CFE6F7] via-[#F6F8E7] to-[#FFEFBE]"
       >
-        <div className="max-w-xs lg:max-w-screen-md xl:max-w-screen-2xl mx-auto flex lg:flex-row flex-col-reverse items-center justify-between gap-4 px-4">
+        <div className="max-w-xs md:max-w-screen-sm lg:max-w-screen-md xl:max-w-screen-2xl mx-auto flex lg:flex-row flex-col-reverse items-center justify-between gap-4 px-4">
           <div className="py-2 space-y-3">
             <p className="text-5xl font-extrabold text-default-900">
               ยินดีต้อนรับสู่แหล่งเรียนรู้ <br />

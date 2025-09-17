@@ -108,6 +108,7 @@ export default function CourseModal({ isOpen, onClose, onAdd, course, onEdit }: 
       scrollBehavior="inside"
       backdrop="blur"
       size="lg"
+      placement="center"
     >
       <ModalContent>
         <Form onSubmit={handleSubmit}>
