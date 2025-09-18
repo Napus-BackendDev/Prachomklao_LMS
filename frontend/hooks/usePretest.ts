@@ -10,7 +10,7 @@ export default function usePretest() {
         setLoading(true);
         setError(null);
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/student/courses/${coursesId}/answer/pretest`, {
+            const res = await fetch(`/api/student/courses/${coursesId}/answer/pretest`, {
                 method: "GET",
                 credentials: "include",
             });
@@ -38,7 +38,7 @@ export default function usePretest() {
         setLoading(true);
         setError(null);
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/courses/pretest/${courseId}`, {
+            const res = await fetch(`/api/courses/pretest/${courseId}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -68,7 +68,7 @@ export default function usePretest() {
         setLoading(true);
         setError(null);
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/student/courses/${courseId}/answer/pretest`, {
+            const res = await fetch(`/api/student/courses/${courseId}/answer/pretest`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -98,7 +98,7 @@ export default function usePretest() {
         setLoading(true);
         setError(null);
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/courses/pretest/${courseId}/${pretestId}`, {
+            const res = await fetch(`/api/courses/pretest/${courseId}/${pretestId}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json"

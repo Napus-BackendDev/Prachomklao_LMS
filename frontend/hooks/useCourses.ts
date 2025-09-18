@@ -11,7 +11,7 @@ export default function useCourses() {
         setLoading(true);
         setError(null);
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/courses`, {
+            const res = await fetch(`/api/courses`, {
                 method: "GET",
                 credentials: "include"
             })
@@ -37,7 +37,7 @@ export default function useCourses() {
         setLoading(true);
         setError(null);
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/courses/${id}`, {
+            const res = await fetch(`/api/courses/${id}`, {
                 method: "GET",
                 credentials: "include"
             });
@@ -63,7 +63,7 @@ export default function useCourses() {
         setLoading(true);
         setError(null);
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/courses`, {
+            const res = await fetch(`/api/courses`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -93,7 +93,7 @@ export default function useCourses() {
         setLoading(true);
         setError(null);
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/courses/${courseId}`, {
+            const res = await fetch(`/api/courses/${courseId}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
@@ -124,7 +124,7 @@ export default function useCourses() {
         setLoading(true);
         setError(null);
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/courses/${courseId}/content/${contentId}`, {
+            const res = await fetch(`/api/courses/${courseId}/content/${contentId}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
@@ -155,7 +155,7 @@ export default function useCourses() {
         setLoading(true);
         setError(null);
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/courses/${id}`, {
+            const res = await fetch(`/api/courses/${id}`, {
                 method: "DELETE",
                 credentials: "include"
             });

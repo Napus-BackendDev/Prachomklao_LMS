@@ -10,7 +10,7 @@ export default function useEnroll() {
         setLoading(true);
         setError(null);
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/student/courses/enroll`, {
+            const res = await fetch(`/api/student/courses/enroll`, {
                 method: "GET",
                 credentials: "include",
             });
@@ -37,7 +37,7 @@ export default function useEnroll() {
         setLoading(true);
         setError(null);
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/student/courses/enroll/${courseId}`, {
+            const res = await fetch(`/api/student/courses/enroll/${courseId}`, {
                 method: "GET",
                 credentials: "include",
             });
@@ -64,7 +64,7 @@ export default function useEnroll() {
         setLoading(true);
         setError(null);
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/student/courses/enroll/${courseId}`, {
+            const res = await fetch(`/api/student/courses/enroll/${courseId}`, {
                 method: "POST",
                 credentials: "include",
             });
@@ -91,7 +91,7 @@ export default function useEnroll() {
         setLoading(true);
         setError(null);
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/student/courses/enroll/${courseId}`, {
+            const res = await fetch(`/api/student/courses/enroll/${courseId}`, {
                 method: "PATCH",
                 credentials: "include",
             });
