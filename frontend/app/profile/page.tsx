@@ -2,7 +2,7 @@
 import useAuth from "@/hooks/useAuth";
 import { useState, useMemo } from "react";
 import { Calendar, ChevronLeft, ChevronRight } from "lucide-react";
-import CourseCard from "@/components/ui/courseCard"; // เพิ่ม import ถ้ามี
+import CourseCard from "@/components/ui/courseCard";
 import { Button } from "@heroui/button";
 import useEnroll from "@/hooks/useEnroll";
 import { formatDate } from "@/public/util/fromatData";

@@ -1,9 +1,12 @@
+import { AdminCourse } from "./couses"
+
 export type User = {
     id: string,
     username?: string,
     email: string,
     role: 'Student' | 'Admin',
     createdAt?: string,
+    courses: AdminCourse[],
 }
 
 export type Profile = {

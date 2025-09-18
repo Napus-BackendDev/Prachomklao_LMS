@@ -51,6 +51,19 @@ const organizers = [
 export default function Home() {
   const { courses, loading } = useCourses();
   const [organizer, setOrganizers] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const mediaQuery = window.matchMedia("(max-width: 820px)");
+      setIsMobile(mediaQuery.matches);
+
+      const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+      mediaQuery.addEventListener("change", handler);
+
+      return () => mediaQuery.removeEventListener("change", handler);
+    }
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -100,9 +113,9 @@ export default function Home() {
       {/* ABOUT */}
       <section
         id="About"
-        className="flex flex-col items-center justify-center py-12 bg-gradient-to-t from-[#FFFFFF] to-[#F0F8FF]"
+        className="flex flex-col items-center justify-center max-w-xs md:max-w-screen-sm lg:max-w-screen-md xl:max-w-screen-xl 2xl:max-w-screen-2xl mx-auto py-12 bg-gradient-to-t from-[#FFFFFF] to-[#F0F8FF]"
       >
-        <div className="max-w-xs md:max-w-screen-sm lg:max-w-screen-xl text-center mx-auto">
+        <div className="text-center mx-auto">
           <p className="text-2xl md:text-4xl font-semibold md:inline-flex flex-nowrap items-baseline gap-2 mb-2">
             <span>วิทยาลัยพยาบาลพระจอมเกล้า จังหวัดเพชรบุรี</span>
             <span className="text-[#0C85FF]">เปิดแหล่งเรียนรู้</span>
@@ -130,7 +143,7 @@ export default function Home() {
       {/* COURSES */}
       <section
         id="courses"
-        className="flex flex-col items-center justify-center py-12 space-y-6 bg-gradient-to-b from-[#FFFFFF] to-[#F0F8FF]"
+        className="flex flex-col items-center justify-center max-w-xs md:max-w-screen-sm lg:max-w-screen-md xl:max-w-screen-xl 2xl:max-w-screen-2xl mx-auto py-12 space-y-6 bg-gradient-to-b from-[#FFFFFF] to-[#F0F8FF]"
       >
         <p className="text-4xl font-semibold">หลักสูตรของเรา</p>
         <div
@@ -211,7 +224,7 @@ export default function Home() {
         <div
           className="flex justify-between transition-transform duration-1000"
           style={{
-            transform: `translateX(-${organizer * (100 / 3)}%)`,
+            transform: `translateX(-${organizer * (100 / (isMobile ? 1 : 3))}%)`,
           }}
         >
           {[...organizers].map((src, i) => (

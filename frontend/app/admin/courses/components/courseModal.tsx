@@ -98,7 +98,7 @@ export default function CourseModal({ isOpen, onClose, onAdd, course, onEdit }: 
       onAdd(data);
     }
 
-    onClose(); // ปิด modal หลัง submit
+    onClose(); 
   };
 
   return (

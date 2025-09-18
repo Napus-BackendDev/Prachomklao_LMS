@@ -16,17 +16,20 @@ import {
     TableHeader,
     TableRow
 } from "@heroui/react";
-import { SearchIcon } from "lucide-react";
+import { Eye, SearchIcon } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
+import CoursesAccordion from "./_components/coursesAccordion";
 
 const columns = [
     { label: "Username", uid: "username" },
     { label: "Email", uid: "email" },
     { label: "Role", uid: "role" },
+    { label: "Courses", uid: "courses" },
 ];
 
 export default function UserAdminPage() {
     const { users } = useUser()
+    const [isCousesOpen, setIsCousesOpen] = useState(false);
     const [search, setSearch] = useState("");
     const [page, setPage] = useState(1);
 
@@ -53,7 +56,6 @@ export default function UserAdminPage() {
     const pages = Math.ceil((search ? searchedUsers.length : users.length) / rowsPerPage);
 
     const renderCell = useCallback((user: User, columnKey: string) => {
-        const cellValue = user[columnKey as keyof User];
         switch (columnKey) {
             case "username":
                 return <p>{user.username ?? "-"}</p>;
@@ -61,23 +63,29 @@ export default function UserAdminPage() {
                 return <p>{user.email}</p>;
             case "role":
                 return <p>{user.role}</p>;
+            case "courses":
+                return (
+                    <div className="flex justify-end text-default-600 hover:text-primary cursor-pointer">
+                        <Eye />
+                    </div>
+                );
             default:
-                return cellValue;
+                return null;
         }
     }, []);
 
     return (
         <>
-            <div className="flex-1 p-6 text-lg">
+            <div className="flex-1 p-6 text-xl">
                 <Card className="flex p-3">
                     <CardHeader className="text-4xl font-bold">
                         <p>USERS</p>
                     </CardHeader>
-                    <CardBody className="space-y-4 mb-4 text-lg">
+                    <CardBody className="space-y-4 mb-4 text-xl">
                         <Input
                             isClearable
-                            className="w-full sm:max-w-[44%] text-lg"
-                            placeholder="Search user..."
+                            className="w-full sm:max-w-[44%] text-xl"
+                            placeholder="ค้นหาผู้ใช้"
                             startContent={<SearchIcon size="20" />}
                             value={search}
                             onClear={() => setSearch("")}
@@ -85,9 +93,9 @@ export default function UserAdminPage() {
                         />
                         <Table
                             aria-label="Example table with dynamic content"
-                            className="text-lg"
+                            className="text-xl"
                             bottomContent={
-                                <div className="flex w-full justify-center text-lg">
+                                <div className="flex w-full justify-center text-xl">
                                     <Pagination
                                         isCompact
                                         showControls
@@ -101,7 +109,7 @@ export default function UserAdminPage() {
                         >
                             <TableHeader>
                                 {columns.map((column) => (
-                                    <TableColumn key={column.uid} className="text-lg">
+                                    <TableColumn key={column.uid} align={column.uid === "courses" ? "end" : "start"} className="text-xl">
                                         {column.label}
                                     </TableColumn>
                                 ))}
@@ -110,7 +118,7 @@ export default function UserAdminPage() {
                                 {searchedUsers.map((user) => (
                                     <TableRow key={user.id}>
                                         {(columnKey) => (
-                                            <TableCell className="text-lg">
+                                            <TableCell className="text-xl">
                                                 {renderCell(user, String(columnKey))}
                                             </TableCell>
                                         )}
@@ -120,6 +128,11 @@ export default function UserAdminPage() {
                         </Table>
                     </CardBody>
                 </Card>
+
+                <CoursesAccordion
+                    isOpen={isCousesOpen}
+                    onClose={() => setIsCousesOpen(false)}
+                />
             </div>
         </>
     )

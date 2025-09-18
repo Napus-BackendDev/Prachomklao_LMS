@@ -35,3 +35,15 @@ export type CourseData = {
   pretest_totle: number,
   posttest_totle: number,
 }
+
+export type AdminCourse = {
+  id: string,
+  title: string,
+  picture: string,
+  enrollment: string,
+  status: 'In progress' | 'Completed',
+  pretestAnswers: Test[],
+  pretestScore: number,
+  posttestAnswers: Test[],
+  posttestScore: number,
+}
