@@ -148,7 +148,7 @@ export default function DashboardPage() {
   });
 
   const [page, setPage] = useState(1);
-  const rowsPerPage = 3;
+  const rowsPerPage = 5;
   const pages = useMemo(() => {
     return Math.ceil(list.items.length / rowsPerPage);
   }, [list.items, rowsPerPage]);
@@ -288,12 +288,6 @@ export default function DashboardPage() {
             <TableBody
               isLoading={isLoading}
               items={items
-                .filter(
-                  (item) =>
-                    typeof item === "object" &&
-                    item !== null &&
-                    (item as { role?: string }).role !== "Admin"
-                )
                 .map((item) =>
                   typeof item === "object" && item !== null
                     ? {
