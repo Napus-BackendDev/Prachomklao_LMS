@@ -115,7 +115,7 @@ export default function DashboardPage() {
 
   let list = useAsyncList({
     async load({ signal }) {
-      let res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin`, {
+      let res = await fetch(`/api/admin`, {
         method: "GET",
         credentials: "include",
         signal,
