@@ -81,7 +81,7 @@ export class EnrollmentsService {
         enrolledAt: new Date(),
         status: Status.IN_PROGRESS,
         progress: {
-          current: 0,
+          current: 1,
           total:
             (courseData?.content?.length ?? 0) +
             1 +
