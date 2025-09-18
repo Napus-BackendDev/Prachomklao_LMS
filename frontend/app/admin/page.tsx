@@ -115,7 +115,7 @@ export default function DashboardPage() {
 
   let list = useAsyncList({
     async load({ signal }) {
-      let res = await fetch(`${process.env.API_URL}/admin`, {
+      let res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin`, {
         method: "GET",
         credentials: "include",
         signal,
@@ -163,7 +163,7 @@ export default function DashboardPage() {
   return (
     <>
       <div
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full justify-between gap-8 px-8 py-6"
+        className="grid grid-cols-1 md:grid-cols-2 w-full justify-between gap-8 px-8 py-6"
         id="stats"
       >
         {/* Total Users Card */}
@@ -188,16 +188,6 @@ export default function DashboardPage() {
           </CardBody>
         </Card>
 
-        {/* Active Users Card */}
-        <Card className="w-full">
-          <CardBody className="flex flex-col justify-center gap-2">
-            <div className="flex justify-between">
-              <h3 className="font-bold">Active Users Today</h3>
-              <BookOpen className="w-6 h-6 text-blue-600" />
-            </div>
-            <p className="text-gray-600">{users.length}</p>
-          </CardBody>
-        </Card>
       </div>
 
       {/* Graph */}
