@@ -10,7 +10,7 @@ const nextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: 'https://prachomklao-lms.onrender.com/api/:path*',
+        destination: 'https://prachomklao-lms.onrender.com/api/api/:path*',
       },
     ];
   },
