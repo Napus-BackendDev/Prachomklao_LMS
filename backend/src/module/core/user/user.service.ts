@@ -28,7 +28,7 @@ export class UserService {
       username: data.username,
       password: data.password,
       role: data.role,
-      createdAt: data.createdAt
+      createdAt: data.createdAt,
     };
     return userData;
   }
@@ -59,8 +59,43 @@ export class UserService {
       .doc(studentId)
       .collection('enrollments')
       .get();
-    const enrollments = await Promise.all(
+    await Promise.all(
       snapshot.docs.map((doc) => doc.data()) as Enrollment[],
+    );
+
+    // ดึง pretestAnswers และ posttestAnswers ของแต่ละ enrollment
+    const courses = await Promise.all(
+      snapshot.docs.map(async (doc) => {
+        const enrollment = doc.data() as Enrollment;
+
+        // ดึง pretestAnswers
+        const pretestAnswersSnap = await doc.ref.collection('pretestAnswers').get();
+        const pretestAnswers = pretestAnswersSnap.docs.map((ansDoc) => ansDoc.data());
+
+        // ดึง posttestAnswers
+        const posttestAnswersSnap = await doc.ref.collection('posttestAnswers').get();
+        const posttestAnswers = posttestAnswersSnap.docs.map((ansDoc) => ansDoc.data());
+
+        // นับคะแนน (เช่น ตอบถูก = 1 คะแนน)
+        const pretestScore = pretestAnswers.filter(
+          (ans) => ans.answer === ans.correctAnswer
+        ).length;
+        const posttestScore = posttestAnswers.filter(
+          (ans) => ans.answer === ans.correctAnswer
+        ).length;
+
+        return {
+          id: enrollment.id,
+          title: enrollment.title,
+          picture: enrollment.urlPicture,
+          enrollment: formatDate((enrollment.enrolledAt as Timestamp).toDate()),
+          status: enrollment.status,
+          pretestAnswers,
+          pretestScore,
+          posttestAnswers,
+          posttestScore,
+        };
+      })
     );
 
     return {
@@ -69,13 +104,7 @@ export class UserService {
       email: userData.email,
       role: userData.role,
       createdAt: userData.createdAt,
-      courses: enrollments.map((enrollment) => ({
-        id: enrollment.id,
-        title: enrollment.title,
-        picture: enrollment.urlPicture,
-        enrollment: formatDate((enrollment.enrolledAt as Timestamp).toDate()),
-        status: enrollment.status,
-      })),
+      courses,
     };
   }
 
@@ -89,7 +118,7 @@ export class UserService {
     monday.setHours(0, 0, 0, 0);
 
     const snapshot = await this.usersCollection
-      .where("createdAt", ">=", monday.toISOString())
+      .where('createdAt', '>=', monday.toISOString())
       .get();
 
     snapshot.forEach((doc) => {
@@ -97,9 +126,9 @@ export class UserService {
       if (data.createdAt) {
         // รองรับทั้งกรณีเป็น string (ISO) หรือ Firestore Timestamp
         let created: Date | null = null;
-        if (typeof data.createdAt === "string") {
+        if (typeof data.createdAt === 'string') {
           created = new Date(data.createdAt);
-        } else if (typeof data.createdAt.toDate === "function") {
+        } else if (typeof data.createdAt.toDate === 'function') {
           created = data.createdAt.toDate();
         }
         if (created && !isNaN(created.getTime())) {
