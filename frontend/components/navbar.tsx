@@ -36,7 +36,7 @@ export default function Navbar() {
   const [isResetOpen, setIsResetOpen] = useState(false);
 
   const handleClear = () => {
-    setUsername("");
+    setUsername(""); 
     setEmail("");
     setPassword("");
   };
@@ -76,7 +76,7 @@ export default function Navbar() {
       setUser(null);
       setIsLoginOpen(true);
       handleClear();
-      router.push("/");
+      router.replace("/");
     }
   };
 
@@ -261,7 +261,7 @@ export default function Navbar() {
       maxWidth="2xl"
       className={`${fontSans.className} py-4 h-auto`}
     >
-      <div className="flex items-center justify-between w-full lg:max-w-screen-md xl:max-w-screen-2xl mx-auto">
+      <div className="flex items-center justify-between w-full lg:max-w-screen-md xl:max-w-screen-xl 2xl:max-w-screen-2xl mx-auto">
         {/* Logo */}
         <NavbarContent>
           <NavbarBrand className={`${fontSans.className}`}>

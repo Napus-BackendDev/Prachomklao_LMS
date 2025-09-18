@@ -118,7 +118,7 @@ export default function CoursePage() {
   }, [courseId]);
 
   return (
-    <div className="xl:flex min-h-screen max-w-xs md:max-w-screen-sm lg:max-w-screen-md xl:max-w-screen-2xl gap-8 space-y-4 mx-auto py-8">
+    <div className="xl:flex min-h-screen max-w-xs md:max-w-screen-sm lg:max-w-screen-md xl:max-w-screen-xl 2xl:max-w-screen-2xl gap-8 space-y-4 mx-auto py-8">
       {/* Left Content */}
       <div className="flex-grow">
         {isLoading ? (
@@ -182,7 +182,9 @@ export default function CoursePage() {
             onPress={handleEnroll}
           >
             {enrolled
-              ? "เรียนต่อ"
+              ? enrolled.progress.current === enrolled.progress.total
+                ? "เรียนอีกครั้ง"
+                : "เรียนต่อ"
               : "สมัครหลักสูตร"
             }
           </Button>
