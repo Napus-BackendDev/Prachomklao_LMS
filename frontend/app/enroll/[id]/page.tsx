@@ -60,6 +60,7 @@ export default function EnrollCoursePage() {
 
     const progressValue = ((currentStep - 1) / (steps.length - 1)) * 100;
 
+
     useEffect(() => {
         if (!courseId) return;
 
@@ -68,7 +69,7 @@ export default function EnrollCoursePage() {
             setCourse(course);
 
             const enrolled = await fetchEnrolledById(courseId);
-            setCurrentStep(enrolled.progress.current);
+            setCurrentStep(enrolled.progress.current === enrolled.progress.total ? 1 : enrolled.progress.current);
         };
 
         fetchData();
@@ -96,7 +97,7 @@ export default function EnrollCoursePage() {
     if (isLoading) return (currentStep !== 1) && (currentStep !== steps.length) ? <EnrollCourseSkeleton /> : <TestCardSkeleton />
 
     return (
-        <div className="min-h-screen max-w-xs md:max-w-screen-sm lg:max-w-screen-md xl:max-w-screen-2xl mx-auto py-8 space-y-30">
+        <div className="min-h-screen max-w-xs md:max-w-screen-sm lg:max-w-screen-md xl:max-w-screen-xl 2xl:max-w-screen-2xl mx-auto py-8 space-y-30">
             {/* Progress Bar */}
             <ProgressBar
                 currentStep={currentStep}

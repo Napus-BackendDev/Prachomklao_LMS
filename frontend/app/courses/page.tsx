@@ -28,7 +28,7 @@ export default function CoursesPage() {
   const endCourse = startCourse + coursesPerPage;
 
   return (
-    <div className="flex flex-col min-h-screen max-w-xs md:max-w-screen-sm lg:max-w-screen-md xl:max-w-screen-2xl mx-auto py-4">
+    <div className="flex flex-col min-h-screen max-w-xs md:max-w-screen-sm lg:max-w-screen-md xl:max-w-screen-xl 2xl:max-w-screen-2xl mx-auto py-4">
       <div className="flex w-full gap-10 mb-4">
         <Input
           isClearable

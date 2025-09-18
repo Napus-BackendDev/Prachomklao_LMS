@@ -19,7 +19,7 @@ const contacts = [
 export default function Footer() {
   return (
     <footer className="w-full py-8 border-t border-default-200 bg-white">
-      <div className="lg:max-w-screen-md xl:max-w-screen-2xl grid lg:grid-cols-3 gap-8 mx-auto">
+      <div className="lg:max-w-screen-md xl:max-w-screen-xl 2xl:max-w-screen-2xl grid lg:grid-cols-3 gap-8 mx-auto">
         {/* ABOUT */}
         <section
           id="about"
