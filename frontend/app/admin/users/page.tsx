@@ -1,8 +1,6 @@
 'use client'
 
-import { Sidebar } from "@/components/sidebar";
 import useUser from "@/hooks/useUser";
-import { User } from "@/types/user";
 import {
     Card,
     CardBody,
@@ -17,8 +15,10 @@ import {
     TableRow
 } from "@heroui/react";
 import { Eye, SearchIcon } from "lucide-react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import CoursesAccordion from "./_components/coursesAccordion";
+import { AdminCourse } from "@/types/couses";
+import { User } from "@/types/user";
 
 const columns = [
     { label: "Username", uid: "username" },
@@ -28,7 +28,9 @@ const columns = [
 ];
 
 export default function UserAdminPage() {
-    const { users } = useUser()
+    const { users, fetchUsersById } = useUser()
+    const [courses, setCourses] = useState<AdminCourse[]>([]);
+    const [userId, setUserId] = useState("");
     const [isCousesOpen, setIsCousesOpen] = useState(false);
     const [search, setSearch] = useState("");
     const [page, setPage] = useState(1);
@@ -65,7 +67,10 @@ export default function UserAdminPage() {
                 return <p>{user.role}</p>;
             case "courses":
                 return (
-                    <div className="flex justify-end text-default-600 hover:text-primary cursor-pointer">
+                    <div
+                        className="flex justify-end text-default-600 hover:text-primary cursor-pointer"
+                        onClick={() => setUserId(user.id)}
+                    >
                         <Eye />
                     </div>
                 );
@@ -73,6 +78,18 @@ export default function UserAdminPage() {
                 return null;
         }
     }, []);
+
+    useEffect(() => {
+        if (!userId) return;
+
+        const fetchData = async () => {
+            const user = await fetchUsersById(userId);
+            setCourses(user.courses);
+            setIsCousesOpen(true);
+        };
+
+        fetchData();
+    }, [userId]);
 
     return (
         <>
@@ -132,6 +149,7 @@ export default function UserAdminPage() {
                 <CoursesAccordion
                     isOpen={isCousesOpen}
                     onClose={() => setIsCousesOpen(false)}
+                    courses={courses}
                 />
             </div>
         </>

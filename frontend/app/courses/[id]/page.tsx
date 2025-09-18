@@ -158,7 +158,7 @@ export default function CoursePage() {
           </div>
 
           {/* Enrolled Users */}
-          <div className="flex items-center justify-between text-lg">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-lg">
             <div className="flex items-center gap-2 text-primary font-semibold">
               <Users /> จำนวนคนที่สมัครหลักสูตรนี้ไปแล้ว
             </div>

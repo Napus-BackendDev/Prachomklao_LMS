@@ -32,6 +32,32 @@ export default function useUser() {
     }
   };
 
+  const fetchUsersById = async (userId: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch(`/api/admin/${userId}`, {
+        method: "GET",
+        credentials: "include",
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Failed to fetch users");
+      }
+
+      return data;
+    } catch (err) {
+      setError(
+        err && typeof err === "object" && "message" in err
+          ? (err as { message?: string }).message || "Failed to fetch users"
+          : "Failed to fetch users"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchUsers();
   }, []);
@@ -41,6 +67,7 @@ export default function useUser() {
     error,
     loading,
     fetchUsers,
+    fetchUsersById,
   };
 }
 

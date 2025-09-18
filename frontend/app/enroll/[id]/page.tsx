@@ -171,7 +171,7 @@ export default function EnrollCoursePage() {
                             results={posttestResult}
                             handleNextStep={() => {
                                 currentStep === steps.length
-                                    ? router.replace('/')
+                                    ? router.replace(`/courses/${courseId}`)
                                     : setCurrentStep(prev => prev + 1)
                             }}
                         />
