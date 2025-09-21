@@ -58,6 +58,36 @@ export default function useUser() {
     }
   };
 
+  const updateUser = async (userInfo: {username?: string, email?: string}) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch(`/api/student`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userInfo),
+        credentials: "include",
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Failed to update user");
+      }
+
+      return data;
+    } catch (err) {
+      setError(
+        err && typeof err === "object" && "message" in err
+          ? (err as { message?: string }).message || "Failed to update user"
+          : "Failed to update user"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchUsers();
   }, []);
@@ -68,6 +98,7 @@ export default function useUser() {
     loading,
     fetchUsers,
     fetchUsersById,
+    updateUser,
   };
 }
 

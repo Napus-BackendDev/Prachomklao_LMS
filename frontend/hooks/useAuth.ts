@@ -166,5 +166,6 @@ export default function useAuth() {
         signup,
         logout,
         resetPassword,
+        fetchProfile,
     }
 }
