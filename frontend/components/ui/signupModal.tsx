@@ -10,7 +10,7 @@ import {
     ModalFooter,
     Form,
 } from "@heroui/react";
-import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { CircleAlert, EyeIcon, EyeOffIcon } from "lucide-react";
 
 type SignUpModalProps = {
     isOpen: boolean;
@@ -21,7 +21,7 @@ type SignUpModalProps = {
     setEmail: (value: string) => void;
     password: string;
     setPassword: (value: string) => void;
-    onSignup: (e: FormEvent) => void;
+    onSignup: () => Promise<string>;
     onOpenLogin: () => void;
 };
 
@@ -37,8 +37,20 @@ export default function SignUpModal({
     onSignup,
     onOpenLogin,
 }: SignUpModalProps) {
+    const [isError, setIsError] = useState(false);
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     const toggleVisibility = () => setIsPasswordVisible(!isPasswordVisible);
+
+    const handleSubmit = async (e: FormEvent) => {
+        e.preventDefault();
+        setIsError(false);
+        const res = await onSignup();
+        if (res) {
+            window.location.reload();
+        } else {
+            setIsError(true);
+        }
+    };
 
     return (
         <Modal
@@ -49,11 +61,15 @@ export default function SignUpModal({
             size="md"
         >
             <ModalContent>
-                <Form onSubmit={onSignup}>
-                    <ModalHeader className="text-2xl font-bold">
-                        สมัครใช้งาน
-                    </ModalHeader>
+                <Form onSubmit={handleSubmit}>
+                    <ModalHeader className="text-2xl font-bold">สมัครใช้งาน</ModalHeader>
                     <ModalBody className="flex flex-col gap-4 w-full">
+                        {isError ? (
+                            <p className="flex items-center gap-2 text-danger font-medium text-center">
+                                <CircleAlert size={16} />
+                                คุณได้ใช้อีเมลนี้ในการสมัครไปแล้ว
+                            </p>
+                        ) : null}
                         <Input
                             isRequired
                             type="text"
@@ -64,7 +80,7 @@ export default function SignUpModal({
                         />
                         <Input
                             isRequired
-                            type="text"
+                            type="email"
                             placeholder="กรอกอีเมล"
                             value={email}
                             onValueChange={setEmail}
