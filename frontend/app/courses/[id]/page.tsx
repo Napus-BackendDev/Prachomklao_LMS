@@ -76,10 +76,10 @@ export default function CoursePage() {
     return res;
   };
 
-  const handleSignup = async (e: FormEvent) => {
-    e.preventDefault();
+  const handleSignup = async () => {
     const res = await signup(username, email, password);
     if (res) window.location.reload();
+    return res;
   };
 
   const handleResetPassword = async (e: FormEvent) => {
