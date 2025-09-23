@@ -64,10 +64,9 @@ export default function Navbar() {
     return res;
   };
 
-  const handleSignup = async (e: FormEvent) => {
-    e.preventDefault();
+  const handleSignup = async () => {
     const res = await signup(username, email, password);
-    if (res) window.location.reload();
+    return res;
   };
 
   const handleLogout = async () => {

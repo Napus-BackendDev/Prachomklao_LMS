@@ -49,9 +49,7 @@ export default function useAuth() {
             });
             const data = await res.json();
 
-            if (!res.ok) {
-                throw new Error(data.message || "Login failed");
-            }
+            if (!res.ok) throw new Error(data.message || "Login failed");
 
             fetchProfile();
             return data;
@@ -85,7 +83,6 @@ export default function useAuth() {
 
             if (!res.ok) throw new Error(data.message || "Signup failed");
 
-            // await login(email, password);
             return data;
         } catch (err) {
             setError(
