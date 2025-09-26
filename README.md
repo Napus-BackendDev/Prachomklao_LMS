@@ -293,9 +293,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👥 Development Team
 
-**Napus-BackendDev Team**
-- University of Phayao
-- Prachomklao Nursing College, Phetchaburi
+**Dev Team**
+- Napus Samuanpho (Backend)
+- Wantana Suwannapho (Frontend)
 
 ---
 
