@@ -131,7 +131,7 @@ export default function EnrollCoursePage() {
             }
 
             {/* Main */}
-            {(course && course.courses.id)
+            {(course && (course?.pretest_totle ? currentStep === 2 : currentStep === 1))
                 && (
                     <VideoCard
                         course={{
