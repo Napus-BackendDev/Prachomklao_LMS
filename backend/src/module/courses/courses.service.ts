@@ -9,7 +9,7 @@ import {
   Student,
   StudentData,
 } from 'src/common/interface/couse-interface';
-import { extractYoutubeId } from 'src/common/utils/youtube.ts';
+import { extractYoutubeId } from 'src/common/utils/youtube';
 import { PosttestQuestion } from 'src/common/interface/posttest-interface';
 import { PretestQuestion } from 'src/common/interface/pretest-interface';
 
