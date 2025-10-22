@@ -1,11 +1,8 @@
 /** @type {import('next').NextConfig} */
-const fs = require('fs');
-const dotenv = require('dotenv');
-const env = dotenv.parse(fs.readFileSync('.env'));
+require('dotenv').config();
 
 const nextConfig = {
   reactStrictMode: true,
-  env: env,
   async rewrites() {
     return [
       {
