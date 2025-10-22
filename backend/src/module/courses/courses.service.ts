@@ -23,10 +23,12 @@ export class CoursesService {
 
     const mainCourse = {
       ...createCourseDto[0],
+      url: `https://www.youtube.com/watch?v=${extractYoutubeId(createCourseDto[0].url)}`,
       urlPicture: `https://img.youtube.com/vi/${extractYoutubeId(createCourseDto[0].url)}/0.jpg`,
       content: createCourseDto.slice(1).map((course) => ({
         id: this.coursesCollection.doc().id,
         ...course,
+        url: `https://www.youtube.com/watch?v=${extractYoutubeId(course.url)}`,
         urlPicture: `https://img.youtube.com/vi/${extractYoutubeId(course.url)}/0.jpg`,
       })),
     };
@@ -100,6 +102,7 @@ export class CoursesService {
     const mainCourse = {
       ...updateCourseDto,
       ...(updateCourseDto.url && {
+       url: `https://www.youtube.com/watch?v=${extractYoutubeId(updateCourseDto.url)}`,
        urlPicture: `https://img.youtube.com/vi/${extractYoutubeId(updateCourseDto.url)}/0.jpg`,
       }),
     };
@@ -129,6 +132,7 @@ export class CoursesService {
       ...courseData.content[contentIndex],
       ...updateCourseDto,
       ...(updateCourseDto.url && {
+        url: `https://www.youtube.com/watch?v=${extractYoutubeId(updateCourseDto.url)}`,
         urlPicture: `https://img.youtube.com/vi/${extractYoutubeId(updateCourseDto.url)}/0.jpg`,
       }),
     };
