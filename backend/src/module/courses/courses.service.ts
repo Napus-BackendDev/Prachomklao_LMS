@@ -100,7 +100,7 @@ export class CoursesService {
     const mainCourse = {
       ...updateCourseDto,
       ...(updateCourseDto.url && {
-       urlPicture: `https://img.youtube.com/vi/${extractYoutubeId(UpdateCourseDto.url)/0.jpg`,
+       urlPicture: `https://img.youtube.com/vi/${extractYoutubeId(updateCourseDto.url)}/0.jpg`,
       }),
     };
 
@@ -129,7 +129,7 @@ export class CoursesService {
       ...courseData.content[contentIndex],
       ...updateCourseDto,
       ...(updateCourseDto.url && {
-        urlPicture: `https://img.youtube.com/vi/${extractYoutubeId(UpdateCourseDto.url)/0.jpg`,
+        urlPicture: `https://img.youtube.com/vi/${extractYoutubeId(UpdateCourseDto.url)}/0.jpg`,
       }),
     };
 
