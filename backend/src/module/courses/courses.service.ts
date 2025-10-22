@@ -22,11 +22,11 @@ export class CoursesService {
 
     const mainCourse = {
       ...createCourseDto[0],
-      urlPicture: `https://img.youtube.com/vi/${createCourseDto[0].url.split('si=')[1]}/0.jpg`,
+      urlPicture: `https://img.youtube.com/vi/${createCourseDto[0].url.split('si=')[0]}/0.jpg`,
       content: createCourseDto.slice(1).map((course) => ({
         id: this.coursesCollection.doc().id,
         ...course,
-        urlPicture: `https://img.youtube.com/vi/${course.url.split('si=')[1]}/0.jpg`,
+        urlPicture: `https://img.youtube.com/vi/${course.url.split('si=')[0]}/0.jpg`,
       })),
     };
 
@@ -99,7 +99,7 @@ export class CoursesService {
     const mainCourse = {
       ...updateCourseDto,
       ...(updateCourseDto.url && {
-        urlPicture: `https://img.youtube.com/vi/${updateCourseDto.url.split('si=')[1]}/0.jpg`,
+        urlPicture: `https://img.youtube.com/vi/${updateCourseDto.url.split('si=')[0]}/0.jpg`,
       }),
     };
 
@@ -128,7 +128,7 @@ export class CoursesService {
       ...courseData.content[contentIndex],
       ...updateCourseDto,
       ...(updateCourseDto.url && {
-        urlPicture: `https://img.youtube.com/vi/${updateCourseDto.url.split('si=')[1]}/0.jpg`,
+        urlPicture: `https://img.youtube.com/vi/${updateCourseDto.url.split('si=')[0]}/0.jpg`,
       }),
     };
 
