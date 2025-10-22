@@ -46,8 +46,8 @@ export default function CourseAdminPage() {
     updateCourse,
     deleteCourse
   } = useCourses();
-  const { updatePretestQuestion } = usePretest();
-  const { updatePosttestQuestion } = usePosttest();
+  const { createPretestQuestion, updatePretestQuestion, deletePretestQuestion } = usePretest();
+  const { createPosttestQuestion, updatePosttestQuestion, deletePosttestQuestion } = usePosttest();
   const [isCourseModalOpen, setIsCourseModalOpen] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [course, setCourse] = useState<CourseData | null>(null);
@@ -133,13 +133,55 @@ export default function CourseAdminPage() {
     window.location.reload();
   };
 
-  const handleEdit = async (course: Courses, pretest: Test[], posttest: { id?: string, question: string, options: string[], correctAnswer: string, explanation: string }[]) => {
+  const handleEdit = async (
+    course: Courses,
+    pretest: Test[],
+    posttest: { id?: string, question: string, options: string[], correctAnswer: string, explanation: string }[],
+    deleted: { pretest: string[], posttest: string[] },
+  ) => {
+    const createPretest: Test[] = [];
+    const createPosttest: { id?: string, question: string, options: string[], correctAnswer: string, explanation: string }[] = [];
+
     if (!courseId) return;
+    // Update course
     await updateCourse(courseId, course);
-    const updatePretest = pretest.filter(test => test.id).map(test => updatePretestQuestion(courseId, test.id!, pretest));
-    await Promise.all(updatePretest);
-    const updatePosttest = posttest.filter(test => test.id).map(test => updatePosttestQuestion(courseId, test.id!, posttest));
-    await Promise.all(updatePosttest);
+
+    
+    // Update and Create pretest
+    await Promise.all(
+      pretest.map(test => {
+        if (test.id) {
+          return updatePretestQuestion(courseId, test.id, test);
+        } else {
+          return createPretest.push(test);
+        }
+      })
+    );
+
+    // Update and Create posttest
+    await Promise.all(
+      posttest.map(test => {
+        if (test.id) {
+          return updatePosttestQuestion(courseId, test.id, test);
+        } else {
+          return createPosttest.push(test);
+        }
+      })
+    )
+
+    // Delete pretest
+    await Promise.all(
+      deleted.pretest.map(id => deletePretestQuestion(courseId, id))
+    )
+
+    // Delete posttest
+    await Promise.all(
+       deleted.posttest.map(id => deletePosttestQuestion(courseId, id)),
+    )
+
+    if (createPretest) await createPretestQuestion(courseId, createPretest);
+    if (createPosttest) await createPosttestQuestion(courseId, createPosttest);
+
     window.location.reload();
   };
 
@@ -223,7 +265,7 @@ export default function CourseAdminPage() {
         onClose={() => setIsCourseModalOpen(false)}
         onAdd={handleAdd}
         course={course ? course : null}
-        onEdit={course ? handleEdit : undefined}
+        onEdit={handleEdit}
       />
 
       <ConfirmModal

@@ -60,7 +60,6 @@ export default function EnrollCoursePage() {
 
     const progressValue = ((currentStep - 1) / (steps.length - 1)) * 100;
 
-
     useEffect(() => {
         if (!courseId) return;
 
@@ -90,8 +89,12 @@ export default function EnrollCoursePage() {
     const handleNext = async () => {
         if (!courseId) return;
 
-        await updateEnrollProgress(courseId);
-        setCurrentStep(prev => prev + 1);
+        if (currentStep === steps.length) {
+            router.replace(`/courses/${courseId}`);
+        } else {
+            await updateEnrollProgress(courseId);
+            setCurrentStep(prev => prev + 1);
+        }
     }
 
     if (isLoading) return (currentStep !== 1) && (currentStep !== steps.length) ? <EnrollCourseSkeleton /> : <TestCardSkeleton />
@@ -128,7 +131,7 @@ export default function EnrollCoursePage() {
             }
 
             {/* Main */}
-            {(course && currentStep === 2 && course.courses.id)
+            {(course && course.courses.id)
                 && (
                     <VideoCard
                         course={{
@@ -145,7 +148,7 @@ export default function EnrollCoursePage() {
             }
 
             {/* Lessons */}
-            {(course && currentStep > 2 && currentStep < (course?.courses.content?.length ?? 0) + 3 && course.courses.content?.[currentStep - 3])
+            {(course && currentStep < (course?.courses.content?.length ?? 0) + 3 && course.courses.content?.[currentStep - 3])
                 && (
                     <VideoCard
                         course={{

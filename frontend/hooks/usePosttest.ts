@@ -94,16 +94,16 @@ export default function usePosttest() {
         }
     };
 
-    const updatePosttestQuestion = async (courseId: string, pretestId: string, answers: { question: string; options: string[]; correctAnswer: string; explanation: string }[]) => {
+    const updatePosttestQuestion = async (courseId: string, posttestId: string, test: { question: string; options: string[]; correctAnswer: string; explanation: string }) => {
         setLoading(true);
         setError(null);
         try {
-            const res = await fetch(`/api/courses/posttest/${courseId}/${pretestId}`, {
+            const res = await fetch(`/api/courses/posttest/${courseId}/${posttestId}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify(answers),
+                body: JSON.stringify(test),
                 credentials: "include",
             });
             const data = await res.json();
@@ -124,6 +124,32 @@ export default function usePosttest() {
         }
     };
 
+    const deletePosttestQuestion = async (courseId: string, posttestId: string) => {
+        setLoading(true);
+        setError(null);
+        try {
+            const res = await fetch(`/api/courses/posttest/${courseId}/${posttestId}`, {
+                method: "DELETE",
+                credentials: "include",
+            });
+            const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(data.message || "Failed to delete post-test question");
+            }
+
+            return data;
+        } catch (err) {
+            setError(
+                err && typeof err === "object" && "message" in err
+                    ? (err as { message?: string }).message || "Failed to delete post-test question"
+                    : "Failed to delete post-test question"
+            );
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return {
         grade,
         error,
@@ -132,5 +158,6 @@ export default function usePosttest() {
         createPosttestQuestion,
         createPosttestAnswer,
         updatePosttestQuestion,
+        deletePosttestQuestion,
     }
 }

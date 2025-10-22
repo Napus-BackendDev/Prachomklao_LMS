@@ -34,21 +34,18 @@ export default function VideoCard({
             <div className="flex justify-center gap-4 mx-auto mt-6">
                 <Button
                     radius="sm"
-                    isDisabled={currentStep === 2}
+                    isDisabled={currentStep === 1}
                     onPress={handlePreviousStep}
                     className="w-20 mx-auto hover:bg-primary hover:text-white"
                 >
-                    บทก่อนหน้า
+                    ก่อนหน้า
                 </Button>
                 <Button
                     radius="sm"
                     onPress={handleNextStep}
                     className="w-20 mx-auto hover:bg-primary hover:text-white"
                 >
-                    {currentStep === (stepLength - 1)
-                        ? "ทำบททดสอบ"
-                        : "บทต่อไป"
-                    }
+                    ต่อไป
                 </Button>
             </div>
         </div >

@@ -23,23 +23,24 @@ type CourseModalProps = {
   onClose: () => void;
   onAdd: (course: (MainContent | Content)[]) => void;
   course?: CourseData | null;
-  onEdit?: (course: Courses, pretest: Test[], posttest: { question: "", options: [], correctAnswer: "", explanation: "" }[]) => void;
+  onEdit?: (course: Courses, pretest: Test[], posttest: { question: "", options: [], correctAnswer: "", explanation: "" }[], deleted: { pretest: string[], posttest: string[] }) => void;
 };
 
 export default function CourseModal({ isOpen, onClose, onAdd, course, onEdit }: CourseModalProps) {
   const [title, setTitle] = useState("");
   const [url, setUrl] = useState("");
   const [code, setCode] = useState("");
-  const [content, setContent] = useState<Content[]>([{ title: "", url: "" }]);
+  const [content, setContent] = useState<Content[]>([]);
   const [pretest, setPretest] = useState<Test[]>([{ question: "", options: [], correctAnswer: "" }]);
   const [posttest, setPosttest] = useState<Test[]>([{ question: "", options: [], correctAnswer: "", explanation: "" }]);
+  const [deleted, setDeleted] = useState<{ pretest: string[], posttest: string[] }>({ pretest: [], posttest: []});
 
   useEffect(() => {
     if (course) {
       setTitle(course.courses.title);
       setUrl(course.courses.url);
       setCode(course.courses.courseCode ?? "");
-      setContent(course.courses.content ?? [{ title: "", url: "" }]);
+      setContent(course.courses.content ?? []);
       setPretest(course.pretest ?? [{ question: "", options: [], correctAnswer: "" }]);
       setPosttest(course.posttest ?? [{ question: "", options: [], correctAnswer: "", explanation: "" }]);
     }
@@ -50,7 +51,7 @@ export default function CourseModal({ isOpen, onClose, onAdd, course, onEdit }: 
       setTitle("");
       setUrl("");
       setCode("");
-      setContent([{ title: "", url: "" }]);
+      setContent([]);
       setPretest([{ question: "", options: [], correctAnswer: "" }]);
       setPosttest([{ question: "", options: [], correctAnswer: "", explanation: "" }]);
     }
@@ -81,7 +82,12 @@ export default function CourseModal({ isOpen, onClose, onAdd, course, onEdit }: 
         courseCode: code,
         content: [...content],
       };
-      onEdit(editCourse, pretest, posttest as { question: "", options: [], correctAnswer: "", explanation: "" }[]);
+      onEdit(
+        editCourse, 
+        pretest, 
+        posttest as { question: "", options: [], correctAnswer: "", explanation: "" }[],
+        deleted
+      );
     } else {
       // Add
       const data = [
@@ -149,11 +155,12 @@ export default function CourseModal({ isOpen, onClose, onAdd, course, onEdit }: 
             {/* Course Accordion */}
             {!!course && onEdit ?
               (
-                < TestAccordion
+                <TestAccordion
                   pretest={pretest}
                   setPretest={setPretest}
                   posttest={posttest}
                   setPosttest={setPosttest}
+                  setDeleted={setDeleted}
                 />
               ) : <p className="text-lg text-center text-primary">Pre-test และ Post-test สามารถเพิ่มได้จากหน้าแก้ไข</p>
             }

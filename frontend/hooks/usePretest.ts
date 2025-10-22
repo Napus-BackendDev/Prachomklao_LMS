@@ -94,7 +94,7 @@ export default function usePretest() {
         }
     };
 
-    const updatePretestQuestion = async (courseId: string, pretestId: string, answers: { question: string; options: string[]; correctAnswer: string }[]) => {
+    const updatePretestQuestion = async (courseId: string, pretestId: string, test: { question: string; options: string[]; correctAnswer: string }) => {
         setLoading(true);
         setError(null);
         try {
@@ -103,7 +103,7 @@ export default function usePretest() {
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify(answers),
+                body: JSON.stringify(test),
                 credentials: "include",
             });
             const data = await res.json();
@@ -124,6 +124,32 @@ export default function usePretest() {
         }
     };
 
+    const deletePretestQuestion = async (courseId: string, pretestId: string) => {
+        setLoading(true);
+        setError(null);
+        try {
+            const res = await fetch(`/api/courses/pretest/${courseId}/${pretestId}`, {
+                method: "DELETE",
+                credentials: "include",
+            });
+            const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(data.message || "Failed to delete pre-test question");
+            }
+
+            return data;
+        } catch (err) {
+            setError(
+                err && typeof err === "object" && "message" in err
+                    ? (err as { message?: string }).message || "Failed to delete pre-test question"
+                    : "Failed to delete pre-test question"
+            );
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return {
         grade,
         error,
@@ -132,5 +158,6 @@ export default function usePretest() {
         createPretestQuestion,
         createPretestAnswer,
         updatePretestQuestion,
+        deletePretestQuestion,
     }
 }

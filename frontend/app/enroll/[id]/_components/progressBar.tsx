@@ -13,13 +13,18 @@ export default function ProgressBar({ currentStep, progressValue, steps }: Progr
     return (
         <>
             {/* Progress bar */}
-            <div className="relative px-6">
-                <Progress
-                    aria-label="progress"
-                    value={progressValue}
-                    className="h-3 rounded-full"
-                    color="primary"
-                />
+            <div className="relative">
+                {steps.length == 1 ?
+                    null
+                    : (
+                        <Progress
+                            aria-label="progress"
+                            value={progressValue}
+                            className="h-3 rounded-full w-full"
+                            color="primary"
+                        />
+                    )
+                }
 
                 {/* Checkpoints */}
                 <div className="absolute top-0 left-0 w-full flex justify-between">
@@ -28,7 +33,7 @@ export default function ProgressBar({ currentStep, progressValue, steps }: Progr
                         return (
                             <div
                                 key={step.id}
-                                className="flex flex-col items-center w-8 -translate-y-2"
+                                className={`flex flex-col justify-center items-center w-8 -translate-y-2 ${steps.length == 1 && "w-full"}`}
                             >
                                 {/* Circle */}
                                 <div

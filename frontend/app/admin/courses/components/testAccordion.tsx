@@ -8,9 +8,10 @@ type TestAccordionProps = {
     setPretest: Dispatch<SetStateAction<{ question: string; options: string[]; correctAnswer: string; }[]>>;
     posttest: Test[];
     setPosttest: Dispatch<SetStateAction<{ question: string; options: string[]; correctAnswer: string; explanation?: string; }[]>>;
+    setDeleted: Dispatch<SetStateAction<{ pretest: string[]; posttest: string[] }>>;
 }
 
-export default function TestAccordion({ pretest, setPretest, posttest, setPosttest } : TestAccordionProps) {
+export default function TestAccordion({ pretest, setPretest, posttest, setPosttest, setDeleted } : TestAccordionProps) {
     return (
         <Accordion selectionMode="multiple" variant="splitted" keepContentMounted>
             <AccordionItem
@@ -123,6 +124,13 @@ export default function TestAccordion({ pretest, setPretest, posttest, setPostte
                                         const newPretest = [...pretest];
                                         newPretest.splice(testIndex, 1);
                                         setPretest(newPretest);
+                                        
+                                        if (test.id) {
+                                            setDeleted(prev => ({
+                                                ...prev,
+                                                pretest: [...prev.pretest, test.id! ]
+                                            }))
+                                        };
                                     }}
                                 >
                                     ลบคำถามนี้
@@ -268,6 +276,13 @@ export default function TestAccordion({ pretest, setPretest, posttest, setPostte
                                         const newPosttest = [...posttest];
                                         newPosttest.splice(testIndex, 1);
                                         setPosttest(newPosttest);
+
+                                        if (test.id) {
+                                            setDeleted(prev => ({
+                                                ...prev,
+                                                posttest: [...prev.posttest, test.id! ]
+                                            }))
+                                        };
                                     }}
                                 >
                                     ลบคำถามนี้
