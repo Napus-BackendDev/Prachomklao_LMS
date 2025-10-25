@@ -28,6 +28,8 @@ export default function EnrollCoursePage() {
     const [currentStep, setCurrentStep] = useState(1);
     const [pretestResult, setPretestResult] = useState<Result[] | null>(null);
     const [posttestResult, setPosttestResult] = useState<Result[] | null>(null);
+    const [nextDisabled, setNextDisabled] = useState(true);
+    
     const isLoading = coursesLoading || pretestLoading || posttestLoading || enrolledLoading;
 
     const steps: { id: number; title: string; uid: string; }[] = [];
@@ -95,6 +97,8 @@ export default function EnrollCoursePage() {
             await updateEnrollProgress(courseId);
             setCurrentStep(prev => prev + 1);
         }
+
+        setNextDisabled(true);
     }
 
     if (isLoading) return (currentStep !== 1) && (currentStep !== steps.length) ? <EnrollCourseSkeleton /> : <TestCardSkeleton />
@@ -140,9 +144,10 @@ export default function EnrollCoursePage() {
                             urlPicture: course.courses.urlPicture ?? ""
                         }}
                         currentStep={currentStep}
-                        stepLength={steps.length}
+                        nextDisabled={nextDisabled}
                         handlePreviousStep={() => setCurrentStep(prev => prev - 1)}
                         handleNextStep={handleNext}
+                        setNextDisabled={setNextDisabled}
                     />
                 )
             }
@@ -158,9 +163,10 @@ export default function EnrollCoursePage() {
                             urlPicture: course.courses.content[currentStep - 3]?.urlPicture ?? ""
                         }}
                         currentStep={currentStep}
-                        stepLength={steps.length}
+                        nextDisabled={nextDisabled}
                         handlePreviousStep={() => setCurrentStep(prev => prev - 1)}
                         handleNextStep={handleNext}
+                        setNextDisabled={setNextDisabled}
                     />
                 )
             }

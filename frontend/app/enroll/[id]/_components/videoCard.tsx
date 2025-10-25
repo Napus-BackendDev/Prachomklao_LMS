@@ -1,30 +1,46 @@
-import React from "react";
+import React, { useCallback } from "react";
+import YouTube from "react-youtube";
 import { Button } from "@heroui/react";
 import { Courses } from "@/types/couses";
 
 type VideoCardProps = {
     course: Courses;
     currentStep: number;
-    stepLength: number;
+    nextDisabled: boolean;
     handlePreviousStep: () => void;
     handleNextStep: () => void;
+    setNextDisabled: (enabled: boolean) => void;
 }
 
 export default function VideoCard({
     course,
     currentStep,
-    stepLength,
+    nextDisabled,
     handlePreviousStep,
-    handleNextStep
+    handleNextStep,
+    setNextDisabled,
 }: VideoCardProps) {
+    const handleVideoEnd = () => {
+        setNextDisabled(false);
+    };
+
+    const opts = {
+        height: '340',
+        width: '100%',
+        playerVars: {
+            autoplay: 0,
+            rel: 0,
+        }
+    };
+
     return (
         <div className="flex flex-col items-center gap-12 p-4">
             <div className="w-full max-w-4xl">
                 <div className="aspect-video w-full rounded-xl overflow-hidden shadow-lg">
-                    <iframe
-                        className="w-full h-full"
-                        src={course.url.replace("watch?v=", "embed/")}
-                        allowFullScreen
+                    <YouTube
+                        videoId={course.url.split('v=')[1]} // Id youtube video
+                        opts={opts}
+                        onEnd={handleVideoEnd}
                     />
                 </div>
                 <h1 className="text-2xl font-bold mt-4">{course.title}</h1>
@@ -42,6 +58,7 @@ export default function VideoCard({
                 </Button>
                 <Button
                     radius="sm"
+                    isDisabled={nextDisabled}
                     onPress={handleNextStep}
                     className="w-20 mx-auto hover:bg-primary hover:text-white"
                 >
