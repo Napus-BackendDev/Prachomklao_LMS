@@ -24,23 +24,19 @@ export default function VideoCard({
         setNextDisabled(false);
     };
 
-    const opts = {
-        height: '340',
-        width: '100%',
-        playerVars: {
-            autoplay: 0,
-            rel: 0,
-        }
-    };
-
     return (
         <div className="flex flex-col items-center gap-12 p-4">
             <div className="w-full max-w-4xl">
-                <div className="aspect-video w-full rounded-xl overflow-hidden shadow-lg">
+                <div className="aspect-video rounded-xl overflow-hidden shadow-lg">
                     <YouTube
-                        videoId={course.url.split('v=')[1]} // Id youtube video
-                        opts={opts}
+                        videoId={course.url.split("v=")[1]} // YouTube ID
+                        opts={{
+                            width: "100%",
+                            height: "100%",
+                            playerVars: { autoplay: 0, rel: 0 },
+                        }}
                         onEnd={handleVideoEnd}
+                        style={{ width: "100%", height: "100%" }}
                     />
                 </div>
                 <h1 className="text-2xl font-bold mt-4">{course.title}</h1>

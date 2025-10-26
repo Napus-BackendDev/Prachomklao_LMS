@@ -4,13 +4,13 @@ import * as path from 'path';
 
 
 // When we Deploy 
-const serviceAccount = JSON.parse(
-  readFileSync('/etc/secrets/firebasekey.json', 'utf8'),
-);
-
 // const serviceAccount = JSON.parse(
-//   readFileSync(path.resolve(process.cwd(), 'config/firebasekey.json'), 'utf8'),
+//   readFileSync('/etc/secrets/firebasekey.json', 'utf8'),
 // );
+
+const serviceAccount = JSON.parse(
+  readFileSync(path.resolve(process.cwd(), 'config/firebasekey.json'), 'utf8'),
+);
 
 
 admin.initializeApp({
